@@ -1,0 +1,21 @@
+{
+  "name": "threeml-example",
+  "version": "1.0.0",
+  "description": "example for threeml",
+  "main": "dist/index.js",
+  "dependencies": {
+    "express": "^4.17.1",
+    "threeml": "^1.0.1"
+  },
+  "devDependencies": {
+    "@types/express": "^4.17.2",
+    "@types/node": "^12.12.12",
+    "typescript": "^3.7.2"
+  },
+  "scripts": {
+    "build": "tsc",
+    "start": "node dist/index.js"
+  },
+  "author": "",
+  "license": "ISC"
+}
