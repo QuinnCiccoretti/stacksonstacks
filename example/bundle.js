@@ -32,6 +32,7 @@ animate();
 // app.listen(port, () => console.log(`Example app listening on port ${port}!`));
 threeml_1.createCube("https://immersiveatuva.github.io/img/vr.png").then(function (cube) {
     console.log(cube);
+    // cube.position.set()
     scene.add(cube);
 }).catch((error) => {
     console.log("XXXX");
@@ -50153,7 +50154,7 @@ function createCube(url) {
                     texture1 = texture;
                     h = texture.image.height;
                     w = texture.image.width;
-                    geometry = new THREE.PlaneGeometry(w / scalefactor, h / scalefactor);
+                    geometry = new THREE.BoxGeometry(1, 1, 1);
                     material = new THREE.MeshBasicMaterial({ map: texture, side: THREE.DoubleSide });
                     mesh = new THREE.Mesh(geometry, material);
                     // set the position of the image mesh in the x,y,z dimensions
@@ -50171,6 +50172,8 @@ function createCube(url) {
     });
 }
 exports.createCube = createCube;
+// Big thx to lewy blue for showing how to wrap loader in promises
+// https://blackthread.io/blog/promisifying-threejs-loaders/
 function promisifyLoader(loader) {
     function promiseLoader(url) {
         return new Promise(function (resolve, reject) {

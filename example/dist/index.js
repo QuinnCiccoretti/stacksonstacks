@@ -31,6 +31,7 @@ animate();
 // app.listen(port, () => console.log(`Example app listening on port ${port}!`));
 threeml_1.createCube("https://immersiveatuva.github.io/img/vr.png").then(function (cube) {
     console.log(cube);
+    // cube.position.set()
     scene.add(cube);
 }).catch((error) => {
     console.log("XXXX");
