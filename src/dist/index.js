@@ -91,6 +91,7 @@ function promisifyLoader(loader) {
             loader.load(url, resolve, reject);
         });
     }
+    loader.setCrossOrigin('anonymous');
     return {
         originalLoader: loader,
         load: promiseLoader,

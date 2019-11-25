@@ -31,7 +31,7 @@ animate();
 // app.get('/', (req, res) => res.send(printMsg()));
 
 // app.listen(port, () => console.log(`Example app listening on port ${port}!`));
-createCube("https://immersiveatuva.github.io/img/vr.png").then(function(cube){
+createCube("./linus.jpg").then(function(cube){
 	console.log(cube);
 	// cube.position.set()
 	scene.add(cube);
