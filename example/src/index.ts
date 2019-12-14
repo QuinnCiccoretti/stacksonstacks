@@ -7,6 +7,8 @@ var camera = new THREE.PerspectiveCamera( 75, window.innerWidth/window.innerHeig
 
 var renderer = new THREE.WebGLRenderer();
 renderer.setSize( window.innerWidth, window.innerHeight );
+renderer.domElement.height = window.innerHeight;
+renderer.domElement.width = window.innerWidth;
 document.body.appendChild( renderer.domElement );
 
 var geometry = new THREE.BoxGeometry( 1, 1, 1 );
@@ -29,7 +31,7 @@ animate();
 // app.get('/', (req, res) => res.send(printMsg()));
 
 // app.listen(port, () => console.log(`Example app listening on port ${port}!`));
-createCube("https://immersiveatuva.github.io/img/vr.png").then(function(cube){
+createCube("./linus.jpg").then(function(cube){
 	console.log(cube);
 	// cube.position.set()
 	scene.add(cube);

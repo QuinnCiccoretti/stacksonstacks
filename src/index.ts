@@ -40,7 +40,7 @@ function promisifyLoader ( loader: THREE.TextureLoader ) {
 
     } );
   }
-
+  loader.setCrossOrigin('anonymous');
   return {
     originalLoader: loader,
     load: promiseLoader,
