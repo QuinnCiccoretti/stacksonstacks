@@ -6,15 +6,19 @@ This is the modular version of stacksonstacks (it will be renamed)
 ### Example install
 Cd to the example directory.
 Run
-```bash
+```sh
 npm install
 npm run build
 ```
 Then, since the image files need to be served, 
-run `python -m http.server` and navigate to http://localhost:8000
+run
+```sh
+python -m http.server
+```
+and navigate to http://localhost:8000
 
 ### The modules
-Cd to the module directory. Right now there are 3:
+cd to the directory. Right now there are 3:
  - threeml: sole purpose is to create textured cubes, but oh my is it good at that
  - scenemanager: takes in a terraform_json and calls threeml to add cubes to the scene.
  I envision this one as managing a graph of 3d nodes eventually
