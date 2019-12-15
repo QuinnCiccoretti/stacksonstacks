@@ -1,7 +1,7 @@
 {
-  "name": "threeml",
-  "version": "1.0.11",
-  "description": "take the guesswork out of initializing complex threejs scenes",
+  "name": "controlmanager",
+  "version": "0.0.0",
+  "description": "for managing a directed graph of objects",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "scripts": {
@@ -15,17 +15,16 @@
     "threejs"
   ],
   "author": "quinnciccoretti",
-  "license": "ISC",
+  "license": "MIT",
   "bugs": {
     "url": "https://github.com/QuinnCiccoretti/threeml/issues"
   },
   "homepage": "https://github.com/QuinnCiccoretti/threeml#readme",
   "devDependencies": {
-    "@types/three": "^0.103.2",
+    "@types/node": "^12.12.17",
     "typescript": "^3.7.2"
   },
   "dependencies": {
-    "three": "^0.110.0",
-    "@types/three": "^0.103.2"
+    "three": "^0.110.0"
   }
 }
