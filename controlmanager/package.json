@@ -25,6 +25,7 @@
     "typescript": "^3.7.2"
   },
   "dependencies": {
-    "three": "^0.110.0"
+    "three": "^0.110.0",
+    "webvr-polyfill": "^0.10.11"
   }
 }
