@@ -105,6 +105,7 @@ function normalAnimate(){
   cube.rotation.y += 0.01;
 	requestAnimationFrame(normalAnimate);
   renderer.render( scene, camera );
+  console.log(camera.position)
 
 }
 
