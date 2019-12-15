@@ -42,54 +42,81 @@ var __importStar = (this && this.__importStar) || function (mod) {
     result["default"] = mod;
     return result;
 };
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 var THREE = __importStar(require("three"));
-var threeml_1 = require("threeml");
-var name_to_path = {
-    "google_compute_instance.vm_instance": "Compute/Compute_Engine",
-    "google_compute_network.vpc_network": "Networking/Virtual_Private_Cloud"
-};
-var path_to_all_icons = "img/gcp_icons/";
-//return path relative to root dir of a resource icon
-function get_iconpath_from_resourcename(name) {
-    name = name.trim();
-    var iconpath = name_to_path[name];
-    console.log(name);
-    console.log(iconpath);
-    if (iconpath && name) {
-        return path_to_all_icons + iconpath + ".png";
-    }
-    else if (name) {
-        console.log("Using default icon");
-        return path_to_all_icons + "Extras/Generic_GCP" + ".png";
-    }
-    return "";
-}
-function initScene(scene, terraform_json) {
+var PointerLockControls_js_1 = require("three/examples/jsm/controls/PointerLockControls.js");
+var webvr_polyfill_1 = __importDefault(require("webvr-polyfill"));
+var three_vrcontrols_module_1 = __importDefault(require("three-vrcontrols-module"));
+var polyfill = new webvr_polyfill_1.default();
+function vrEnabled() {
     return __awaiter(this, void 0, void 0, function () {
-        var gridsize, gridHelper;
+        var vrDisplays;
         return __generator(this, function (_a) {
-            Object.keys(terraform_json).forEach(function (resource_name) {
-                var info = terraform_json[resource_name];
-                var resourcex = parseFloat(info.x);
-                var resourcey = parseFloat(info.y);
-                var dot_to_three_scale = 0.02;
-                resourcex *= dot_to_three_scale;
-                resourcey *= dot_to_three_scale;
-                var icon_path = get_iconpath_from_resourcename(resource_name);
-                threeml_1.createCube(icon_path).then(function (cube) {
-                    cube.position.set(resourcex, resourcey / 2 + 3, resourcey);
-                    scene.add(cube);
-                }).catch(function (error) {
-                    console.log(error);
-                });
-            });
-            gridsize = 30;
-            gridHelper = new THREE.GridHelper(gridsize, gridsize);
-            gridHelper.position.set(0, -1.6, 0);
-            scene.add(gridHelper);
-            return [2 /*return*/];
+            switch (_a.label) {
+                case 0: return [4 /*yield*/, navigator.getVRDisplays()];
+                case 1:
+                    vrDisplays = _a.sent();
+                    return [2 /*return*/, vrDisplays.length != 0];
+            }
         });
     });
 }
-exports.initScene = initScene;
+exports.vrEnabled = vrEnabled;
+function addControls(controls, scene, camera) {
+    return __awaiter(this, void 0, void 0, function () {
+        var vrDisplays, vrDisplay, onKeyDown;
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0: return [4 /*yield*/, navigator.getVRDisplays()];
+                case 1:
+                    vrDisplays = _a.sent();
+                    // If we have a native display, or we have a CardboardVRDisplay
+                    // from the polyfill, use it
+                    if (vrDisplays.length) {
+                        vrDisplay = vrDisplays[0];
+                        // Apply VR headset positional data to camera.
+                        controls = new three_vrcontrols_module_1.default(camera);
+                        return [2 /*return*/, vrDisplay];
+                    }
+                    else { //we on desktop, get that good good point and shoot
+                        controls = new PointerLockControls_js_1.PointerLockControls(camera);
+                        scene.add(controls.getObject());
+                        onKeyDown = function (event) {
+                            var moveForward, moveLeft, moveBackward, moveRight = false;
+                            switch (event.keyCode) {
+                                case 38: // up
+                                case 87: // w
+                                    moveForward = true;
+                                    break;
+                                case 37: // left
+                                case 65: // a
+                                    moveLeft = true;
+                                    break;
+                                case 40: // down
+                                case 83: // s
+                                    moveBackward = true;
+                                    break;
+                                case 39: // right
+                                case 68: // d
+                                    moveRight = true;
+                                    break;
+                            }
+                            var move_dir = new THREE.Vector3();
+                            move_dir.z = Number(moveForward) - Number(moveBackward);
+                            move_dir.x = Number(moveRight) - Number(moveLeft);
+                            move_dir.normalize(); // this ensures consistent movements in all directions
+                            move_dir.divideScalar(10);
+                            controls.moveRight(move_dir.x);
+                            controls.moveForward(move_dir.z);
+                        };
+                        document.addEventListener('keydown', onKeyDown, false);
+                    }
+                    return [2 /*return*/];
+            }
+        });
+    });
+}
+exports.addControls = addControls;
