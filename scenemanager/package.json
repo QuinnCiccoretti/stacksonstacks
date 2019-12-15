@@ -1,0 +1,30 @@
+{
+  "name": "scenemanager",
+  "version": "0.0.2",
+  "description": "for managing a directed graph of objects",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsc"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/QuinnCiccoretti/threeml.git"
+  },
+  "keywords": [
+    "threejs"
+  ],
+  "author": "quinnciccoretti",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/QuinnCiccoretti/threeml/issues"
+  },
+  "homepage": "https://github.com/QuinnCiccoretti/threeml#readme",
+  "devDependencies": {
+    "typescript": "^3.7.2"
+  },
+  "dependencies": {
+    "three": "^0.110.0",
+    "threeml": "^1.0.11"
+  }
+}

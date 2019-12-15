@@ -5,7 +5,8 @@
   "main": "dist/index.js",
   "dependencies": {
     "express": "^4.17.1",
-    "threeml": "^1.0.1"
+    "scenemanager": "0.0.2",
+    "webvr-polyfill": "^0.10.11"
   },
   "devDependencies": {
     "@types/express": "^4.17.2",
