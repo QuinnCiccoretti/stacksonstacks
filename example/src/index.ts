@@ -75,6 +75,7 @@ addControls(controls, scene, camera).then(
 				vrDisplay.requestAnimationFrame(vrAnimate);
 			}
 			else{
+        controls = potential_display;
 				requestAnimationFrame(normalAnimate);
 			}
 		});
@@ -103,6 +104,11 @@ function vrAnimate(){
 function normalAnimate(){
   cube.rotation.x += 0.01;
   cube.rotation.y += 0.01;
+  if(controls){
+    updateControls(controls);
+  }
+  else{console.log("looks like the controls weren't set")}
+  
 	requestAnimationFrame(normalAnimate);
   renderer.render( scene, camera );
   console.log(camera.position)

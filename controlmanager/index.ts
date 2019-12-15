@@ -14,7 +14,7 @@ export async function vrEnabled():Promise<boolean>{
     return vrDisplays.length != 0;
 }
 
-export async function updateControls(controls:any){
+export function updateControls(controls:any){
   var move_dir = new THREE.Vector3()
   move_dir.z = Number( moveForward ) - Number( moveBackward );
   move_dir.x = Number( moveRight ) - Number( moveLeft );
@@ -82,5 +82,6 @@ export async function addControls(controls: any, scene: THREE.Scene, camera: THR
         };
     document.addEventListener( 'keydown', onKeyDown, false );
     document.addEventListener( 'keyup', onKeyUp, false );
+    return controls;
   }
 }

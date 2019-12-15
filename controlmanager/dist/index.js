@@ -70,19 +70,13 @@ function vrEnabled() {
 }
 exports.vrEnabled = vrEnabled;
 function updateControls(controls) {
-    return __awaiter(this, void 0, void 0, function () {
-        var move_dir;
-        return __generator(this, function (_a) {
-            move_dir = new THREE.Vector3();
-            move_dir.z = Number(moveForward) - Number(moveBackward);
-            move_dir.x = Number(moveRight) - Number(moveLeft);
-            move_dir.normalize(); // this ensures consistent movements in all directions
-            move_dir.divideScalar(10);
-            controls.moveRight(move_dir.x);
-            controls.moveForward(move_dir.z);
-            return [2 /*return*/];
-        });
-    });
+    var move_dir = new THREE.Vector3();
+    move_dir.z = Number(moveForward) - Number(moveBackward);
+    move_dir.x = Number(moveRight) - Number(moveLeft);
+    move_dir.normalize(); // this ensures consistent movements in all directions
+    move_dir.divideScalar(10);
+    controls.moveRight(move_dir.x);
+    controls.moveForward(move_dir.z);
 }
 exports.updateControls = updateControls;
 function addControls(controls, scene, camera) {
@@ -146,6 +140,7 @@ function addControls(controls, scene, camera) {
                         };
                         document.addEventListener('keydown', onKeyDown, false);
                         document.addEventListener('keyup', onKeyUp, false);
+                        return [2 /*return*/, controls];
                     }
                     return [2 /*return*/];
             }
