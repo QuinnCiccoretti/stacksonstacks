@@ -1,6 +1,8 @@
 import * as THREE from 'three';
 // import WebVRPolyfill from 'webvr-polyfill';
 import {initScene} from 'scenemanager';
+import {vrEnabled, addControls, updateControls} from 'controlmanager';
+
 
 var scene = new THREE.Scene();
 var camera = new THREE.PerspectiveCamera( 75, window.innerWidth/window.innerHeight, 0.1, 1000 );
@@ -63,6 +65,25 @@ var terraform_json:any = {
 };
 
 initScene(scene, terraform_json);
+var controls:any;
+var vrDisplay:any;
+addControls(controls, scene, camera).then(
+	function(potential_display){
+		vrEnabled().then(function(result){
+			if(result){
+				vrDisplay = potential_display;
+				vrDisplay.requestAnimationFrame(vrAnimate);
+			}
+			else{
+        controls = potential_display;
+				requestAnimationFrame(normalAnimate);
+			}
+		});
+	}
+	
+).catch(function(error){
+	console.log(error);
+});
 
 var geometry = new THREE.BoxGeometry( 1, 1, 1 );
 var material = new THREE.MeshBasicMaterial( { color: 0x00ff00 } );
@@ -71,16 +92,32 @@ scene.add( cube );
 
 camera.position.z = 5;
 
-var animate = function () {
-	requestAnimationFrame( animate );
+function vrAnimate(){
+	controls.update();
+  cube.rotation.x += 0.01;
+  cube.rotation.y += 0.01;
+	vrDisplay.requestAnimationFrame(vrAnimate);
+  renderer.render( scene, camera );
+  console.log(camera.position)
+}
 
-	cube.rotation.x += 0.01;
-	cube.rotation.y += 0.01;
+function normalAnimate(){
+  cube.rotation.x += 0.01;
+  cube.rotation.y += 0.01;
+  if(controls){
+    updateControls(controls);
+  }
+  else{console.log("looks like the controls weren't set")}
+  
+	requestAnimationFrame(normalAnimate);
+  renderer.render( scene, camera );
+  console.log(camera.position)
 
-	renderer.render( scene, camera );
-};
+}
 
-animate();
+
+
+
 
 
 

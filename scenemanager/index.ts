@@ -36,7 +36,7 @@ export async function initScene(scene: THREE.Scene, terraform_json:any): Promise
         createCube(icon_path).then(function(cube){
             cube.position.set(resourcex, resourcey/2+3, resourcey)
             scene.add(cube);
-        }).catch((error)=>{
+        }).catch((error:any)=>{
             console.log(error);
         });
     })
