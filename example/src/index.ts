@@ -84,15 +84,6 @@ addControls(controls, scene, camera).then(
 	console.log(error);
 });
 
-function vrAnimate(){
-	controls.update();
-	vrDisplay.requestAnimationFrame(vrAnimate);
-}
-
-function normalAnimate(){
-	requestAnimationFrame(normalAnimate);
-}
-
 var geometry = new THREE.BoxGeometry( 1, 1, 1 );
 var material = new THREE.MeshBasicMaterial( { color: 0x00ff00 } );
 var cube = new THREE.Mesh( geometry, material );
@@ -100,14 +91,24 @@ scene.add( cube );
 
 camera.position.z = 5;
 
-var animate = function () {
-	requestAnimationFrame( animate );
+function vrAnimate(){
+	controls.update();
+  cube.rotation.x += 0.01;
+  cube.rotation.y += 0.01;
+	vrDisplay.requestAnimationFrame(vrAnimate);
+  renderer.render( scene, camera );
+  console.log(camera.position)
+}
 
-	cube.rotation.x += 0.01;
-	cube.rotation.y += 0.01;
+function normalAnimate(){
+  cube.rotation.x += 0.01;
+  cube.rotation.y += 0.01;
+	requestAnimationFrame(normalAnimate);
+  renderer.render( scene, camera );
 
-	renderer.render( scene, camera );
-};
+}
+
+
 
 
 
