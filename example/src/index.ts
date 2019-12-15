@@ -1,7 +1,7 @@
 import * as THREE from 'three';
 // import WebVRPolyfill from 'webvr-polyfill';
 import {initScene} from 'scenemanager';
-import {vrEnabled, addControls} from 'controlmanager';
+import {vrEnabled, addControls, updateControls} from 'controlmanager';
 
 
 var scene = new THREE.Scene();

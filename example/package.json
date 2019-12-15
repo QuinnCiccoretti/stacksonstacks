@@ -4,8 +4,8 @@
   "description": "example for threeml",
   "main": "dist/index.js",
   "dependencies": {
-    "controlmanager": "0.0.0",
-    "scenemanager": "0.0.2",
+    "controlmanager": "^0.0.2",
+    "scenemanager": "^0.0.2",
     "webvr-polyfill": "^0.10.11"
   },
   "devDependencies": {

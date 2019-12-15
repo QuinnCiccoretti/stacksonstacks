@@ -51,6 +51,10 @@ var PointerLockControls_js_1 = require("three/examples/jsm/controls/PointerLockC
 var webvr_polyfill_1 = __importDefault(require("webvr-polyfill"));
 var three_vrcontrols_module_1 = __importDefault(require("three-vrcontrols-module"));
 var polyfill = new webvr_polyfill_1.default();
+var moveForward = false;
+var moveLeft = false;
+var moveBackward = false;
+var moveRight = false;
 function vrEnabled() {
     return __awaiter(this, void 0, void 0, function () {
         var vrDisplays;
@@ -65,9 +69,25 @@ function vrEnabled() {
     });
 }
 exports.vrEnabled = vrEnabled;
+function updateControls(controls) {
+    return __awaiter(this, void 0, void 0, function () {
+        var move_dir;
+        return __generator(this, function (_a) {
+            move_dir = new THREE.Vector3();
+            move_dir.z = Number(moveForward) - Number(moveBackward);
+            move_dir.x = Number(moveRight) - Number(moveLeft);
+            move_dir.normalize(); // this ensures consistent movements in all directions
+            move_dir.divideScalar(10);
+            controls.moveRight(move_dir.x);
+            controls.moveForward(move_dir.z);
+            return [2 /*return*/];
+        });
+    });
+}
+exports.updateControls = updateControls;
 function addControls(controls, scene, camera) {
     return __awaiter(this, void 0, void 0, function () {
-        var vrDisplays, vrDisplay, onKeyDown;
+        var vrDisplays, vrDisplay, onKeyDown, onKeyUp;
         return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0: return [4 /*yield*/, navigator.getVRDisplays()];
@@ -85,7 +105,6 @@ function addControls(controls, scene, camera) {
                         controls = new PointerLockControls_js_1.PointerLockControls(camera);
                         scene.add(controls.getObject());
                         onKeyDown = function (event) {
-                            var moveForward, moveLeft, moveBackward, moveRight = false;
                             switch (event.keyCode) {
                                 case 38: // up
                                 case 87: // w
@@ -104,16 +123,29 @@ function addControls(controls, scene, camera) {
                                     moveRight = true;
                                     break;
                             }
-                            var move_dir = new THREE.Vector3();
-                            move_dir.z = Number(moveForward) - Number(moveBackward);
-                            move_dir.x = Number(moveRight) - Number(moveLeft);
-                            move_dir.normalize(); // this ensures consistent movements in all directions
-                            move_dir.divideScalar(100);
-                            console.log(move_dir);
-                            controls.moveRight(move_dir.x);
-                            controls.moveForward(move_dir.z);
+                        };
+                        onKeyUp = function (event) {
+                            switch (event.keyCode) {
+                                case 38: // up
+                                case 87: // w
+                                    moveForward = false;
+                                    break;
+                                case 37: // left
+                                case 65: // a
+                                    moveLeft = false;
+                                    break;
+                                case 40: // down
+                                case 83: // s
+                                    moveBackward = false;
+                                    break;
+                                case 39: // right
+                                case 68: // d
+                                    moveRight = false;
+                                    break;
+                            }
                         };
                         document.addEventListener('keydown', onKeyDown, false);
+                        document.addEventListener('keyup', onKeyUp, false);
                     }
                     return [2 /*return*/];
             }
