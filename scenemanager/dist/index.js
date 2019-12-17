@@ -67,7 +67,7 @@ function get_iconpath_from_resourcename(name) {
 }
 function initScene(scene, terraform_json) {
     return __awaiter(this, void 0, void 0, function () {
-        var gridsize, gridHelper;
+        var josh, gridsize, gridHelper;
         return __generator(this, function (_a) {
             Object.keys(terraform_json).forEach(function (resource_name) {
                 var info = terraform_json[resource_name];
@@ -83,6 +83,13 @@ function initScene(scene, terraform_json) {
                 }).catch(function (error) {
                     console.log(error);
                 });
+            });
+            josh = "https://scontent-iad3-1.xx.fbcdn.net/v/t31.0-8/28701384_611205672553420_861063517891691345_o.jpg?_nc_cat=108&_nc_oc=AQkES19skZE56YmLT3a6H6U8xRKrLBB6h_hPjjlzvx8aED3WbZfB5bocBSZMHjgs1T0&_nc_ht=scontent-iad3-1.xx&oh=40bcd73e3df92eb235b5f4e05e5e7beb&oe=5E7A74A1";
+            threeml_1.createCube(josh).then(function (cube) {
+                cube.position.set(0, 1, 0);
+                scene.add(cube);
+            }).catch(function (error) {
+                console.log(error);
             });
             gridsize = 30;
             gridHelper = new THREE.GridHelper(gridsize, gridsize);
