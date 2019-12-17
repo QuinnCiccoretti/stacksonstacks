@@ -1,4 +1,4 @@
 import * as THREE from "three";
-export declare function vrEnabled(): Promise<boolean>;
-export declare function updateControls(controls: any): void;
-export declare function addControls(controls: any, scene: THREE.Scene, camera: THREE.Camera): Promise<any>;
+export declare function isVREnabled(): boolean;
+export declare function updateControls(): void;
+export declare function addControls(scene: THREE.Scene, camera: THREE.Camera, blocker: HTMLElement): Promise<void>;

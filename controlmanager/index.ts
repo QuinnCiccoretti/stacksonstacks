@@ -8,37 +8,53 @@ var moveForward:boolean = false;
 var moveLeft:boolean = false;
 var moveBackward:boolean = false;
 var moveRight:boolean = false;
+var controls:any;
+var vrEnabled:boolean = false;
 
-export async function vrEnabled():Promise<boolean>{
-    const vrDisplays = await navigator.getVRDisplays();
-    return vrDisplays.length != 0;
+export function isVREnabled():boolean{
+	return vrEnabled;
 }
 
-export function updateControls(controls:any){
-  var move_dir = new THREE.Vector3()
-  move_dir.z = Number( moveForward ) - Number( moveBackward );
-  move_dir.x = Number( moveRight ) - Number( moveLeft );
-  move_dir.normalize(); // this ensures consistent movements in all directions
-  move_dir.divideScalar(10);
-  controls.moveRight( move_dir.x );
-  controls.moveForward( move_dir.z);
+export function updateControls():void {
+	if(vrEnabled){
+		updateVRControls();
+	}
+	else{
+		updateDesktopControls();
+	}
+
 }
 
-export async function addControls(controls: any, scene: THREE.Scene, camera: THREE.Camera): Promise<any>{
+function updateVRControls(): void {
+	controls.update();	
+}
+function updateDesktopControls(): void {
+	var move_dir = new THREE.Vector3()
+	move_dir.z = Number( moveForward ) - Number( moveBackward );
+	move_dir.x = Number( moveRight ) - Number( moveLeft );
+	move_dir.normalize(); // this ensures consistent movements in all directions
+	move_dir.divideScalar(10);
+	controls.moveRight( move_dir.x );
+	controls.moveForward( move_dir.z);
+}
+
+//set vrenabled and init controls
+export async function addControls(scene: THREE.Scene, camera: THREE.Camera, blocker: HTMLElement): Promise<void>{
   const vrDisplays = await navigator.getVRDisplays();
   // If we have a native display, or we have a CardboardVRDisplay
   // from the polyfill, use it
   if (vrDisplays.length) {
+  	vrEnabled = true;
     var vrDisplay = vrDisplays[0];
-
     // Apply VR headset positional data to camera.
     controls = new VRControls(camera);
-    return vrDisplay;
   }
   else {    //we on desktop, get that good good point and shoot
-    controls = new PointerLockControls(camera);
+    vrEnabled = false;
+    controls = new PointerLockControls(camera,document.body);
+    console.log("added pointerlock document with blocker");
     scene.add(controls.getObject());
-    var onKeyDown = function ( event:KeyboardEvent) {
+    var onKeyDown = function ( event:KeyboardEvent):void{
         
         switch ( event.keyCode ) {
         case 38: // up
@@ -60,7 +76,7 @@ export async function addControls(controls: any, scene: THREE.Scene, camera: THR
         }
        
     };
-    var onKeyUp = function ( event:KeyboardEvent ) {
+    var onKeyUp = function ( event:KeyboardEvent ):void{
           switch ( event.keyCode ) {
             case 38: // up
             case 87: // w
@@ -82,6 +98,16 @@ export async function addControls(controls: any, scene: THREE.Scene, camera: THR
         };
     document.addEventListener( 'keydown', onKeyDown, false );
     document.addEventListener( 'keyup', onKeyUp, false );
-    return controls;
+
+    blocker.addEventListener( 'click', function () {
+      controls.lock();
+    }, false );
+    controls.addEventListener( 'lock', function () {
+      blocker.style.display = 'none';
+    } );
+    controls.addEventListener( 'unlock', function () {
+      blocker.style.display = 'block';      
+    } );
+
   }
 }
