@@ -51,7 +51,8 @@ export async function addControls(scene: THREE.Scene, camera: THREE.Camera): Pro
   }
   else {    //we on desktop, get that good good point and shoot
     vrEnabled = false;
-    controls = new PointerLockControls(camera);
+    controls = new PointerLockControls(camera,document.body);
+    console.log("added pointerlock document");
     scene.add(controls.getObject());
     var onKeyDown = function ( event:KeyboardEvent):void{
         
