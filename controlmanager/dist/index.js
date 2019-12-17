@@ -55,21 +55,25 @@ var moveForward = false;
 var moveLeft = false;
 var moveBackward = false;
 var moveRight = false;
-function vrEnabled() {
-    return __awaiter(this, void 0, void 0, function () {
-        var vrDisplays;
-        return __generator(this, function (_a) {
-            switch (_a.label) {
-                case 0: return [4 /*yield*/, navigator.getVRDisplays()];
-                case 1:
-                    vrDisplays = _a.sent();
-                    return [2 /*return*/, vrDisplays.length != 0];
-            }
-        });
-    });
+var controls;
+var vrEnabled = false;
+function isVREnabled() {
+    return vrEnabled;
 }
-exports.vrEnabled = vrEnabled;
-function updateControls(controls) {
+exports.isVREnabled = isVREnabled;
+function updateControls() {
+    if (vrEnabled) {
+        updateVRControls();
+    }
+    else {
+        updateDesktopControls();
+    }
+}
+exports.updateControls = updateControls;
+function updateVRControls() {
+    controls.update();
+}
+function updateDesktopControls() {
     var move_dir = new THREE.Vector3();
     move_dir.z = Number(moveForward) - Number(moveBackward);
     move_dir.x = Number(moveRight) - Number(moveLeft);
@@ -78,8 +82,7 @@ function updateControls(controls) {
     controls.moveRight(move_dir.x);
     controls.moveForward(move_dir.z);
 }
-exports.updateControls = updateControls;
-function addControls(controls, scene, camera) {
+function addControls(scene, camera) {
     return __awaiter(this, void 0, void 0, function () {
         var vrDisplays, vrDisplay, onKeyDown, onKeyUp;
         return __generator(this, function (_a) {
@@ -90,12 +93,13 @@ function addControls(controls, scene, camera) {
                     // If we have a native display, or we have a CardboardVRDisplay
                     // from the polyfill, use it
                     if (vrDisplays.length) {
+                        vrEnabled = true;
                         vrDisplay = vrDisplays[0];
                         // Apply VR headset positional data to camera.
                         controls = new three_vrcontrols_module_1.default(camera);
-                        return [2 /*return*/, vrDisplay];
                     }
                     else { //we on desktop, get that good good point and shoot
+                        vrEnabled = false;
                         controls = new PointerLockControls_js_1.PointerLockControls(camera);
                         scene.add(controls.getObject());
                         onKeyDown = function (event) {
@@ -140,7 +144,6 @@ function addControls(controls, scene, camera) {
                         };
                         document.addEventListener('keydown', onKeyDown, false);
                         document.addEventListener('keyup', onKeyUp, false);
-                        return [2 /*return*/, controls];
                     }
                     return [2 /*return*/];
             }

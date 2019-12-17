@@ -1,7 +1,7 @@
 import * as THREE from 'three';
 // import WebVRPolyfill from 'webvr-polyfill';
 import {initScene} from 'scenemanager';
-import {vrEnabled, addControls, updateControls} from 'controlmanager';
+import {isVREnabled, addControls, updateControls} from 'controlmanager';
 
 
 var scene = new THREE.Scene();
@@ -67,20 +67,15 @@ var terraform_json:any = {
 initScene(scene, terraform_json);
 var controls:any;
 var vrDisplay:any;
-addControls(controls, scene, camera).then(
-	function(potential_display){
-		vrEnabled().then(function(result){
-			if(result){
-				vrDisplay = potential_display;
-				vrDisplay.requestAnimationFrame(vrAnimate);
-			}
-			else{
-        controls = potential_display;
-				requestAnimationFrame(normalAnimate);
-			}
-		});
-	}
-	
+addControls(scene, camera).then(
+	function(){
+  	if(isVREnabled()){
+  		vrDisplay.requestAnimationFrame(vrAnimate);
+  	}
+  	else{
+  		requestAnimationFrame(desktopAnimate);
+  	}
+  }
 ).catch(function(error){
 	console.log(error);
 });
@@ -93,26 +88,19 @@ scene.add( cube );
 camera.position.z = 5;
 
 function vrAnimate(){
-	controls.update();
+	updateControls();
   cube.rotation.x += 0.01;
   cube.rotation.y += 0.01;
 	vrDisplay.requestAnimationFrame(vrAnimate);
   renderer.render( scene, camera );
-  console.log(camera.position)
 }
 
-function normalAnimate(){
+function desktopAnimate(){
   cube.rotation.x += 0.01;
   cube.rotation.y += 0.01;
-  if(controls){
-    updateControls(controls);
-  }
-  else{console.log("looks like the controls weren't set")}
-  
-	requestAnimationFrame(normalAnimate);
+  updateControls();  
+	requestAnimationFrame(desktopAnimate);
   renderer.render( scene, camera );
-  console.log(camera.position)
-
 }
 
 
