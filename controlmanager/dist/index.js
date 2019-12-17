@@ -83,7 +83,7 @@ function updateDesktopControls() {
     controls.moveForward(move_dir.z);
 }
 //set vrenabled and init controls
-function addControls(scene, camera) {
+function addControls(scene, camera, blocker) {
     return __awaiter(this, void 0, void 0, function () {
         var vrDisplays, vrDisplay, onKeyDown, onKeyUp;
         return __generator(this, function (_a) {
@@ -102,7 +102,7 @@ function addControls(scene, camera) {
                     else { //we on desktop, get that good good point and shoot
                         vrEnabled = false;
                         controls = new PointerLockControls_js_1.PointerLockControls(camera, document.body);
-                        console.log("added pointerlock document");
+                        console.log("added pointerlock document with blocker");
                         scene.add(controls.getObject());
                         onKeyDown = function (event) {
                             switch (event.keyCode) {
@@ -146,6 +146,15 @@ function addControls(scene, camera) {
                         };
                         document.addEventListener('keydown', onKeyDown, false);
                         document.addEventListener('keyup', onKeyUp, false);
+                        blocker.addEventListener('click', function () {
+                            controls.lock();
+                        }, false);
+                        controls.addEventListener('lock', function () {
+                            blocker.style.display = 'none';
+                        });
+                        controls.addEventListener('unlock', function () {
+                            blocker.style.display = 'block';
+                        });
                     }
                     return [2 /*return*/];
             }
