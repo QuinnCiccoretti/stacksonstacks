@@ -47,19 +47,24 @@ export async function initScene(camera: THREE.Camera,scene: THREE.Scene, terrafo
         name_to_cube[resource_name] = cube;
         cy.add({
             group: 'nodes',
-            data: { cube }
+            data: {
+                id: cube.uuid,
+                cube: cube
+            }
         });
     }
-    // console.log(c)
+    console.log(cy.elements());
+    console.log("XXXXXXXXXXXXXX");
     for(const resource_name of resource_list){
         var cube = name_to_cube[resource_name];
         var neighbors:string[] = terraform_json[resource_name].next;
-        neighbors.forEach(function(neighbor_name){
+        for(const neighbor_name of neighbors){
             cy.add({
                 group: 'edges',
-                data: { source: cube, target: name_to_cube[neighbor_name]}
+                data: { source: cube.uuid, target: name_to_cube[neighbor_name].uuid}
             });
-        })
+        }
+
     }
     var josh = "https://scontent-iad3-1.xx.fbcdn.net/v/t31.0-8/28701384_611205672553420_861063517891691345_o.jpg?_nc_cat=108&_nc_oc=AQkES19skZE56YmLT3a6H6U8xRKrLBB6h_hPjjlzvx8aED3WbZfB5bocBSZMHjgs1T0&_nc_ht=scontent-iad3-1.xx&oh=40bcd73e3df92eb235b5f4e05e5e7beb&oe=5E7A74A1";
     createCube(josh).then(function(cube){

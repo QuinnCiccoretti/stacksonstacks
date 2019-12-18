@@ -75,14 +75,14 @@ function get_iconpath_from_resourcename(name) {
 }
 function initScene(camera, scene, terraform_json) {
     return __awaiter(this, void 0, void 0, function () {
-        var name_to_cube, resource_list, _i, resource_list_1, resource_name, info, resourcex, resourcey, dot_to_three_scale, icon_path, cube, josh, gridsize, gridHelper;
-        return __generator(this, function (_a) {
-            switch (_a.label) {
+        var name_to_cube, resource_list, _i, resource_list_1, resource_name, info, resourcex, resourcey, dot_to_three_scale, icon_path, cube, _a, resource_list_2, resource_name_1, cube, neighbors, josh, gridsize, gridHelper;
+        return __generator(this, function (_b) {
+            switch (_b.label) {
                 case 0:
                     name_to_cube = {};
                     resource_list = Object.keys(terraform_json);
                     _i = 0, resource_list_1 = resource_list;
-                    _a.label = 1;
+                    _b.label = 1;
                 case 1:
                     if (!(_i < resource_list_1.length)) return [3 /*break*/, 4];
                     resource_name = resource_list_1[_i];
@@ -95,29 +95,35 @@ function initScene(camera, scene, terraform_json) {
                     icon_path = get_iconpath_from_resourcename(resource_name);
                     return [4 /*yield*/, threeml_1.createCube(icon_path)];
                 case 2:
-                    cube = _a.sent();
+                    cube = _b.sent();
                     cube.position.set(resourcex, resourcey / 2 + 3, resourcey);
                     scene.add(cube);
                     name_to_cube[resource_name] = cube;
-                    _a.label = 3;
+                    cy.add({
+                        group: 'nodes',
+                        data: {
+                            id: cube.uuid,
+                            cube: cube
+                        }
+                    });
+                    _b.label = 3;
                 case 3:
                     _i++;
                     return [3 /*break*/, 1];
                 case 4:
-                    resource_list.forEach(function (resource_name) {
-                        var cube = name_to_cube[resource_name];
-                        cy.add({
-                            group: 'nodes',
-                            data: { cube: cube }
-                        });
-                        var neighbors = terraform_json[resource_name].next;
+                    console.log(cy.elements());
+                    console.log("XXXXXXXXXXXXXX");
+                    for (_a = 0, resource_list_2 = resource_list; _a < resource_list_2.length; _a++) {
+                        resource_name_1 = resource_list_2[_a];
+                        cube = name_to_cube[resource_name_1];
+                        neighbors = terraform_json[resource_name_1].next;
                         neighbors.forEach(function (neighbor_name) {
                             cy.add({
                                 group: 'edges',
-                                data: { source: cube, target: name_to_cube[neighbor_name] }
+                                data: { source: cube.uuid, target: name_to_cube[neighbor_name].uuid }
                             });
                         });
-                    });
+                    }
                     josh = "https://scontent-iad3-1.xx.fbcdn.net/v/t31.0-8/28701384_611205672553420_861063517891691345_o.jpg?_nc_cat=108&_nc_oc=AQkES19skZE56YmLT3a6H6U8xRKrLBB6h_hPjjlzvx8aED3WbZfB5bocBSZMHjgs1T0&_nc_ht=scontent-iad3-1.xx&oh=40bcd73e3df92eb235b5f4e05e5e7beb&oe=5E7A74A1";
                     threeml_1.createCube(josh).then(function (cube) {
                         cube.position.set(0, 2, 0);
