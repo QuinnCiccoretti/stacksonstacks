@@ -1,8 +1,12 @@
 import * as THREE from "three";
 import {createCube} from 'threeml';
 import {setupRaycasting} from 'dragdrop'
+import cytoscape from 'cytoscape';
 
-var obj_list: THREE.Object3D[] = [];
+var cy = cytoscape({
+  headless: true //we don't want a fricking gui
+});
+
 
 var name_to_path:Record<string,string> = {
     "google_compute_instance.vm_instance":"Compute/Compute_Engine",
@@ -26,29 +30,43 @@ function get_iconpath_from_resourcename(name:string): string{
     return "";
 }
 export async function initScene(camera: THREE.Camera,scene: THREE.Scene, terraform_json:any): Promise<any> {
-    Object.keys(terraform_json).forEach(function(resource_name){
+    var name_to_cube:Record<string,THREE.Mesh> = {};
+    const resource_list = Object.keys(terraform_json);
+    for(var resource_name of resource_list){
         var info:any = terraform_json[resource_name];
         var resourcex:number = parseFloat(info.x);
         var resourcey:number = parseFloat(info.y);
-        
         var dot_to_three_scale = 0.02;
         resourcex *= dot_to_three_scale;
         resourcey *= dot_to_three_scale;
 
         var icon_path:string = get_iconpath_from_resourcename(resource_name);
-        createCube(icon_path).then(function(cube){
-            cube.position.set(resourcex, resourcey/2+3, resourcey)
-            scene.add(cube);
-            obj_list.push(cube);
-        }).catch((error:any)=>{
-            console.log(error);
+        var cube = await createCube(icon_path);
+        cube.position.set(resourcex, resourcey/2+3, resourcey)
+        scene.add(cube);
+        name_to_cube[resource_name] = cube;
+        cy.add({
+            group: 'nodes',
+            data: { cube }
         });
-    })
+    }
+    // console.log(c)
+    for(const resource_name of resource_list){
+        var cube = name_to_cube[resource_name];
+        var neighbors:string[] = terraform_json[resource_name].next;
+        neighbors.forEach(function(neighbor_name){
+            cy.add({
+                group: 'edges',
+                data: { source: cube, target: name_to_cube[neighbor_name]}
+            });
+        })
+    }
     var josh = "https://scontent-iad3-1.xx.fbcdn.net/v/t31.0-8/28701384_611205672553420_861063517891691345_o.jpg?_nc_cat=108&_nc_oc=AQkES19skZE56YmLT3a6H6U8xRKrLBB6h_hPjjlzvx8aED3WbZfB5bocBSZMHjgs1T0&_nc_ht=scontent-iad3-1.xx&oh=40bcd73e3df92eb235b5f4e05e5e7beb&oe=5E7A74A1";
     createCube(josh).then(function(cube){
         cube.position.set(0,2,0);
         scene.add(cube);
-        obj_list.push(cube);
+        // obj_list.push(cube);
+        // cy.add(cube);
     }).catch((error:any)=>{
         console.log(error);
     });
@@ -57,7 +75,7 @@ export async function initScene(camera: THREE.Camera,scene: THREE.Scene, terrafo
     var gridHelper = new THREE.GridHelper( gridsize, gridsize );
     gridHelper.position.set(0,-1.6,0);
     scene.add( gridHelper );
-
-    setupRaycasting(camera,scene,obj_list);
+    console.log(cy.elements());
+    setupRaycasting(camera,scene,[]);
 
 }
