@@ -2,10 +2,17 @@ import * as THREE from 'three';
 // import WebVRPolyfill from 'webvr-polyfill';
 import {initScene} from 'scenemanager';
 import {isVREnabled, addControls, updateControls} from 'controlmanager';
-
+import {setupRaycasting} from 'dragdrop';
 
 var scene = new THREE.Scene();
 var camera = new THREE.PerspectiveCamera( 75, window.innerWidth/window.innerHeight, 0.1, 1000 );
+
+var reticle = new THREE.Mesh(
+  new THREE.RingBufferGeometry(0.005, 0.01, 15),
+  new THREE.MeshBasicMaterial({ color: ~0x0, opacity: 0.5 })
+);
+reticle.position.z = -0.5;
+camera.add(reticle);
 
 var renderer = new THREE.WebGLRenderer();
 renderer.setSize( window.innerWidth, window.innerHeight );
