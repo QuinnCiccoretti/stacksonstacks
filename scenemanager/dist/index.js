@@ -45,6 +45,8 @@ var __importStar = (this && this.__importStar) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 var THREE = __importStar(require("three"));
 var threeml_1 = require("threeml");
+var dragdrop_1 = require("dragdrop");
+var obj_list = [];
 var name_to_path = {
     "google_compute_instance.vm_instance": "Compute/Compute_Engine",
     "google_compute_network.vpc_network": "Networking/Virtual_Private_Cloud"
@@ -65,7 +67,7 @@ function get_iconpath_from_resourcename(name) {
     }
     return "";
 }
-function initScene(scene, terraform_json) {
+function initScene(camera, scene, terraform_json) {
     return __awaiter(this, void 0, void 0, function () {
         var josh, gridsize, gridHelper;
         return __generator(this, function (_a) {
@@ -80,14 +82,16 @@ function initScene(scene, terraform_json) {
                 threeml_1.createCube(icon_path).then(function (cube) {
                     cube.position.set(resourcex, resourcey / 2 + 3, resourcey);
                     scene.add(cube);
+                    obj_list.push(cube);
                 }).catch(function (error) {
                     console.log(error);
                 });
             });
             josh = "https://scontent-iad3-1.xx.fbcdn.net/v/t31.0-8/28701384_611205672553420_861063517891691345_o.jpg?_nc_cat=108&_nc_oc=AQkES19skZE56YmLT3a6H6U8xRKrLBB6h_hPjjlzvx8aED3WbZfB5bocBSZMHjgs1T0&_nc_ht=scontent-iad3-1.xx&oh=40bcd73e3df92eb235b5f4e05e5e7beb&oe=5E7A74A1";
             threeml_1.createCube(josh).then(function (cube) {
-                cube.position.set(0, 1, 0);
+                cube.position.set(0, 2, 0);
                 scene.add(cube);
+                obj_list.push(cube);
             }).catch(function (error) {
                 console.log(error);
             });
@@ -95,6 +99,7 @@ function initScene(scene, terraform_json) {
             gridHelper = new THREE.GridHelper(gridsize, gridsize);
             gridHelper.position.set(0, -1.6, 0);
             scene.add(gridHelper);
+            dragdrop_1.setupRaycasting(camera, scene, obj_list);
             return [2 /*return*/];
         });
     });

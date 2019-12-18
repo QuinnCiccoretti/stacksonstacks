@@ -1,5 +1,8 @@
 import * as THREE from "three";
 import {createCube} from 'threeml';
+import {setupRaycasting} from 'dragdrop'
+
+var obj_list: THREE.Object3D[] = [];
 
 var name_to_path:Record<string,string> = {
     "google_compute_instance.vm_instance":"Compute/Compute_Engine",
@@ -22,7 +25,7 @@ function get_iconpath_from_resourcename(name:string): string{
     }
     return "";
 }
-export async function initScene(scene: THREE.Scene, terraform_json:any): Promise<any> {
+export async function initScene(camera: THREE.Camera,scene: THREE.Scene, terraform_json:any): Promise<any> {
     Object.keys(terraform_json).forEach(function(resource_name){
         var info:any = terraform_json[resource_name];
         var resourcex:number = parseFloat(info.x);
@@ -36,6 +39,7 @@ export async function initScene(scene: THREE.Scene, terraform_json:any): Promise
         createCube(icon_path).then(function(cube){
             cube.position.set(resourcex, resourcey/2+3, resourcey)
             scene.add(cube);
+            obj_list.push(cube);
         }).catch((error:any)=>{
             console.log(error);
         });
@@ -44,12 +48,16 @@ export async function initScene(scene: THREE.Scene, terraform_json:any): Promise
     createCube(josh).then(function(cube){
         cube.position.set(0,2,0);
         scene.add(cube);
+        obj_list.push(cube);
     }).catch((error:any)=>{
         console.log(error);
     });
+
     var gridsize = 30;
     var gridHelper = new THREE.GridHelper( gridsize, gridsize );
     gridHelper.position.set(0,-1.6,0);
     scene.add( gridHelper );
+
+    setupRaycasting(camera,scene,obj_list);
 
 }

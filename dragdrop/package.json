@@ -1,7 +1,7 @@
 {
-  "name": "scenemanager",
-  "version": "0.0.2",
-  "description": "for managing a directed graph of objects",
+  "name": "dragdrop",
+  "version": "0.0.0",
+  "description": "for managing raycaster",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "scripts": {
@@ -25,8 +25,6 @@
     "typescript": "^3.7.2"
   },
   "dependencies": {
-    "three": "^0.110.0",
-    "threeml": "file:../threeml",
-    "dragdrop": "file:../dragdrop"
+    "three": "^0.110.0"
   }
 }
