@@ -1,2 +1,2 @@
 import * as THREE from "three";
-export declare function initScene(scene: THREE.Scene, terraform_json: any): Promise<any>;
+export declare function initScene(camera: THREE.Camera, scene: THREE.Scene, terraform_json: any): Promise<any>;

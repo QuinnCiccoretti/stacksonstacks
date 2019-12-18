@@ -26,6 +26,7 @@
   },
   "dependencies": {
     "three": "^0.110.0",
-    "threeml": "file:../threeml"
+    "threeml": "file:../threeml",
+    "dragdrop": "file:../dragdrop"
   }
 }

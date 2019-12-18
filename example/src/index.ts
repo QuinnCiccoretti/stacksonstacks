@@ -2,7 +2,6 @@ import * as THREE from 'three';
 // import WebVRPolyfill from 'webvr-polyfill';
 import {initScene} from 'scenemanager';
 import {isVREnabled, addControls, updateControls} from 'controlmanager';
-import {setupRaycasting} from 'dragdrop';
 
 var scene = new THREE.Scene();
 var camera = new THREE.PerspectiveCamera( 75, window.innerWidth/window.innerHeight, 0.1, 1000 );
@@ -71,7 +70,7 @@ var terraform_json:any = {
   }
 };
 
-initScene(scene, terraform_json);
+initScene(camera,scene, terraform_json);
 var controls:any;
 var vrDisplay:any;
 var blocker = document.getElementById("blocker");
