@@ -1,11 +1,8 @@
 import * as THREE from "three";
 import {createCube} from 'threeml';
 import {setupRaycasting} from 'dragdrop'
-import cytoscape from 'cytoscape';
 
-var cy = cytoscape({
-  headless: true //we don't want a fricking gui
-});
+var obj_list:THREE.Object3D[] = [];
 
 
 var name_to_path:Record<string,string> = {
@@ -44,26 +41,18 @@ export async function initScene(camera: THREE.Camera,scene: THREE.Scene, terrafo
         var cube = await createCube(icon_path);
         cube.position.set(resourcex, resourcey/2+3, resourcey)
         scene.add(cube);
+        obj_list.push(cube); //insert into our "graph"
         name_to_cube[resource_name] = cube;
-        cy.add({
-            group: 'nodes',
-            data: {
-                id: cube.uuid,
-                cube: cube
-            }
-        });
+        
     }
-    console.log(cy.elements());
-    console.log("XXXXXXXXXXXXXX");
+    
     for(const resource_name of resource_list){
         var cube = name_to_cube[resource_name];
+        cube.userData.neighbors = [];
         var neighbors:string[] = terraform_json[resource_name].next;
-        if(neighbors){
+        if(neighbors){ //if this field exists
             for(const neighbor_name of neighbors){
-                cy.add({
-                    group: 'edges',
-                    data: { source: cube.uuid, target: name_to_cube[neighbor_name].uuid}
-                });
+                cube.add(name_to_cube[neighbor_name]);
             }
         }
 
@@ -72,17 +61,16 @@ export async function initScene(camera: THREE.Camera,scene: THREE.Scene, terrafo
     createCube(josh).then(function(cube){
         cube.position.set(0,2,0);
         scene.add(cube);
-        // obj_list.push(cube);
+        obj_list.push(cube);
         // cy.add(cube);
     }).catch((error:any)=>{
         console.log(error);
     });
-
+    console.log("YYYYYYYYYYYYYYY");
     var gridsize = 30;
     var gridHelper = new THREE.GridHelper( gridsize, gridsize );
     gridHelper.position.set(0,-1.6,0);
     scene.add( gridHelper );
-    console.log(cy.elements());
-    setupRaycasting(camera,scene,[]);
+    setupRaycasting(camera,scene,obj_list);
 
 }

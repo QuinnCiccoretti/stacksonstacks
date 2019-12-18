@@ -42,17 +42,11 @@ var __importStar = (this && this.__importStar) || function (mod) {
     result["default"] = mod;
     return result;
 };
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
 Object.defineProperty(exports, "__esModule", { value: true });
 var THREE = __importStar(require("three"));
 var threeml_1 = require("threeml");
 var dragdrop_1 = require("dragdrop");
-var cytoscape_1 = __importDefault(require("cytoscape"));
-var cy = cytoscape_1.default({
-    headless: true //we don't want a fricking gui
-});
+var obj_list = [];
 var name_to_path = {
     "google_compute_instance.vm_instance": "Compute/Compute_Engine",
     "google_compute_network.vpc_network": "Networking/Virtual_Private_Cloud"
@@ -98,32 +92,22 @@ function initScene(camera, scene, terraform_json) {
                     cube = _c.sent();
                     cube.position.set(resourcex, resourcey / 2 + 3, resourcey);
                     scene.add(cube);
+                    obj_list.push(cube); //insert into our "graph"
                     name_to_cube[resource_name] = cube;
-                    cy.add({
-                        group: 'nodes',
-                        data: {
-                            id: cube.uuid,
-                            cube: cube
-                        }
-                    });
                     _c.label = 3;
                 case 3:
                     _i++;
                     return [3 /*break*/, 1];
                 case 4:
-                    console.log(cy.elements());
-                    console.log("XXXXXXXXXXXXXX");
                     for (_a = 0, resource_list_2 = resource_list; _a < resource_list_2.length; _a++) {
                         resource_name_1 = resource_list_2[_a];
                         cube = name_to_cube[resource_name_1];
+                        cube.userData.neighbors = [];
                         neighbors = terraform_json[resource_name_1].next;
-                        if (neighbors) {
+                        if (neighbors) { //if this field exists
                             for (_b = 0, neighbors_1 = neighbors; _b < neighbors_1.length; _b++) {
                                 neighbor_name = neighbors_1[_b];
-                                cy.add({
-                                    group: 'edges',
-                                    data: { source: cube.uuid, target: name_to_cube[neighbor_name].uuid }
-                                });
+                                cube.add(name_to_cube[neighbor_name]);
                             }
                         }
                     }
@@ -131,17 +115,17 @@ function initScene(camera, scene, terraform_json) {
                     threeml_1.createCube(josh).then(function (cube) {
                         cube.position.set(0, 2, 0);
                         scene.add(cube);
-                        // obj_list.push(cube);
+                        obj_list.push(cube);
                         // cy.add(cube);
                     }).catch(function (error) {
                         console.log(error);
                     });
+                    console.log("YYYYYYYYYYYYYYY");
                     gridsize = 30;
                     gridHelper = new THREE.GridHelper(gridsize, gridsize);
                     gridHelper.position.set(0, -1.6, 0);
                     scene.add(gridHelper);
-                    console.log(cy.elements());
-                    dragdrop_1.setupRaycasting(camera, scene, []);
+                    dragdrop_1.setupRaycasting(camera, scene, obj_list);
                     return [2 /*return*/];
             }
         });
