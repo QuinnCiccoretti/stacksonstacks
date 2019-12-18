@@ -75,14 +75,14 @@ function get_iconpath_from_resourcename(name) {
 }
 function initScene(camera, scene, terraform_json) {
     return __awaiter(this, void 0, void 0, function () {
-        var name_to_cube, resource_list, _i, resource_list_1, resource_name, info, resourcex, resourcey, dot_to_three_scale, icon_path, cube, _a, resource_list_2, resource_name_1, cube, neighbors, josh, gridsize, gridHelper;
-        return __generator(this, function (_b) {
-            switch (_b.label) {
+        var name_to_cube, resource_list, _i, resource_list_1, resource_name, info, resourcex, resourcey, dot_to_three_scale, icon_path, cube, _a, resource_list_2, resource_name_1, cube, neighbors, _b, neighbors_1, neighbor_name, josh, gridsize, gridHelper;
+        return __generator(this, function (_c) {
+            switch (_c.label) {
                 case 0:
                     name_to_cube = {};
                     resource_list = Object.keys(terraform_json);
                     _i = 0, resource_list_1 = resource_list;
-                    _b.label = 1;
+                    _c.label = 1;
                 case 1:
                     if (!(_i < resource_list_1.length)) return [3 /*break*/, 4];
                     resource_name = resource_list_1[_i];
@@ -95,7 +95,7 @@ function initScene(camera, scene, terraform_json) {
                     icon_path = get_iconpath_from_resourcename(resource_name);
                     return [4 /*yield*/, threeml_1.createCube(icon_path)];
                 case 2:
-                    cube = _b.sent();
+                    cube = _c.sent();
                     cube.position.set(resourcex, resourcey / 2 + 3, resourcey);
                     scene.add(cube);
                     name_to_cube[resource_name] = cube;
@@ -106,7 +106,7 @@ function initScene(camera, scene, terraform_json) {
                             cube: cube
                         }
                     });
-                    _b.label = 3;
+                    _c.label = 3;
                 case 3:
                     _i++;
                     return [3 /*break*/, 1];
@@ -117,12 +117,15 @@ function initScene(camera, scene, terraform_json) {
                         resource_name_1 = resource_list_2[_a];
                         cube = name_to_cube[resource_name_1];
                         neighbors = terraform_json[resource_name_1].next;
-                        neighbors.forEach(function (neighbor_name) {
-                            cy.add({
-                                group: 'edges',
-                                data: { source: cube.uuid, target: name_to_cube[neighbor_name].uuid }
-                            });
-                        });
+                        if (neighbors) {
+                            for (_b = 0, neighbors_1 = neighbors; _b < neighbors_1.length; _b++) {
+                                neighbor_name = neighbors_1[_b];
+                                cy.add({
+                                    group: 'edges',
+                                    data: { source: cube.uuid, target: name_to_cube[neighbor_name].uuid }
+                                });
+                            }
+                        }
                     }
                     josh = "https://scontent-iad3-1.xx.fbcdn.net/v/t31.0-8/28701384_611205672553420_861063517891691345_o.jpg?_nc_cat=108&_nc_oc=AQkES19skZE56YmLT3a6H6U8xRKrLBB6h_hPjjlzvx8aED3WbZfB5bocBSZMHjgs1T0&_nc_ht=scontent-iad3-1.xx&oh=40bcd73e3df92eb235b5f4e05e5e7beb&oe=5E7A74A1";
                     threeml_1.createCube(josh).then(function (cube) {

@@ -58,11 +58,13 @@ export async function initScene(camera: THREE.Camera,scene: THREE.Scene, terrafo
     for(const resource_name of resource_list){
         var cube = name_to_cube[resource_name];
         var neighbors:string[] = terraform_json[resource_name].next;
-        for(const neighbor_name of neighbors){
-            cy.add({
-                group: 'edges',
-                data: { source: cube.uuid, target: name_to_cube[neighbor_name].uuid}
-            });
+        if(neighbors){
+            for(const neighbor_name of neighbors){
+                cy.add({
+                    group: 'edges',
+                    data: { source: cube.uuid, target: name_to_cube[neighbor_name].uuid}
+                });
+            }
         }
 
     }
