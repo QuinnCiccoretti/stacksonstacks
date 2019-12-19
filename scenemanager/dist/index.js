@@ -69,7 +69,7 @@ function get_iconpath_from_resourcename(name) {
 }
 function initScene(camera, scene, terraform_json) {
     return __awaiter(this, void 0, void 0, function () {
-        var name_to_cube, resource_list, _i, resource_list_1, resource_name, info, resourcex, resourcey, dot_to_three_scale, icon_path, cube, _a, resource_list_2, resource_name_1, cube, neighbors, _b, neighbors_1, neighbor_name, josh, gridsize, gridHelper;
+        var name_to_cube, resource_list, _i, resource_list_1, resource_name, info, resourcex, resourcey, dot_to_three_scale, icon_path, cube, _a, resource_list_2, resource_name_1, cube, neighbors, _b, neighbors_1, neighbor_name, neighbor_cube, cubepos, npos, direction, length, arrow, josh, gridsize, gridHelper;
         return __generator(this, function (_c) {
             switch (_c.label) {
                 case 0:
@@ -94,6 +94,10 @@ function initScene(camera, scene, terraform_json) {
                     scene.add(cube);
                     obj_list.push(cube); //insert into our "graph"
                     name_to_cube[resource_name] = cube;
+                    cube.userData.resource_children = [];
+                    cube.userData.resource_parents = [];
+                    cube.userData.arrows_out = [];
+                    cube.userData.arrows_in = [];
                     _c.label = 3;
                 case 3:
                     _i++;
@@ -102,12 +106,21 @@ function initScene(camera, scene, terraform_json) {
                     for (_a = 0, resource_list_2 = resource_list; _a < resource_list_2.length; _a++) {
                         resource_name_1 = resource_list_2[_a];
                         cube = name_to_cube[resource_name_1];
-                        cube.userData.neighbors = [];
                         neighbors = terraform_json[resource_name_1].next;
                         if (neighbors) { //if this field exists
                             for (_b = 0, neighbors_1 = neighbors; _b < neighbors_1.length; _b++) {
                                 neighbor_name = neighbors_1[_b];
-                                cube.add(name_to_cube[neighbor_name]);
+                                neighbor_cube = name_to_cube[neighbor_name];
+                                cube.userData.resource_children.push(neighbor_cube);
+                                neighbor_cube.userData.resource_parents.push(cube);
+                                cubepos = cube.position;
+                                npos = neighbor_cube.position;
+                                direction = npos.clone().sub(cubepos);
+                                length = direction.length();
+                                arrow = new THREE.ArrowHelper(direction.normalize(), cubepos, length, 0xff0000);
+                                scene.add(arrow);
+                                cube.userData.arrows_out.push(arrow);
+                                neighbor_cube.userData.arrows_in.push(arrow);
                             }
                         }
                     }

@@ -9,6 +9,7 @@ var __importStar = (this && this.__importStar) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 var THREE = __importStar(require("three"));
 var raycaster = new THREE.Raycaster();
+var selected_cube = null;
 function setupRaycasting(camera, scene, obj_list) {
     // actually onclick lmao
     function getIntersections() {
@@ -27,22 +28,49 @@ function setupRaycasting(camera, scene, obj_list) {
             var object = intersection.object;
             object.matrix.premultiply(tempMatrix);
             object.matrix.decompose(object.position, object.quaternion, object.scale);
+            selected_cube = object;
             camera.add(object);
-            camera.userData.selected = object;
         }
     };
     // actually onmouseup lmao
     var onMouseUp = function () {
-        if (camera.userData.selected) {
-            var object = camera.userData.selected;
+        if (selected_cube) {
+            var object = selected_cube;
+            selected_cube = null;
             object.matrix.premultiply(camera.matrixWorld);
             object.matrix.decompose(object.position, object.quaternion, object.scale);
             camera.remove(object); //remove from camera
             scene.add(object); //add back to scene
-            camera.userData.selected = null;
         }
     };
     document.body.addEventListener('mousedown', onMouseDown, false);
     document.body.addEventListener('mouseup', onMouseUp, false);
 }
 exports.setupRaycasting = setupRaycasting;
+function updateSelectedArrows() {
+    if (selected_cube) {
+        //we need the lists
+        var arrows_in = selected_cube.userData.arrows_in;
+        var arrows_out = selected_cube.userData.arrows_out;
+        var edges_in = selected_cube.userData.edges_in;
+        var edges_out = selected_cube.userData.edges_out;
+        for (var i = 0; i < arrows_in.length; i++) {
+            var arrow = arrows_in[i];
+            var dest = selected_cube.position;
+            var start = edges_in[i].position;
+            var direction = dest.clone().sub(start);
+            arrow.setLength(direction.length());
+            arrow.setDirection(direction.normalize());
+        }
+        for (var i = 0; i < arrows_out.length; i++) {
+            var arrow = arrows_in[i];
+            var s = selected_cube.position;
+            var d = edges_out[i].position;
+            var dir = d.clone().sub(s);
+            arrow.setLength(dir.length());
+            arrow.setDirection(dir.normalize());
+            arrow.position.set(s);
+        }
+    }
+}
+exports.updateSelectedArrows = updateSelectedArrows;

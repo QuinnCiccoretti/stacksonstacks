@@ -1,6 +1,6 @@
 import * as THREE from "three";
 import {createCube} from 'threeml';
-import {setupRaycasting} from 'dragdrop'
+import {setupRaycasting, updateSelectedArrows} from 'dragdrop'
 
 var obj_list:THREE.Object3D[] = [];
 
@@ -48,11 +48,26 @@ export async function initScene(camera: THREE.Camera,scene: THREE.Scene, terrafo
     
     for(const resource_name of resource_list){
         var cube = name_to_cube[resource_name];
-        cube.userData.neighbors = [];
         var neighbors:string[] = terraform_json[resource_name].next;
         if(neighbors){ //if this field exists
             for(const neighbor_name of neighbors){
-                cube.add(name_to_cube[neighbor_name]);
+            	var neighbor_cube = name_to_cube[neighbor_name];
+                cube.userData.edges_in.push(neighbor_cube);
+                neighbor_cube.userData.edges_out.push(cube);
+                //draw the edge
+                var cubepos = cube.position;
+                var npos = neighbor_cube.position;
+                var direction = npos.clone().sub(cubepos);
+                var length = direction.length();
+                var arrow = new THREE.ArrowHelper(
+                	direction.normalize(),
+                	cubepos,
+              		length,
+              		0xff0000
+                );
+                scene.add(arrow);
+                cube.userData.arrows_out.push(arrow);
+                neighbor_cube.userData.arrows_in.push(arrow);
             }
         }
 
@@ -62,11 +77,10 @@ export async function initScene(camera: THREE.Camera,scene: THREE.Scene, terrafo
         cube.position.set(0,2,0);
         scene.add(cube);
         obj_list.push(cube);
-        // cy.add(cube);
     }).catch((error:any)=>{
         console.log(error);
     });
-    console.log("YYYYYYYYYYYYYYY");
+    
     var gridsize = 30;
     var gridHelper = new THREE.GridHelper( gridsize, gridsize );
     gridHelper.position.set(0,-1.6,0);
