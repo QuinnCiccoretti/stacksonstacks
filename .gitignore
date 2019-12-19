@@ -62,3 +62,6 @@ typings/
 
 # andrew's virtual environment
 andrewsvenv/
+
+# secrets secrets are no fun ;)
+bricked_experiments/
