@@ -3,7 +3,7 @@ const loader = promisifyLoader(new THREE.TextureLoader());
 export function printMsg() : string {
 	return "This is a new three-enabled messo from the for dummies of npm";
 }
-export async function createCube(url: string): Promise<any> {
+export async function createCube(url: string): Promise<THREE.Mesh> {
 	console.log("We doing it big");
 	var texture = await loader.load(url);
 	console.log(texture);

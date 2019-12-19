@@ -47,6 +47,10 @@ var THREE = __importStar(require("three"));
 var threeml_1 = require("threeml");
 var dragdrop_1 = require("dragdrop");
 var obj_list = [];
+function updateScene(camera) {
+    dragdrop_1.updateSelectedArrows(camera);
+}
+exports.updateScene = updateScene;
 var name_to_path = {
     "google_compute_instance.vm_instance": "Compute/Compute_Engine",
     "google_compute_network.vpc_network": "Networking/Virtual_Private_Cloud"
@@ -69,38 +73,76 @@ function get_iconpath_from_resourcename(name) {
 }
 function initScene(camera, scene, terraform_json) {
     return __awaiter(this, void 0, void 0, function () {
-        var josh, gridsize, gridHelper;
-        return __generator(this, function (_a) {
-            Object.keys(terraform_json).forEach(function (resource_name) {
-                var info = terraform_json[resource_name];
-                var resourcex = parseFloat(info.x);
-                var resourcey = parseFloat(info.y);
-                var dot_to_three_scale = 0.02;
-                resourcex *= dot_to_three_scale;
-                resourcey *= dot_to_three_scale;
-                var icon_path = get_iconpath_from_resourcename(resource_name);
-                threeml_1.createCube(icon_path).then(function (cube) {
+        var name_to_cube, resource_list, _i, resource_list_1, resource_name, info, resourcex, resourcey, dot_to_three_scale, icon_path, cube, _a, resource_list_2, resource_name_1, cube, neighbors, _b, neighbors_1, neighbor_name, neighbor_cube, cubepos, npos, direction, length, arrow, josh, gridsize, gridHelper;
+        return __generator(this, function (_c) {
+            switch (_c.label) {
+                case 0:
+                    name_to_cube = {};
+                    resource_list = Object.keys(terraform_json);
+                    _i = 0, resource_list_1 = resource_list;
+                    _c.label = 1;
+                case 1:
+                    if (!(_i < resource_list_1.length)) return [3 /*break*/, 4];
+                    resource_name = resource_list_1[_i];
+                    info = terraform_json[resource_name];
+                    resourcex = parseFloat(info.x);
+                    resourcey = parseFloat(info.y);
+                    dot_to_three_scale = 0.02;
+                    resourcex *= dot_to_three_scale;
+                    resourcey *= dot_to_three_scale;
+                    icon_path = get_iconpath_from_resourcename(resource_name);
+                    return [4 /*yield*/, threeml_1.createCube(icon_path)];
+                case 2:
+                    cube = _c.sent();
                     cube.position.set(resourcex, resourcey / 2 + 3, resourcey);
                     scene.add(cube);
-                    obj_list.push(cube);
-                }).catch(function (error) {
-                    console.log(error);
-                });
-            });
-            josh = "https://scontent-iad3-1.xx.fbcdn.net/v/t31.0-8/28701384_611205672553420_861063517891691345_o.jpg?_nc_cat=108&_nc_oc=AQkES19skZE56YmLT3a6H6U8xRKrLBB6h_hPjjlzvx8aED3WbZfB5bocBSZMHjgs1T0&_nc_ht=scontent-iad3-1.xx&oh=40bcd73e3df92eb235b5f4e05e5e7beb&oe=5E7A74A1";
-            threeml_1.createCube(josh).then(function (cube) {
-                cube.position.set(0, 2, 0);
-                scene.add(cube);
-                obj_list.push(cube);
-            }).catch(function (error) {
-                console.log(error);
-            });
-            gridsize = 30;
-            gridHelper = new THREE.GridHelper(gridsize, gridsize);
-            gridHelper.position.set(0, -1.6, 0);
-            scene.add(gridHelper);
-            dragdrop_1.setupRaycasting(camera, scene, obj_list);
-            return [2 /*return*/];
+                    obj_list.push(cube); //insert into our "graph"
+                    name_to_cube[resource_name] = cube;
+                    cube.userData.arrows_in = [];
+                    cube.userData.arrows_out = [];
+                    cube.userData.edges_in = [];
+                    cube.userData.edges_out = [];
+                    _c.label = 3;
+                case 3:
+                    _i++;
+                    return [3 /*break*/, 1];
+                case 4:
+                    for (_a = 0, resource_list_2 = resource_list; _a < resource_list_2.length; _a++) {
+                        resource_name_1 = resource_list_2[_a];
+                        cube = name_to_cube[resource_name_1];
+                        neighbors = terraform_json[resource_name_1].next;
+                        if (neighbors) { //if this field exists
+                            for (_b = 0, neighbors_1 = neighbors; _b < neighbors_1.length; _b++) {
+                                neighbor_name = neighbors_1[_b];
+                                neighbor_cube = name_to_cube[neighbor_name];
+                                cube.userData.edges_out.push(neighbor_cube);
+                                neighbor_cube.userData.edges_in.push(cube);
+                                cubepos = cube.position;
+                                npos = neighbor_cube.position;
+                                direction = npos.clone().sub(cubepos);
+                                length = direction.length();
+                                arrow = new THREE.ArrowHelper(direction.normalize(), cubepos, length, 0xff0000);
+                                scene.add(arrow);
+                                cube.userData.arrows_out.push(arrow);
+                                neighbor_cube.userData.arrows_in.push(arrow);
+                            }
+                        }
+                    }
+                    josh = "https://scontent-iad3-1.xx.fbcdn.net/v/t31.0-8/28701384_611205672553420_861063517891691345_o.jpg?_nc_cat=108&_nc_oc=AQkES19skZE56YmLT3a6H6U8xRKrLBB6h_hPjjlzvx8aED3WbZfB5bocBSZMHjgs1T0&_nc_ht=scontent-iad3-1.xx&oh=40bcd73e3df92eb235b5f4e05e5e7beb&oe=5E7A74A1";
+                    threeml_1.createCube(josh).then(function (cube) {
+                        cube.position.set(0, 2, 0);
+                        scene.add(cube);
+                        obj_list.push(cube);
+                    }).catch(function (error) {
+                        console.log(error);
+                    });
+                    gridsize = 30;
+                    gridHelper = new THREE.GridHelper(gridsize, gridsize);
+                    gridHelper.position.set(0, -1.6, 0);
+                    scene.add(gridHelper);
+                    dragdrop_1.setupRaycasting(camera, scene, obj_list);
+                    return [2 /*return*/];
+            }
         });
     });
 }

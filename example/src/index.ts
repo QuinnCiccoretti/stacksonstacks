@@ -1,6 +1,6 @@
 import * as THREE from 'three';
 // import WebVRPolyfill from 'webvr-polyfill';
-import {initScene} from 'scenemanager';
+import {initScene, updateScene} from 'scenemanager';
 import {isVREnabled, addControls, updateControls} from 'controlmanager';
 
 var scene = new THREE.Scene();
@@ -96,18 +96,22 @@ camera.position.z = 5;
 
 function vrAnimate(){
 	updateControls();
-  cube.rotation.x += 0.01;
-  cube.rotation.y += 0.01;
+  updateScene(camera);
 	vrDisplay.requestAnimationFrame(vrAnimate);
   renderer.render( scene, camera );
+
+  cube.rotation.x += 0.01;
+  cube.rotation.y += 0.01;
 }
 
 function desktopAnimate(){
-  cube.rotation.x += 0.01;
-  cube.rotation.y += 0.01;
-  updateControls();  
+  updateControls();
+  updateScene(camera);
 	requestAnimationFrame(desktopAnimate);
   renderer.render( scene, camera );
+
+  cube.rotation.x += 0.01;
+  cube.rotation.y += 0.01;
 }
 
 
