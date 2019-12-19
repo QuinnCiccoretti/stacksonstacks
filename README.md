@@ -1,10 +1,13 @@
-# threeml
-Modularize - Adapt - Overcome
+# stacksonstacks
 
-This is the modular version of stacksonstacks (it will be renamed)
+Modular visualizations of directed graphs - specifically, terraform resources
 
-### Example install
-Cd to the example directory.
+### Set up the example
+Cd to the example directory, run `./start.sh` and navigate
+to navigate to http://localhost:8000
+
+### Development install
+You must run build if you want to make changes. Cd to the example directory.
 Run
 ```sh
 npm install
@@ -41,4 +44,4 @@ The example is slightly different. As usual, run `npm install` before doing anyt
 and sees that we specify typescript, and then invokes the typescript compiler on the src file,
 and bundles it into `dist/`. The `dist/bundle.js` file is the only thing included in `example/index.html`.
 Webpack does all the work
-- Note that updating the dependencies doesn't really work automatically yet, idk why
+- Note that dependencies are currently all local.
