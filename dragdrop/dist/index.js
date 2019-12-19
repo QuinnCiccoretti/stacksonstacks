@@ -47,9 +47,10 @@ function setupRaycasting(camera, scene, obj_list) {
     document.body.addEventListener('mouseup', onMouseUp, false);
 }
 exports.setupRaycasting = setupRaycasting;
-function updateSelectedArrows() {
+function updateSelectedArrows(camera) {
     if (selected_cube) {
         //we need the lists
+        var cam_pos = camera.position;
         var arrows_in = selected_cube.userData.arrows_in;
         var arrows_out = selected_cube.userData.arrows_out;
         var edges_in = selected_cube.userData.edges_in;
@@ -60,21 +61,26 @@ function updateSelectedArrows() {
         console.log(arrows_in);
         for (var i = 0; i < arrows_in.length; i++) {
             var arrow = arrows_in[i];
-            var dest = selected_cube.position;
-            var start = edges_in[i].position;
-            var direction = dest.clone().sub(start);
+            var dest1 = new THREE.Vector3();
+            selected_cube.getWorldPosition(dest1);
+            // var dest = selected_cube.position.clone().add(cam_pos);
+            var start1 = edges_in[i].position;
+            var direction = dest1.sub(start1);
+            console.log("v2");
             arrow.setLength(direction.length());
             arrow.setDirection(direction.normalize());
         }
         console.log("You are here");
         for (var i = 0; i < arrows_out.length; i++) {
             var arrow = arrows_out[i];
-            var s = selected_cube.position;
-            var d = edges_out[i].position;
-            var dir = d.clone().sub(s);
+            console.log(arrow);
+            var start2 = new THREE.Vector3();
+            selected_cube.getWorldPosition(start2);
+            var dest2 = edges_out[i].position;
+            var dir = dest2.clone().sub(start2);
             arrow.setLength(dir.length());
             arrow.setDirection(dir.normalize());
-            arrow.position.set(s);
+            arrow.position.set(start2);
         }
         console.log("what");
     }

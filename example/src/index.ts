@@ -96,7 +96,7 @@ camera.position.z = 5;
 
 function vrAnimate(){
 	updateControls();
-  updateScene();
+  updateScene(camera);
 	vrDisplay.requestAnimationFrame(vrAnimate);
   renderer.render( scene, camera );
 
@@ -106,7 +106,7 @@ function vrAnimate(){
 
 function desktopAnimate(){
   updateControls();
-  updateScene();
+  updateScene(camera);
 	requestAnimationFrame(desktopAnimate);
   renderer.render( scene, camera );
 

@@ -47,8 +47,8 @@ var THREE = __importStar(require("three"));
 var threeml_1 = require("threeml");
 var dragdrop_1 = require("dragdrop");
 var obj_list = [];
-function updateScene() {
-    dragdrop_1.updateSelectedArrows();
+function updateScene(camera) {
+    dragdrop_1.updateSelectedArrows(camera);
 }
 exports.updateScene = updateScene;
 var name_to_path = {
@@ -115,8 +115,8 @@ function initScene(camera, scene, terraform_json) {
                             for (_b = 0, neighbors_1 = neighbors; _b < neighbors_1.length; _b++) {
                                 neighbor_name = neighbors_1[_b];
                                 neighbor_cube = name_to_cube[neighbor_name];
-                                cube.userData.edges_in.push(neighbor_cube);
-                                neighbor_cube.userData.edges_out.push(cube);
+                                cube.userData.edges_out.push(neighbor_cube);
+                                neighbor_cube.userData.edges_in.push(cube);
                                 cubepos = cube.position;
                                 npos = neighbor_cube.position;
                                 direction = npos.clone().sub(cubepos);

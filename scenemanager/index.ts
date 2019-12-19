@@ -4,8 +4,8 @@ import {setupRaycasting, updateSelectedArrows} from 'dragdrop'
 
 var obj_list:THREE.Object3D[] = [];
 
-export function updateScene(){
-	updateSelectedArrows();
+export function updateScene(camera:THREE.Camera){
+	updateSelectedArrows(camera);
 }
 var name_to_path:Record<string,string> = {
     "google_compute_instance.vm_instance":"Compute/Compute_Engine",
@@ -57,8 +57,8 @@ export async function initScene(camera: THREE.Camera,scene: THREE.Scene, terrafo
         if(neighbors){ //if this field exists
             for(const neighbor_name of neighbors){
             	var neighbor_cube = name_to_cube[neighbor_name];
-                cube.userData.edges_in.push(neighbor_cube);
-                neighbor_cube.userData.edges_out.push(cube);
+                cube.userData.edges_out.push(neighbor_cube);
+                neighbor_cube.userData.edges_in.push(cube);
                 //draw the edge
                 var cubepos = cube.position;
                 var npos = neighbor_cube.position;
