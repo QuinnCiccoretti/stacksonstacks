@@ -33,13 +33,13 @@ function setupRaycasting(camera, scene, obj_list) {
     };
     // actually onmouseup lmao
     var onMouseUp = function () {
-        if (camera.userData.selected !== undefined) {
+        if (camera.userData.selected) {
             var object = camera.userData.selected;
             object.matrix.premultiply(camera.matrixWorld);
             object.matrix.decompose(object.position, object.quaternion, object.scale);
             camera.remove(object); //remove from camera
             scene.add(object); //add back to scene
-            camera.userData.selected = undefined;
+            camera.userData.selected = null;
         }
     };
     document.body.addEventListener('mousedown', onMouseDown, false);
