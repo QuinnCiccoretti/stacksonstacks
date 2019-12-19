@@ -6,7 +6,10 @@ Modular visualizations of directed graphs - specifically, terraform resources
 
 ### Set up the example
 Cd to the example directory, run `./start.sh` and navigate
-to navigate to http://localhost:8000
+to http://localhost:8000.
+
+There is no need to build if you just want to check this out, because a 
+"stable" bundle file is included in the repo.
 
 ### Development install
 You must run build if you want to make changes. Cd to the example directory.
