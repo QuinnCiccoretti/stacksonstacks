@@ -2,6 +2,8 @@
 
 Modular visualizations of directed graphs - specifically, terraform resources
 
+![graph with edges](./stacks-on-stacks-cover.png)
+
 ### Set up the example
 Cd to the example directory, run `./start.sh` and navigate
 to navigate to http://localhost:8000
