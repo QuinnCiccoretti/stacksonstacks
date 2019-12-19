@@ -4,7 +4,9 @@ import {setupRaycasting, updateSelectedArrows} from 'dragdrop'
 
 var obj_list:THREE.Object3D[] = [];
 
-
+export function updateScene(){
+	updateSelectedArrows();
+}
 var name_to_path:Record<string,string> = {
     "google_compute_instance.vm_instance":"Compute/Compute_Engine",
     "google_compute_network.vpc_network":"Networking/Virtual_Private_Cloud"
@@ -43,7 +45,10 @@ export async function initScene(camera: THREE.Camera,scene: THREE.Scene, terrafo
         scene.add(cube);
         obj_list.push(cube); //insert into our "graph"
         name_to_cube[resource_name] = cube;
-        
+        cube.userData.arrows_in = [];
+        cube.userData.arrows_out = [];
+        cube.userData.edges_in = [];
+        cube.userData.edges_out = [];
     }
     
     for(const resource_name of resource_list){

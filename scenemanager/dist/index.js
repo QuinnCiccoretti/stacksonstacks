@@ -47,6 +47,10 @@ var THREE = __importStar(require("three"));
 var threeml_1 = require("threeml");
 var dragdrop_1 = require("dragdrop");
 var obj_list = [];
+function updateScene() {
+    dragdrop_1.updateSelectedArrows();
+}
+exports.updateScene = updateScene;
 var name_to_path = {
     "google_compute_instance.vm_instance": "Compute/Compute_Engine",
     "google_compute_network.vpc_network": "Networking/Virtual_Private_Cloud"
@@ -94,10 +98,10 @@ function initScene(camera, scene, terraform_json) {
                     scene.add(cube);
                     obj_list.push(cube); //insert into our "graph"
                     name_to_cube[resource_name] = cube;
-                    cube.userData.resource_children = [];
-                    cube.userData.resource_parents = [];
-                    cube.userData.arrows_out = [];
                     cube.userData.arrows_in = [];
+                    cube.userData.arrows_out = [];
+                    cube.userData.edges_in = [];
+                    cube.userData.edges_out = [];
                     _c.label = 3;
                 case 3:
                     _i++;
@@ -111,8 +115,8 @@ function initScene(camera, scene, terraform_json) {
                             for (_b = 0, neighbors_1 = neighbors; _b < neighbors_1.length; _b++) {
                                 neighbor_name = neighbors_1[_b];
                                 neighbor_cube = name_to_cube[neighbor_name];
-                                cube.userData.resource_children.push(neighbor_cube);
-                                neighbor_cube.userData.resource_parents.push(cube);
+                                cube.userData.edges_in.push(neighbor_cube);
+                                neighbor_cube.userData.edges_out.push(cube);
                                 cubepos = cube.position;
                                 npos = neighbor_cube.position;
                                 direction = npos.clone().sub(cubepos);
@@ -129,11 +133,9 @@ function initScene(camera, scene, terraform_json) {
                         cube.position.set(0, 2, 0);
                         scene.add(cube);
                         obj_list.push(cube);
-                        // cy.add(cube);
                     }).catch(function (error) {
                         console.log(error);
                     });
-                    console.log("YYYYYYYYYYYYYYY");
                     gridsize = 30;
                     gridHelper = new THREE.GridHelper(gridsize, gridsize);
                     gridHelper.position.set(0, -1.6, 0);

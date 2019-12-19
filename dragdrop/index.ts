@@ -47,6 +47,10 @@ export function updateSelectedArrows(){
 		var arrows_out = selected_cube.userData.arrows_out;
 		var edges_in = selected_cube.userData.edges_in;
 		var edges_out = selected_cube.userData.edges_out;
+		console.log(edges_out);
+		console.log(edges_in);
+		console.log(arrows_out);
+		console.log(arrows_in);
 
 		for(var i = 0; i < arrows_in.length; i++){
 			var arrow = arrows_in[i];
@@ -56,8 +60,9 @@ export function updateSelectedArrows(){
 			arrow.setLength(direction.length());
 			arrow.setDirection(direction.normalize());
 		}
+		console.log("You are here");
 		for(var i = 0; i < arrows_out.length; i++){
-			var arrow = arrows_in[i];
+			var arrow = arrows_out[i];
 			var s = selected_cube.position;
 			var d = edges_out[i].position;
 			var dir = d.clone().sub(s);
@@ -65,5 +70,6 @@ export function updateSelectedArrows(){
 			arrow.setDirection(dir.normalize());
 			arrow.position.set(s);
 		}
+		console.log("what");
 	}
 }
