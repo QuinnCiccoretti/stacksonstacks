@@ -80,7 +80,7 @@ function updateSelectedArrows(camera) {
             var dir = dest2.clone().sub(start2);
             arrow.setLength(dir.length());
             arrow.setDirection(dir.normalize());
-            arrow.position.set(start2);
+            arrow.position.copy(start2);
         }
         console.log("what");
     }
