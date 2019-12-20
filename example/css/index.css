@@ -21,6 +21,7 @@ canvas {
   font-family: "Roboto", sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  text-align: center;
 }
 h1 {
   font-family: "Open Sans", sans-serif;
@@ -29,11 +30,6 @@ h1 {
   padding: 10%
 }
 button {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  -ms-transform: translate(-50%, -50%);
   background-color: #f1f1f1;
   color: black;
   font-size: 16px;

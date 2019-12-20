@@ -74,7 +74,8 @@ initScene(camera,scene, terraform_json);
 var controls:any;
 var vrDisplay:any;
 var blocker = document.getElementById("blocker");
-addControls(scene, camera, blocker).then(
+var startbutton = document.getElementById("startButton");
+addControls(scene, camera, blocker,startbutton).then(
 	function(){
   	if(isVREnabled()){
   		vrDisplay.requestAnimationFrame(vrAnimate);
