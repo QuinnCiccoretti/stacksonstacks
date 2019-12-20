@@ -51,9 +51,11 @@ function updateScene(camera) {
     dragdrop_1.updateSelectedArrows(camera);
 }
 exports.updateScene = updateScene;
+//some of these may be arbitrarily decided symbols, nothing more
 var name_to_path = {
     "google_compute_instance.vm_instance": "Compute/Compute_Engine",
-    "google_compute_network.vpc_network": "Networking/Virtual_Private_Cloud"
+    "google_compute_network.vpc_network": "Networking/Virtual_Private_Cloud",
+    "provider.google": "Extras/Google_Cloud_Platform.png"
 };
 var path_to_all_icons = "img/gcp_icons/";
 //return path relative to root dir of a resource icon
@@ -147,3 +149,7 @@ function initScene(camera, scene, terraform_json) {
     });
 }
 exports.initScene = initScene;
+function updateSkyColor(scene, color) {
+    scene.background = new THREE.Color(color);
+}
+exports.updateSkyColor = updateSkyColor;

@@ -7,9 +7,11 @@ var obj_list:THREE.Object3D[] = [];
 export function updateScene(camera:THREE.Camera){
 	updateSelectedArrows(camera);
 }
+//some of these may be arbitrarily decided symbols, nothing more
 var name_to_path:Record<string,string> = {
     "google_compute_instance.vm_instance":"Compute/Compute_Engine",
-    "google_compute_network.vpc_network":"Networking/Virtual_Private_Cloud"
+    "google_compute_network.vpc_network":"Networking/Virtual_Private_Cloud",
+    "provider.google":"Extras/Google_Cloud_Platform.png"
 }
 var path_to_all_icons:string = "img/gcp_icons/";
 //return path relative to root dir of a resource icon
@@ -92,4 +94,8 @@ export async function initScene(camera: THREE.Camera,scene: THREE.Scene, terrafo
     scene.add( gridHelper );
     setupRaycasting(camera,scene,obj_list);
 
+}
+
+export function updateSkyColor(scene:THREE.Scene, color:string){
+    scene.background = new THREE.Color( color );
 }

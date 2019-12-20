@@ -1,6 +1,6 @@
 import * as THREE from 'three';
 // import WebVRPolyfill from 'webvr-polyfill';
-import {initScene, updateScene} from 'scenemanager';
+import {initScene, updateScene, updateSkyColor} from 'scenemanager';
 import {isVREnabled, addControls, updateControls} from 'controlmanager';
 
 var scene = new THREE.Scene();
@@ -86,6 +86,13 @@ addControls(scene, camera, blocker,startbutton).then(
   }
 ).catch(function(error){
 	console.log(error);
+});
+
+var color1picker = document.getElementById("color1");
+color1picker.addEventListener("change", function(event:any){
+  console.log(event);
+  var color = event.target.value;
+  updateSkyColor(scene, color);
 });
 
 var geometry = new THREE.BoxGeometry( 1, 1, 1 );
