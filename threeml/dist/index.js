@@ -45,10 +45,6 @@ var __importStar = (this && this.__importStar) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 var THREE = __importStar(require("three"));
 var loader = promisifyLoader(new THREE.TextureLoader());
-function printMsg() {
-    return "This is a new three-enabled messo from the for dummies of npm";
-}
-exports.printMsg = printMsg;
 function createCube(url) {
     return __awaiter(this, void 0, void 0, function () {
         var texture, scalefactor, h, w, geometry, uniforms, material, mesh;
@@ -61,7 +57,8 @@ function createCube(url) {
                     h = texture.image.height;
                     w = texture.image.width;
                     geometry = new THREE.BoxGeometry(1, 1, 1);
-                    texture.needsUpdate = true; // important
+                    // texture.needsUpdate = true; // important for shading
+                    console.log("mike check");
                     uniforms = {
                         color: { type: "c", value: new THREE.Color(0x004fd1) },
                         texture: { type: "t", value: texture },
@@ -72,14 +69,7 @@ function createCube(url) {
                         fragmentShader: fragmentShader()
                     });
                     mesh = new THREE.Mesh(geometry, material);
-                    // set the position of the image mesh in the x,y,z dimensions
                     mesh.name = url;
-                    // mesh.position.add(pos);
-                    // mesh.lookAt(0,0,0);
-                    // mesh.userData.redirect = redirect;
-                    // mesh.userData.url = url;
-                    // scene.add(mesh);
-                    // draggable_obj_list.push(mesh);
                     console.log(mesh);
                     return [2 /*return*/, mesh];
             }
