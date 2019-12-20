@@ -6,11 +6,17 @@
 	<title>threeml</title>
 </head>
 <body>
+	<!-- this blocker appears over the scene -->
 	<div id="blocker">
     	<h1>Cloud Cover</h1>
-    	<button class="btn">Start</button>
+    	<button id = "startButton" class="btn">Start</button><br>
+    	<div id = "colorpicker">
+    		<h3>Select a background color</h3>
+    		<input type="color" id="color1" value="#ffffff">
+    	</div>
+    	<!-- <input type="color" id="color2" value="#ff0000"> -->
   	</div>
-	<!-- it really do be like that-->
+	<!-- include the result of webpack -->
 	<script src="./dist/bundle.js"></script>
 </body>
 </html>

@@ -83,7 +83,7 @@ function updateDesktopControls() {
     controls.moveForward(move_dir.z);
 }
 //set vrenabled and init controls
-function addControls(scene, camera, blocker) {
+function addControls(scene, camera, blocker, startbutton) {
     return __awaiter(this, void 0, void 0, function () {
         var vrDisplays, vrDisplay, onKeyDown, onKeyUp;
         return __generator(this, function (_a) {
@@ -146,7 +146,7 @@ function addControls(scene, camera, blocker) {
                         };
                         document.addEventListener('keydown', onKeyDown, false);
                         document.addEventListener('keyup', onKeyUp, false);
-                        blocker.addEventListener('click', function () {
+                        startbutton.addEventListener('click', function () {
                             controls.lock();
                         }, false);
                         controls.addEventListener('lock', function () {

@@ -45,37 +45,31 @@ var __importStar = (this && this.__importStar) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 var THREE = __importStar(require("three"));
 var loader = promisifyLoader(new THREE.TextureLoader());
-function printMsg() {
-    return "This is a new three-enabled messo from the for dummies of npm";
-}
-exports.printMsg = printMsg;
 function createCube(url) {
     return __awaiter(this, void 0, void 0, function () {
-        var texture, scalefactor, texture1, h, w, geometry, material, mesh;
+        var texture, scalefactor, h, w, geometry, uniforms, material, mesh;
         return __generator(this, function (_a) {
             switch (_a.label) {
-                case 0:
-                    console.log("We doing it big");
-                    return [4 /*yield*/, loader.load(url)];
+                case 0: return [4 /*yield*/, loader.load(url)];
                 case 1:
                     texture = _a.sent();
-                    console.log(texture);
-                    console.log("I get it how I live it");
                     scalefactor = 1;
-                    texture1 = texture;
                     h = texture.image.height;
                     w = texture.image.width;
                     geometry = new THREE.BoxGeometry(1, 1, 1);
-                    material = new THREE.MeshBasicMaterial({ map: texture, side: THREE.DoubleSide });
+                    // texture.needsUpdate = true; // important for shading
+                    console.log("mike check");
+                    uniforms = {
+                        color: { type: "c", value: new THREE.Color(0x004fd1) },
+                        texture: { type: "t", value: texture },
+                    };
+                    material = new THREE.ShaderMaterial({
+                        uniforms: uniforms,
+                        vertexShader: vertexShader(),
+                        fragmentShader: fragmentShader()
+                    });
                     mesh = new THREE.Mesh(geometry, material);
-                    // set the position of the image mesh in the x,y,z dimensions
                     mesh.name = url;
-                    // mesh.position.add(pos);
-                    // mesh.lookAt(0,0,0);
-                    // mesh.userData.redirect = redirect;
-                    // mesh.userData.url = url;
-                    // scene.add(mesh);
-                    // draggable_obj_list.push(mesh);
                     console.log(mesh);
                     return [2 /*return*/, mesh];
             }
@@ -96,4 +90,10 @@ function promisifyLoader(loader) {
         originalLoader: loader,
         load: promiseLoader,
     };
+}
+function fragmentShader() {
+    return "\n  uniform vec3 color;\n  uniform sampler2D texture;\n  varying vec2 vUv;\n  void main() {\n      vec4 tColor = texture2D( texture, vUv );\n      \n      gl_FragColor = vec4( mix( color, tColor.rgb, tColor.a ), 1.0 );\n      \n  }\n  ";
+}
+function vertexShader() {
+    return "\n  varying vec2 vUv;\n  void main() {\n      vUv = uv;\n      \n      gl_Position = projectionMatrix * modelViewMatrix * vec4( position, 1.0 );\n      \n  }\n  ";
 }

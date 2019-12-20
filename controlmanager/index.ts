@@ -39,7 +39,7 @@ function updateDesktopControls(): void {
 }
 
 //set vrenabled and init controls
-export async function addControls(scene: THREE.Scene, camera: THREE.Camera, blocker: HTMLElement): Promise<void>{
+export async function addControls(scene: THREE.Scene, camera: THREE.Camera, blocker: HTMLElement, startbutton:HTMLElement): Promise<void>{
   const vrDisplays = await navigator.getVRDisplays();
   // If we have a native display, or we have a CardboardVRDisplay
   // from the polyfill, use it
@@ -99,7 +99,7 @@ export async function addControls(scene: THREE.Scene, camera: THREE.Camera, bloc
     document.addEventListener( 'keydown', onKeyDown, false );
     document.addEventListener( 'keyup', onKeyUp, false );
 
-    blocker.addEventListener( 'click', function () {
+    startbutton.addEventListener( 'click', function () {
       controls.lock();
     }, false );
     controls.addEventListener( 'lock', function () {

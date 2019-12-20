@@ -3,13 +3,17 @@ import {createCube} from 'threeml';
 import {setupRaycasting, updateSelectedArrows} from 'dragdrop'
 
 var obj_list:THREE.Object3D[] = [];
+var ret_mat:THREE.MeshBasicMaterial;
 
 export function updateScene(camera:THREE.Camera){
 	updateSelectedArrows(camera);
 }
+//some of these may be arbitrarily decided symbols, nothing more
+//assumes all end in .png
 var name_to_path:Record<string,string> = {
     "google_compute_instance.vm_instance":"Compute/Compute_Engine",
-    "google_compute_network.vpc_network":"Networking/Virtual_Private_Cloud"
+    "google_compute_network.vpc_network":"Networking/Virtual_Private_Cloud",
+    "provider.google":"Extras/Google_Cloud_Platform"
 }
 var path_to_all_icons:string = "img/gcp_icons/";
 //return path relative to root dir of a resource icon
@@ -28,7 +32,19 @@ function get_iconpath_from_resourcename(name:string): string{
     }
     return "";
 }
+
 export async function initScene(camera: THREE.Camera,scene: THREE.Scene, terraform_json:any): Promise<any> {
+    //add reticle
+    ret_mat = new THREE.MeshBasicMaterial({ color: ~0x0, opacity: 0.5 });
+    var reticle = new THREE.Mesh(
+      new THREE.RingBufferGeometry(0.005, 0.01, 15),
+      ret_mat
+    );
+    reticle.position.z = -0.5;
+    camera.add(reticle);
+
+    updateSkyColor(scene,"#ffffff");
+
     var name_to_cube:Record<string,THREE.Mesh> = {};
     const resource_list = Object.keys(terraform_json);
     for(var resource_name of resource_list){
@@ -92,4 +108,10 @@ export async function initScene(camera: THREE.Camera,scene: THREE.Scene, terrafo
     scene.add( gridHelper );
     setupRaycasting(camera,scene,obj_list);
 
+}
+
+export function updateSkyColor(scene:THREE.Scene, color:string){
+    scene.background = new THREE.Color( color );
+    var hexcolor = parseInt(color.replace(/^#/, ''), 16);
+    ret_mat.color.setHex(~hexcolor);
 }

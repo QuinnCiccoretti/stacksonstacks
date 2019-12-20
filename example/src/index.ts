@@ -1,18 +1,17 @@
 import * as THREE from 'three';
 // import WebVRPolyfill from 'webvr-polyfill';
-import {initScene, updateScene} from 'scenemanager';
+import {initScene, updateScene, updateSkyColor} from 'scenemanager';
 import {isVREnabled, addControls, updateControls} from 'controlmanager';
 
 var scene = new THREE.Scene();
+var color1picker = document.getElementById("color1");
+color1picker.addEventListener("change", function(event:any){
+  console.log(event);
+  var color = event.target.value;
+  updateSkyColor(scene, color);
+});
+
 var camera = new THREE.PerspectiveCamera( 75, window.innerWidth/window.innerHeight, 0.1, 1000 );
-
-var reticle = new THREE.Mesh(
-  new THREE.RingBufferGeometry(0.005, 0.01, 15),
-  new THREE.MeshBasicMaterial({ color: ~0x0, opacity: 0.5 })
-);
-reticle.position.z = -0.5;
-camera.add(reticle);
-
 var renderer = new THREE.WebGLRenderer();
 renderer.setSize( window.innerWidth, window.innerHeight );
 document.body.appendChild( renderer.domElement );
@@ -74,7 +73,8 @@ initScene(camera,scene, terraform_json);
 var controls:any;
 var vrDisplay:any;
 var blocker = document.getElementById("blocker");
-addControls(scene, camera, blocker).then(
+var startbutton = document.getElementById("startButton");
+addControls(scene, camera, blocker,startbutton).then(
 	function(){
   	if(isVREnabled()){
   		vrDisplay.requestAnimationFrame(vrAnimate);
@@ -85,6 +85,13 @@ addControls(scene, camera, blocker).then(
   }
 ).catch(function(error){
 	console.log(error);
+});
+
+var color1picker = document.getElementById("color1");
+color1picker.addEventListener("change", function(event:any){
+  console.log(event);
+  var color = event.target.value;
+  updateSkyColor(scene, color);
 });
 
 var geometry = new THREE.BoxGeometry( 1, 1, 1 );
