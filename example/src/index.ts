@@ -4,6 +4,13 @@ import {initScene, updateScene, updateSkyColor} from 'scenemanager';
 import {isVREnabled, addControls, updateControls} from 'controlmanager';
 
 var scene = new THREE.Scene();
+var color1picker = document.getElementById("color1");
+color1picker.addEventListener("change", function(event:any){
+  console.log(event);
+  var color = event.target.value;
+  updateSkyColor(scene, color);
+});
+scene.background = new THREE.Color(~0x0);
 var camera = new THREE.PerspectiveCamera( 75, window.innerWidth/window.innerHeight, 0.1, 1000 );
 
 var reticle = new THREE.Mesh(

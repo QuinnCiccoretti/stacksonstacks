@@ -52,10 +52,11 @@ function updateScene(camera) {
 }
 exports.updateScene = updateScene;
 //some of these may be arbitrarily decided symbols, nothing more
+//assumes all end in .png
 var name_to_path = {
     "google_compute_instance.vm_instance": "Compute/Compute_Engine",
     "google_compute_network.vpc_network": "Networking/Virtual_Private_Cloud",
-    "provider.google": "Extras/Google_Cloud_Platform.png"
+    "provider.google": "Extras/Google_Cloud_Platform"
 };
 var path_to_all_icons = "img/gcp_icons/";
 //return path relative to root dir of a resource icon
