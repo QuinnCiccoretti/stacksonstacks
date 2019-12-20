@@ -160,6 +160,6 @@ exports.initScene = initScene;
 function updateSkyColor(scene, color) {
     scene.background = new THREE.Color(color);
     var hexcolor = parseInt(color.replace(/^#/, ''), 16);
-    ret_mat.color.setHex(0xffffff);
+    ret_mat.color.setHex(~hexcolor);
 }
 exports.updateSkyColor = updateSkyColor;

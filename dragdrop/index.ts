@@ -48,10 +48,6 @@ export function updateSelectedArrows(camera:THREE.Camera){
 		var arrows_out = selected_cube.userData.arrows_out;
 		var edges_in = selected_cube.userData.edges_in;
 		var edges_out = selected_cube.userData.edges_out;
-		console.log(edges_out);
-		console.log(edges_in);
-		console.log(arrows_out);
-		console.log(arrows_in);
 
 		for(var i = 0; i < arrows_in.length; i++){
 			var arrow = arrows_in[i];
@@ -60,11 +56,9 @@ export function updateSelectedArrows(camera:THREE.Camera){
 			// var dest = selected_cube.position.clone().add(cam_pos);
 			var start1 = edges_in[i].position;
 			var direction = dest1.sub(start1);
-			console.log("v2")
 			arrow.setLength(direction.length());
 			arrow.setDirection(direction.normalize());
 		}
-		console.log("You are here");
 		for(var i = 0; i < arrows_out.length; i++){
 			var arrow = arrows_out[i];
 			console.log(arrow);
@@ -76,6 +70,5 @@ export function updateSelectedArrows(camera:THREE.Camera){
 			arrow.setDirection(dir.normalize());
 			arrow.position.copy(start2);
 		}
-		console.log("what");
 	}
 }

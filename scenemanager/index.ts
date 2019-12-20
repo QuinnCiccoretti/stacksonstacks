@@ -113,5 +113,5 @@ export async function initScene(camera: THREE.Camera,scene: THREE.Scene, terrafo
 export function updateSkyColor(scene:THREE.Scene, color:string){
     scene.background = new THREE.Color( color );
     var hexcolor = parseInt(color.replace(/^#/, ''), 16);
-    ret_mat.color.setHex( 0xffffff );
+    ret_mat.color.setHex(~hexcolor);
 }
