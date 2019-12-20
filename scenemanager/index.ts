@@ -3,6 +3,7 @@ import {createCube} from 'threeml';
 import {setupRaycasting, updateSelectedArrows} from 'dragdrop'
 
 var obj_list:THREE.Object3D[] = [];
+var ret_mat:THREE.MeshBasicMaterial;
 
 export function updateScene(camera:THREE.Camera){
 	updateSelectedArrows(camera);
@@ -31,7 +32,19 @@ function get_iconpath_from_resourcename(name:string): string{
     }
     return "";
 }
+
 export async function initScene(camera: THREE.Camera,scene: THREE.Scene, terraform_json:any): Promise<any> {
+    //add reticle
+    ret_mat = new THREE.MeshBasicMaterial({ color: ~0x0, opacity: 0.5 });
+    var reticle = new THREE.Mesh(
+      new THREE.RingBufferGeometry(0.005, 0.01, 15),
+      ret_mat
+    );
+    reticle.position.z = -0.5;
+    camera.add(reticle);
+
+    updateSkyColor(scene,"#ffffff");
+
     var name_to_cube:Record<string,THREE.Mesh> = {};
     const resource_list = Object.keys(terraform_json);
     for(var resource_name of resource_list){
@@ -99,4 +112,6 @@ export async function initScene(camera: THREE.Camera,scene: THREE.Scene, terrafo
 
 export function updateSkyColor(scene:THREE.Scene, color:string){
     scene.background = new THREE.Color( color );
+    var hexcolor = parseInt(color.replace(/^#/, ''), 16);
+    ret_mat.color.setHex( 0xffffff );
 }

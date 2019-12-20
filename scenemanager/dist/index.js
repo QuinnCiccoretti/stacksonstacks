@@ -47,6 +47,7 @@ var THREE = __importStar(require("three"));
 var threeml_1 = require("threeml");
 var dragdrop_1 = require("dragdrop");
 var obj_list = [];
+var ret_mat;
 function updateScene(camera) {
     dragdrop_1.updateSelectedArrows(camera);
 }
@@ -76,10 +77,16 @@ function get_iconpath_from_resourcename(name) {
 }
 function initScene(camera, scene, terraform_json) {
     return __awaiter(this, void 0, void 0, function () {
-        var name_to_cube, resource_list, _i, resource_list_1, resource_name, info, resourcex, resourcey, dot_to_three_scale, icon_path, cube, _a, resource_list_2, resource_name_1, cube, neighbors, _b, neighbors_1, neighbor_name, neighbor_cube, cubepos, npos, direction, length, arrow, josh, gridsize, gridHelper;
+        var reticle, name_to_cube, resource_list, _i, resource_list_1, resource_name, info, resourcex, resourcey, dot_to_three_scale, icon_path, cube, _a, resource_list_2, resource_name_1, cube, neighbors, _b, neighbors_1, neighbor_name, neighbor_cube, cubepos, npos, direction, length, arrow, josh, gridsize, gridHelper;
         return __generator(this, function (_c) {
             switch (_c.label) {
                 case 0:
+                    //add reticle
+                    ret_mat = new THREE.MeshBasicMaterial({ color: ~0x0, opacity: 0.5 });
+                    reticle = new THREE.Mesh(new THREE.RingBufferGeometry(0.005, 0.01, 15), ret_mat);
+                    reticle.position.z = -0.5;
+                    camera.add(reticle);
+                    updateSkyColor(scene, "#ffffff");
                     name_to_cube = {};
                     resource_list = Object.keys(terraform_json);
                     _i = 0, resource_list_1 = resource_list;
@@ -152,5 +159,7 @@ function initScene(camera, scene, terraform_json) {
 exports.initScene = initScene;
 function updateSkyColor(scene, color) {
     scene.background = new THREE.Color(color);
+    var hexcolor = parseInt(color.replace(/^#/, ''), 16);
+    ret_mat.color.setHex(0xffffff);
 }
 exports.updateSkyColor = updateSkyColor;
