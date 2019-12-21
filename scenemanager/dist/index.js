@@ -58,7 +58,8 @@ exports.updateScene = updateScene;
 var name_to_path = {
     "google_compute_instance.vm_instance": "Compute/Compute_Engine",
     "google_compute_network.vpc_network": "Networking/Virtual_Private_Cloud",
-    "provider.google": "Extras/Google_Cloud_Platform"
+    "provider.google": "Extras/Google_Cloud_Platform",
+    "google_project.my_project": "Cloud_AI/Cloud_Natural_Language_API"
 };
 var path_to_all_icons = "img/gcp_icons/";
 //return path relative to root dir of a resource icon
