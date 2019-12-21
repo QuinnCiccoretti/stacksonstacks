@@ -24,7 +24,8 @@ export async function createCube(url: string): Promise<THREE.Mesh> {
 
   var mesh:THREE.Mesh = new THREE.Mesh(geometry, material);
   mesh.name = url;
-  console.log(mesh);
+  mesh.castShadow = true;
+  mesh.receiveShadow = true;
   return mesh;
 
 }

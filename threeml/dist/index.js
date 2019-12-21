@@ -57,8 +57,6 @@ function createCube(url) {
                     h = texture.image.height;
                     w = texture.image.width;
                     geometry = new THREE.BoxGeometry(1, 1, 1);
-                    // texture.needsUpdate = true; // important for shading
-                    console.log("mike check");
                     uniforms = {
                         color: { type: "c", value: new THREE.Color(0x004fd1) },
                         texture: { type: "t", value: texture },
@@ -70,7 +68,8 @@ function createCube(url) {
                     });
                     mesh = new THREE.Mesh(geometry, material);
                     mesh.name = url;
-                    console.log(mesh);
+                    mesh.castShadow = true;
+                    mesh.receiveShadow = true;
                     return [2 /*return*/, mesh];
             }
         });
