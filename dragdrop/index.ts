@@ -62,7 +62,6 @@ export function updateSelectedArrows(camera:THREE.Camera){
 		}
 		for(var i = 0; i < arrows_out.length; i++){
 			var arrow = arrows_out[i];
-			console.log(arrow);
 			var start2 = new THREE.Vector3();
 			selected_cube.getWorldPosition(start2);
 			var dest2 = edges_out[i].position;

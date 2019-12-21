@@ -47,7 +47,8 @@ var THREE = __importStar(require("three"));
 var threeml_1 = require("threeml");
 var dragdrop_1 = require("dragdrop");
 var obj_list = [];
-var ret_mat;
+var reticleMat;
+var groundMat;
 function updateScene(camera) {
     dragdrop_1.updateSelectedArrows(camera);
 }
@@ -64,26 +65,34 @@ var path_to_all_icons = "img/gcp_icons/";
 function get_iconpath_from_resourcename(name) {
     name = name.trim();
     var iconpath = name_to_path[name];
-    console.log(name);
-    console.log(iconpath);
     if (iconpath && name) {
         return path_to_all_icons + iconpath + ".png";
     }
     else if (name) {
-        console.log("Using default icon");
         return path_to_all_icons + "Extras/Generic_GCP" + ".png";
     }
     return "";
 }
 function initScene(camera, scene, terraform_json) {
     return __awaiter(this, void 0, void 0, function () {
-        var reticle, name_to_cube, resource_list, _i, resource_list_1, resource_name, info, resourcex, resourcey, dot_to_three_scale, icon_path, cube, _a, resource_list_2, resource_name_1, cube, neighbors, _b, neighbors_1, neighbor_name, neighbor_cube, cubepos, npos, direction, length, cone_length, arrow, josh, gridsize, gridHelper;
+        var floorsize, groundGeo, ground, gridHelper, reticle, name_to_cube, resource_list, _i, resource_list_1, resource_name, info, resourcex, resourcey, dot_to_three_scale, icon_path, cube, _a, resource_list_2, resource_name_1, cube, neighbors, _b, neighbors_1, neighbor_name, neighbor_cube, cubepos, npos, direction, length, cone_length, arrow, josh;
         return __generator(this, function (_c) {
             switch (_c.label) {
                 case 0:
-                    //add reticle
-                    ret_mat = new THREE.MeshBasicMaterial({ color: ~0x0, opacity: 0.5 });
-                    reticle = new THREE.Mesh(new THREE.RingBufferGeometry(0.005, 0.01, 15), ret_mat);
+                    floorsize = 100;
+                    createDirLight(scene, 0, 5, 0);
+                    groundGeo = new THREE.PlaneBufferGeometry(floorsize, floorsize);
+                    groundMat = new THREE.MeshLambertMaterial({ color: 0xededed });
+                    ground = new THREE.Mesh(groundGeo, groundMat);
+                    ground.position.y = -1.6;
+                    ground.rotation.x = -Math.PI / 2;
+                    ground.receiveShadow = true;
+                    scene.add(ground);
+                    gridHelper = new THREE.GridHelper(10, 10);
+                    gridHelper.position.set(0, -1.6, 0);
+                    scene.add(gridHelper);
+                    reticleMat = new THREE.MeshBasicMaterial({ color: ~0x0, opacity: 0.5 });
+                    reticle = new THREE.Mesh(new THREE.RingBufferGeometry(0.005, 0.01, 15), reticleMat);
                     reticle.position.z = -0.5;
                     camera.add(reticle);
                     updateSkyColor(scene, "#ffffff");
@@ -142,15 +151,12 @@ function initScene(camera, scene, terraform_json) {
                     josh = "https://scontent-iad3-1.xx.fbcdn.net/v/t31.0-8/28701384_611205672553420_861063517891691345_o.jpg?_nc_cat=108&_nc_oc=AQkES19skZE56YmLT3a6H6U8xRKrLBB6h_hPjjlzvx8aED3WbZfB5bocBSZMHjgs1T0&_nc_ht=scontent-iad3-1.xx&oh=40bcd73e3df92eb235b5f4e05e5e7beb&oe=5E7A74A1";
                     threeml_1.createCube(josh).then(function (cube) {
                         cube.position.set(0, 2, 0);
+                        cube.castShadow = true;
                         scene.add(cube);
                         obj_list.push(cube);
                     }).catch(function (error) {
                         console.log(error);
                     });
-                    gridsize = 30;
-                    gridHelper = new THREE.GridHelper(gridsize, gridsize);
-                    gridHelper.position.set(0, -1.6, 0);
-                    scene.add(gridHelper);
                     dragdrop_1.setupRaycasting(camera, scene, obj_list);
                     return [2 /*return*/];
             }
@@ -161,6 +167,25 @@ exports.initScene = initScene;
 function updateSkyColor(scene, color) {
     scene.background = new THREE.Color(color);
     var hexcolor = parseInt(color.replace(/^#/, ''), 16);
-    ret_mat.color.setHex(~hexcolor);
+    reticleMat.color.setHex(~hexcolor);
 }
 exports.updateSkyColor = updateSkyColor;
+function updateGroundColor(color) {
+    var hexcolor = parseInt(color.replace(/^#/, ''), 16);
+    groundMat.color.setHex(hexcolor);
+}
+exports.updateGroundColor = updateGroundColor;
+function createDirLight(scene, x, y, z) {
+    var light = new THREE.DirectionalLight(0xffffff);
+    var helper = new THREE.DirectionalLightHelper(light, 5);
+    scene.add(helper);
+    light.position.set(x, y, z);
+    light.castShadow = true;
+    var shadow_range = 50;
+    light.shadow.camera.top = shadow_range;
+    light.shadow.camera.bottom = -shadow_range;
+    light.shadow.camera.right = shadow_range;
+    light.shadow.camera.left = -shadow_range;
+    light.shadow.mapSize.set(4096, 4096);
+    scene.add(light);
+}

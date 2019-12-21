@@ -3,8 +3,8 @@ import {createCube} from 'threeml';
 import {setupRaycasting, updateSelectedArrows} from 'dragdrop'
 
 var obj_list:THREE.Object3D[] = [];
-var ret_mat:THREE.MeshBasicMaterial;
-
+var reticleMat:THREE.MeshBasicMaterial;
+var groundMat:THREE.MeshLambertMaterial;
 export function updateScene(camera:THREE.Camera){
 	updateSelectedArrows(camera);
 }
@@ -20,25 +20,37 @@ var path_to_all_icons:string = "img/gcp_icons/";
 function get_iconpath_from_resourcename(name:string): string{
     name = name.trim();
     var iconpath:string = name_to_path[name];
-    console.log(name);
-    console.log(iconpath);
+
     if(iconpath && name){
         return path_to_all_icons + iconpath + ".png"
         
     }
     else if(name){
-        console.log("Using default icon")
         return path_to_all_icons + "Extras/Generic_GCP" + ".png"
     }
     return "";
 }
 
 export async function initScene(camera: THREE.Camera,scene: THREE.Scene, terraform_json:any): Promise<any> {
-    //add reticle
-    ret_mat = new THREE.MeshBasicMaterial({ color: ~0x0, opacity: 0.5 });
+    //create light and floor
+    var floorsize = 100;
+    createDirLight( scene, 0, 5, 0 );
+    var groundGeo = new THREE.PlaneBufferGeometry( floorsize, floorsize );
+    groundMat = new THREE.MeshLambertMaterial( { color: 0xededed } );
+    var ground = new THREE.Mesh( groundGeo, groundMat );
+    ground.position.y = -1.6;
+    ground.rotation.x = - Math.PI / 2;
+    ground.receiveShadow = true;
+    scene.add(ground);
+
+    var gridHelper = new THREE.GridHelper( 10, 10 );
+    gridHelper.position.set(0,-1.6,0);
+    scene.add( gridHelper );
+
+    reticleMat = new THREE.MeshBasicMaterial({ color: ~0x0, opacity: 0.5 });
     var reticle = new THREE.Mesh(
       new THREE.RingBufferGeometry(0.005, 0.01, 15),
-      ret_mat
+      reticleMat
     );
     reticle.position.z = -0.5;
     camera.add(reticle);
@@ -99,16 +111,13 @@ export async function initScene(camera: THREE.Camera,scene: THREE.Scene, terrafo
     var josh = "https://scontent-iad3-1.xx.fbcdn.net/v/t31.0-8/28701384_611205672553420_861063517891691345_o.jpg?_nc_cat=108&_nc_oc=AQkES19skZE56YmLT3a6H6U8xRKrLBB6h_hPjjlzvx8aED3WbZfB5bocBSZMHjgs1T0&_nc_ht=scontent-iad3-1.xx&oh=40bcd73e3df92eb235b5f4e05e5e7beb&oe=5E7A74A1";
     createCube(josh).then(function(cube){
         cube.position.set(0,2,0);
+        cube.castShadow = true;
         scene.add(cube);
         obj_list.push(cube);
     }).catch((error:any)=>{
         console.log(error);
     });
-    
-    var gridsize = 30;
-    var gridHelper = new THREE.GridHelper( gridsize, gridsize );
-    gridHelper.position.set(0,-1.6,0);
-    scene.add( gridHelper );
+
     setupRaycasting(camera,scene,obj_list);
 
 }
@@ -116,5 +125,25 @@ export async function initScene(camera: THREE.Camera,scene: THREE.Scene, terrafo
 export function updateSkyColor(scene:THREE.Scene, color:string){
     scene.background = new THREE.Color( color );
     var hexcolor = parseInt(color.replace(/^#/, ''), 16);
-    ret_mat.color.setHex(~hexcolor);
+    reticleMat.color.setHex(~hexcolor);
+}
+
+export function updateGroundColor(color:string){
+    var hexcolor = parseInt(color.replace(/^#/, ''), 16);
+    groundMat.color.setHex(hexcolor);
+}
+
+function createDirLight(scene:THREE.Scene,x:number,y:number,z:number){
+    var light = new THREE.DirectionalLight( 0xffffff );
+    var helper = new THREE.DirectionalLightHelper( light, 5 );
+    scene.add(helper);
+    light.position.set( x, y, z );
+    light.castShadow = true;
+    var shadow_range = 50;
+    light.shadow.camera.top = shadow_range;
+    light.shadow.camera.bottom = -shadow_range;
+    light.shadow.camera.right = shadow_range;
+    light.shadow.camera.left = -shadow_range;
+    light.shadow.mapSize.set( 4096, 4096 );
+    scene.add( light );
 }

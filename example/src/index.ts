@@ -1,18 +1,23 @@
 import * as THREE from 'three';
 // import WebVRPolyfill from 'webvr-polyfill';
-import {initScene, updateScene, updateSkyColor} from 'scenemanager';
+import {initScene, updateScene, updateSkyColor, updateGroundColor} from 'scenemanager';
 import {isVREnabled, addControls, updateControls} from 'controlmanager';
 
 var scene = new THREE.Scene();
 var color1picker = document.getElementById("color1");
 color1picker.addEventListener("change", function(event:any){
-  console.log(event);
   var color = event.target.value;
   updateSkyColor(scene, color);
+});
+var color2picker = document.getElementById("color2");
+color2picker.addEventListener("change", function(event:any){
+  var color = event.target.value;
+  updateGroundColor(color);
 });
 
 var camera = new THREE.PerspectiveCamera( 75, window.innerWidth/window.innerHeight, 0.1, 1000 );
 var renderer = new THREE.WebGLRenderer();
+renderer.shadowMap.enabled = true;
 renderer.setSize( window.innerWidth, window.innerHeight );
 document.body.appendChild( renderer.domElement );
 
@@ -94,10 +99,7 @@ color1picker.addEventListener("change", function(event:any){
   updateSkyColor(scene, color);
 });
 
-var geometry = new THREE.BoxGeometry( 1, 1, 1 );
-var material = new THREE.MeshBasicMaterial( { color: 0x00ff00 } );
-var cube = new THREE.Mesh( geometry, material );
-scene.add( cube );
+
 
 camera.position.z = 5;
 
@@ -106,9 +108,6 @@ function vrAnimate(){
   updateScene(camera);
 	vrDisplay.requestAnimationFrame(vrAnimate);
   renderer.render( scene, camera );
-
-  cube.rotation.x += 0.01;
-  cube.rotation.y += 0.01;
 }
 
 function desktopAnimate(){
@@ -116,9 +115,6 @@ function desktopAnimate(){
   updateScene(camera);
 	requestAnimationFrame(desktopAnimate);
   renderer.render( scene, camera );
-
-  cube.rotation.x += 0.01;
-  cube.rotation.y += 0.01;
 }
 
 
