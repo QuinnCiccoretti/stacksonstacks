@@ -55,6 +55,7 @@ function updateSelectedArrows(camera) {
         var arrows_out = selected_cube.userData.arrows_out;
         var edges_in = selected_cube.userData.edges_in;
         var edges_out = selected_cube.userData.edges_out;
+        var ar_ofst = 0.5;
         for (var i = 0; i < arrows_in.length; i++) {
             var arrow = arrows_in[i];
             var dest1 = new THREE.Vector3();
@@ -62,7 +63,7 @@ function updateSelectedArrows(camera) {
             // var dest = selected_cube.position.clone().add(cam_pos);
             var start1 = edges_in[i].position;
             var direction = dest1.sub(start1);
-            arrow.setLength(direction.length());
+            arrow.setLength(direction.length() - ar_ofst, ar_ofst, ar_ofst / 2);
             arrow.setDirection(direction.normalize());
         }
         for (var i = 0; i < arrows_out.length; i++) {
@@ -72,7 +73,7 @@ function updateSelectedArrows(camera) {
             selected_cube.getWorldPosition(start2);
             var dest2 = edges_out[i].position;
             var dir = dest2.clone().sub(start2);
-            arrow.setLength(dir.length());
+            arrow.setLength(dir.length() - ar_ofst, ar_ofst, ar_ofst / 2);
             arrow.setDirection(dir.normalize());
             arrow.position.copy(start2);
         }
