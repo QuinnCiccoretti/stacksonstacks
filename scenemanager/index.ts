@@ -80,11 +80,14 @@ export async function initScene(camera: THREE.Camera,scene: THREE.Scene, terrafo
                 var npos = neighbor_cube.position;
                 var direction = npos.clone().sub(cubepos);
                 var length = direction.length();
+                const cone_length = 0.5;
                 var arrow = new THREE.ArrowHelper(
                 	direction.normalize(),
                 	cubepos,
-              		length,
-              		0xff0000
+              		length-cone_length,
+              		0xff0000,
+                    cone_length,
+                    cone_length/2
                 );
                 scene.add(arrow);
                 cube.userData.arrows_out.push(arrow);

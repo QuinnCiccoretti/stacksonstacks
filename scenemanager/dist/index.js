@@ -77,7 +77,7 @@ function get_iconpath_from_resourcename(name) {
 }
 function initScene(camera, scene, terraform_json) {
     return __awaiter(this, void 0, void 0, function () {
-        var reticle, name_to_cube, resource_list, _i, resource_list_1, resource_name, info, resourcex, resourcey, dot_to_three_scale, icon_path, cube, _a, resource_list_2, resource_name_1, cube, neighbors, _b, neighbors_1, neighbor_name, neighbor_cube, cubepos, npos, direction, length, arrow, josh, gridsize, gridHelper;
+        var reticle, name_to_cube, resource_list, _i, resource_list_1, resource_name, info, resourcex, resourcey, dot_to_three_scale, icon_path, cube, _a, resource_list_2, resource_name_1, cube, neighbors, _b, neighbors_1, neighbor_name, neighbor_cube, cubepos, npos, direction, length, cone_length, arrow, josh, gridsize, gridHelper;
         return __generator(this, function (_c) {
             switch (_c.label) {
                 case 0:
@@ -131,7 +131,8 @@ function initScene(camera, scene, terraform_json) {
                                 npos = neighbor_cube.position;
                                 direction = npos.clone().sub(cubepos);
                                 length = direction.length();
-                                arrow = new THREE.ArrowHelper(direction.normalize(), cubepos, length, 0xff0000);
+                                cone_length = 0.5;
+                                arrow = new THREE.ArrowHelper(direction.normalize(), cubepos, length - cone_length, 0xff0000, cone_length, cone_length / 2);
                                 scene.add(arrow);
                                 cube.userData.arrows_out.push(arrow);
                                 neighbor_cube.userData.arrows_in.push(arrow);
