@@ -8,7 +8,7 @@ export class SceneManager extends THREE.Scene{
         this.tf_json = tf_json;
         this.obj_list = [];
         this.camera = new THREE.PerspectiveCamera( 75, window.innerWidth/window.innerHeight, 0.1, 1000 );
-
+        camera.position.z = 5;
         
          //add reticle
         this.reticleMat = new THREE.MeshBasicMaterial({ color: ~0x0, opacity: 0.5 });
@@ -68,8 +68,8 @@ export class SceneManager extends THREE.Scene{
         this.add( gridHelper );
    
     }
-    updateScene(camera:THREE.Camera){
-        updateSelectedArrows(camera);
+    updateScene(){
+        updateSelectedArrows(this.camera);
     }
     path_to_all_icons:string = "img/gcp_icons/";
     get_iconpath_from_resourcename(name:string): string{
@@ -92,7 +92,7 @@ export class SceneManager extends THREE.Scene{
         var hexcolor = parseInt(color.replace(/^#/, ''), 16);
         this.groundMat.color.setHex(hexcolor);
     }
-    make_cubes(){
+    async make_cubes(){
         var name_to_cube:Record<string,NodeCube> = {};
         const resource_list = Object.keys(this.tf_json);
         for(var resource_name of resource_list){
