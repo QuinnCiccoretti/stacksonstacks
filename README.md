@@ -4,6 +4,10 @@ Modular visualizations of directed graphs - specifically, terraform resources
 
 ![graph with edges](./stacks-on-stacks-cover.png)
 
+### Live Demo
+
+Here is a [live demo with an example graph](https://quinnciccoretti.github.io/stacksonstacks/example/).
+
 ### Set up the example
 Cd to the example directory, run `./start.sh` and navigate
 to http://localhost:8000.
