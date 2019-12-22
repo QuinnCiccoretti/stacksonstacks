@@ -1,8 +1,8 @@
 import * as THREE from "three";
-import {createCube} from 'threeml';
+import {createCube, NodeCube} from 'threeml';
 import {setupRaycasting, updateSelectedArrows} from 'dragdrop'
 
-var obj_list:THREE.Object3D[] = [];
+var obj_list:NodeCube[] = [];
 var reticleMat:THREE.MeshBasicMaterial;
 var groundMat:THREE.MeshLambertMaterial;
 export function updateScene(camera:THREE.Camera){
@@ -47,7 +47,7 @@ export async function initScene(camera: THREE.Camera,scene: THREE.Scene, terrafo
     var gridHelper = new THREE.GridHelper( 10, 10 );
     gridHelper.position.set(0,-1.6,0);
     scene.add( gridHelper );
-
+    //add reticle
     reticleMat = new THREE.MeshBasicMaterial({ color: ~0x0, opacity: 0.5 });
     var reticle = new THREE.Mesh(
       new THREE.RingBufferGeometry(0.005, 0.01, 15),
@@ -58,7 +58,7 @@ export async function initScene(camera: THREE.Camera,scene: THREE.Scene, terrafo
 
     updateSkyColor(scene,"#ffffff");
 
-    var name_to_cube:Record<string,THREE.Mesh> = {};
+    var name_to_cube:Record<string,NodeCube> = {};
     const resource_list = Object.keys(terraform_json);
     for(var resource_name of resource_list){
         var info:any = terraform_json[resource_name];
@@ -74,10 +74,6 @@ export async function initScene(camera: THREE.Camera,scene: THREE.Scene, terrafo
         scene.add(cube);
         obj_list.push(cube); //insert into our "graph"
         name_to_cube[resource_name] = cube;
-        cube.userData.arrows_in = [];
-        cube.userData.arrows_out = [];
-        cube.userData.edges_in = [];
-        cube.userData.edges_out = [];
     }
     
     for(const resource_name of resource_list){
@@ -86,8 +82,8 @@ export async function initScene(camera: THREE.Camera,scene: THREE.Scene, terrafo
         if(neighbors){ //if this field exists
             for(const neighbor_name of neighbors){
             	var neighbor_cube = name_to_cube[neighbor_name];
-                cube.userData.edges_out.push(neighbor_cube);
-                neighbor_cube.userData.edges_in.push(cube);
+                cube.edges_out.push(neighbor_cube);
+                neighbor_cube.edges_in.push(cube);
                 //draw the edge
                 var cubepos = cube.position;
                 var npos = neighbor_cube.position;
@@ -103,8 +99,8 @@ export async function initScene(camera: THREE.Camera,scene: THREE.Scene, terrafo
                     cone_length/2
                 );
                 scene.add(arrow);
-                cube.userData.arrows_out.push(arrow);
-                neighbor_cube.userData.arrows_in.push(arrow);
+                cube.arrows_out.push(arrow);
+                neighbor_cube.arrows_in.push(arrow);
             }
         }
 

@@ -1,32 +1,49 @@
 import * as THREE from "three";
+// import {NodeCube} from "./NodeCube";
 const loader = promisifyLoader(new THREE.TextureLoader());
 
-export async function createCube(url: string): Promise<THREE.Mesh> {
+export class NodeCube extends THREE.Mesh{
+  constructor(geometry:THREE.Geometry, material:THREE.Material){
+    super(geometry, material);
+    this.arrows_in = [];
+    this.arrows_out = [];
+    this.edges_in = [];
+    this.edges_out = [];
+  }
+  arrows_in:THREE.ArrowHelper[];
+  arrows_out:THREE.ArrowHelper[];
+  edges_in:NodeCube[];
+  edges_out:NodeCube[];
+}
+
+export async function createCube(url: string): Promise<NodeCube> {
 	var texture = await loader.load(url);
 	var scalefactor: number = 1;
-  var h = texture.image.height;
-  var w = texture.image.width;
+	var h = texture.image.height;
+	var w = texture.image.width;
 
-  var geometry: THREE.Geometry = new THREE.BoxGeometry(1, 1, 1);
-  
-  // uniforms
-  var uniforms = {
-      color: { type: "c", value: new THREE.Color( 0x004fd1 ) }, // material is "red"
-      texture: { type: "t", value: texture },
-  };
+	var geometry: THREE.Geometry = new THREE.BoxGeometry(1, 1, 1);
 
-  // material. we need shaders since we use pngs for backgrounds
-  var material = new THREE.ShaderMaterial({
-    uniforms: uniforms,
-    vertexShader: vertexShader(),
-    fragmentShader: fragmentShader()
-  });
+	// uniforms
+	var uniforms = {
+	  color: { type: "c", value: new THREE.Color( 0x004fd1 ) }, // material is "red"
+	  texture: { type: "t", value: texture },
+	};
 
-  var mesh:THREE.Mesh = new THREE.Mesh(geometry, material);
-  mesh.name = url;
-  mesh.castShadow = true;
-  mesh.receiveShadow = true;
-  return mesh;
+	// material. we need shaders since we use pngs for backgrounds
+	var material = new THREE.ShaderMaterial({
+	uniforms: uniforms,
+	vertexShader: vertexShader(),
+	fragmentShader: fragmentShader()
+	});
+
+	// var mesh:THREE.Mesh = new THREE.Mesh(geometry, material);
+	var nodecube = new NodeCube(geometry, material);
+  nodecube.name = url;
+	nodecube.castShadow = true;
+	nodecube.receiveShadow = true;
+	
+	return nodecube;
 
 }
 
