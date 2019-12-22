@@ -51,10 +51,13 @@ function updateSelectedArrows(camera) {
     if (selected_cube) {
         //we need the lists
         var cam_pos = camera.position;
-        var arrows_in = selected_cube.userData.arrows_in;
-        var arrows_out = selected_cube.userData.arrows_out;
-        var edges_in = selected_cube.userData.edges_in;
-        var edges_out = selected_cube.userData.edges_out;
+        if (!selected_cube.arrows_in) {
+            return;
+        }
+        var arrows_in = selected_cube.arrows_in;
+        var arrows_out = selected_cube.arrows_out;
+        var edges_in = selected_cube.edges_in;
+        var edges_out = selected_cube.edges_out;
         var cone_l = 0.5;
         for (var i = 0; i < arrows_in.length; i++) {
             var arrow = arrows_in[i];

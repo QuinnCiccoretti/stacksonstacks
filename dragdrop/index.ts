@@ -1,7 +1,8 @@
 import * as THREE from "three";
+import {NodeCube} from "threeml";
 var raycaster = new THREE.Raycaster();
-var selected_cube:THREE.Object3D|null = null;
-export function setupRaycasting(camera:THREE.Camera, scene:THREE.Scene, obj_list:THREE.Object3D[]){
+var selected_cube:any|null = null;
+export function setupRaycasting(camera:THREE.Camera, scene:THREE.Scene, obj_list:NodeCube[]){
 // actually onclick lmao
 function getIntersections() {
   var cam_mat = new THREE.Matrix4();
@@ -44,10 +45,13 @@ export function updateSelectedArrows(camera:THREE.Camera){
 	if(selected_cube){
 		//we need the lists
 		var cam_pos = camera.position;
-		var arrows_in = selected_cube.userData.arrows_in;
-		var arrows_out = selected_cube.userData.arrows_out;
-		var edges_in = selected_cube.userData.edges_in;
-		var edges_out = selected_cube.userData.edges_out;
+		if(!selected_cube.arrows_in){
+			return;
+		}
+		var arrows_in = selected_cube.arrows_in;
+		var arrows_out = selected_cube.arrows_out;
+		var edges_in = selected_cube.edges_in;
+		var edges_out = selected_cube.edges_out;
 		const cone_l = 0.5;
 
 		for(var i = 0; i < arrows_in.length; i++){

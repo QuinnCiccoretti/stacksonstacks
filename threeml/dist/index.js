@@ -1,4 +1,17 @@
 "use strict";
+var __extends = (this && this.__extends) || (function () {
+    var extendStatics = function (d, b) {
+        extendStatics = Object.setPrototypeOf ||
+            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+            function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+        return extendStatics(d, b);
+    };
+    return function (d, b) {
+        extendStatics(d, b);
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+})();
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -44,10 +57,24 @@ var __importStar = (this && this.__importStar) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 var THREE = __importStar(require("three"));
+// import {NodeCube} from "./NodeCube";
 var loader = promisifyLoader(new THREE.TextureLoader());
+var NodeCube = /** @class */ (function (_super) {
+    __extends(NodeCube, _super);
+    function NodeCube(geometry, material) {
+        var _this = _super.call(this, geometry, material) || this;
+        _this.arrows_in = [];
+        _this.arrows_out = [];
+        _this.edges_in = [];
+        _this.edges_out = [];
+        return _this;
+    }
+    return NodeCube;
+}(THREE.Mesh));
+exports.NodeCube = NodeCube;
 function createCube(url) {
     return __awaiter(this, void 0, void 0, function () {
-        var texture, scalefactor, h, w, geometry, uniforms, material, mesh;
+        var texture, scalefactor, h, w, geometry, uniforms, material, nodecube;
         return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0: return [4 /*yield*/, loader.load(url)];
@@ -66,11 +93,11 @@ function createCube(url) {
                         vertexShader: vertexShader(),
                         fragmentShader: fragmentShader()
                     });
-                    mesh = new THREE.Mesh(geometry, material);
-                    mesh.name = url;
-                    mesh.castShadow = true;
-                    mesh.receiveShadow = true;
-                    return [2 /*return*/, mesh];
+                    nodecube = new NodeCube(geometry, material);
+                    nodecube.name = url;
+                    nodecube.castShadow = true;
+                    nodecube.receiveShadow = true;
+                    return [2 /*return*/, nodecube];
             }
         });
     });

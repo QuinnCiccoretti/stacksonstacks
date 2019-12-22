@@ -92,6 +92,7 @@ function initScene(camera, scene, terraform_json) {
                     gridHelper = new THREE.GridHelper(10, 10);
                     gridHelper.position.set(0, -1.6, 0);
                     scene.add(gridHelper);
+                    //add reticle
                     reticleMat = new THREE.MeshBasicMaterial({ color: ~0x0, opacity: 0.5 });
                     reticle = new THREE.Mesh(new THREE.RingBufferGeometry(0.005, 0.01, 15), reticleMat);
                     reticle.position.z = -0.5;
@@ -118,10 +119,6 @@ function initScene(camera, scene, terraform_json) {
                     scene.add(cube);
                     obj_list.push(cube); //insert into our "graph"
                     name_to_cube[resource_name] = cube;
-                    cube.userData.arrows_in = [];
-                    cube.userData.arrows_out = [];
-                    cube.userData.edges_in = [];
-                    cube.userData.edges_out = [];
                     _c.label = 3;
                 case 3:
                     _i++;
@@ -135,8 +132,8 @@ function initScene(camera, scene, terraform_json) {
                             for (_b = 0, neighbors_1 = neighbors; _b < neighbors_1.length; _b++) {
                                 neighbor_name = neighbors_1[_b];
                                 neighbor_cube = name_to_cube[neighbor_name];
-                                cube.userData.edges_out.push(neighbor_cube);
-                                neighbor_cube.userData.edges_in.push(cube);
+                                cube.edges_out.push(neighbor_cube);
+                                neighbor_cube.edges_in.push(cube);
                                 cubepos = cube.position;
                                 npos = neighbor_cube.position;
                                 direction = npos.clone().sub(cubepos);
@@ -144,8 +141,8 @@ function initScene(camera, scene, terraform_json) {
                                 cone_length = 0.5;
                                 arrow = new THREE.ArrowHelper(direction.normalize(), cubepos, length - cone_length, 0xff0000, cone_length, cone_length / 2);
                                 scene.add(arrow);
-                                cube.userData.arrows_out.push(arrow);
-                                neighbor_cube.userData.arrows_in.push(arrow);
+                                cube.arrows_out.push(arrow);
+                                neighbor_cube.arrows_in.push(arrow);
                             }
                         }
                     }
