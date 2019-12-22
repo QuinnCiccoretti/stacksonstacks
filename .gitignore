@@ -1,3 +1,7 @@
+# Ignore built ts files
+**/*/dist/**/*
+# We only want one javascript file, and that is bundle
+!bundle.js
 # Logs
 logs
 *.log

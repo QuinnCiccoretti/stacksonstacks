@@ -33,6 +33,8 @@ cd to the directory. Right now there are 3:
  - scenemanager: takes in a terraform_json and calls threeml to add cubes to the scene.
  - controlsmanager: this module hides the disgusting keystroke boilerplate to get browser movements to work
 
+ > Important Note: all dist/ directories are gitignored, except for webpack's bundle. This means if you change the modules you will have to rebuild them, and rerun webpack on the example
+
 ### Developing the modules
 We _only_ write typescript, otherwise the world collapses. So the build process is a bit involved.
  - Before all, run `npm install` in the module directory.
