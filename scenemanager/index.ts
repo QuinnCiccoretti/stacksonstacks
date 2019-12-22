@@ -2,61 +2,103 @@ import * as THREE from "three";
 import {createCube, NodeCube} from 'threeml';
 import {setupRaycasting, updateSelectedArrows} from 'dragdrop'
 
-var obj_list:NodeCube[] = [];
-var reticleMat:THREE.MeshBasicMaterial;
-var groundMat:THREE.MeshLambertMaterial;
-export function updateScene(camera:THREE.Camera){
-	updateSelectedArrows(camera);
+
+
+export class SceneManager extends THREE.Scene{
+    constructor(terraform_json:any){
+        super();
+        this.obj_list = [];
+        this.camera = new THREE.PerspectiveCamera( 75, window.innerWidth/window.innerHeight, 0.1, 1000 );
+
+        
+         //add reticle
+        this.reticleMat = new THREE.MeshBasicMaterial({ color: ~0x0, opacity: 0.5 });
+        var reticle = new THREE.Mesh(
+          new THREE.RingBufferGeometry(0.005, 0.01, 15),
+          this.reticleMat
+        );
+        reticle.position.z = -0.5;
+        this.camera.add(reticle);
+        this.groundMat = new THREE.MeshLambertMaterial( { color: 0xededed } );
+
+        this.createDirLight( new THREE.Vector3(0,6,0) );
+        this.createFloor();
+        this.updateSkyColor("#ffffff");
+
+    }
+    obj_list:NodeCube[];
+    reticleMat:THREE.MeshBasicMaterial;
+    groundMat:THREE.MeshLambertMaterial;
+    camera:THREE.Camera;
+    //some of these may be arbitrarily decided symbols, nothing more
+    //assumes all end in .png
+    name_to_path:Record<string,string> = {
+        "google_compute_instance.vm_instance":"Compute/Compute_Engine",
+        "google_compute_network.vpc_network":"Networking/Virtual_Private_Cloud",
+        "provider.google":"Extras/Google_Cloud_Platform",
+        "google_project.my_project":"Cloud_AI/Cloud_Natural_Language_API"
+    }
+
+    createDirLight(position:THREE.Vector3){
+        var light = new THREE.DirectionalLight( 0xffffff );
+        light.position.copy( position );
+        light.castShadow = true;
+        var shadow_range = 40;
+        light.shadow.camera.top = shadow_range;
+        light.shadow.camera.bottom = -shadow_range;
+        light.shadow.camera.right = shadow_range;
+        light.shadow.camera.left = -shadow_range;
+        light.shadow.mapSize.set( 4096, 4096 );
+        this.add( light );
+    }
+    createFloor(){
+        //floor plane
+        var floorsize = 100;
+        var groundGeo = new THREE.PlaneBufferGeometry( floorsize, floorsize );
+        var ground = new THREE.Mesh( groundGeo, this.groundMat );
+        ground.position.y = -1.6;
+        ground.rotation.x = - Math.PI / 2;
+        ground.receiveShadow = true;
+        this.add(ground);
+
+        var gridHelper = new THREE.GridHelper( 10, 10 );
+        gridHelper.position.set(0,-1.6,0);
+        this.add( gridHelper );
+   
+    }
+    updateScene(camera:THREE.Camera){
+        updateSelectedArrows(camera);
+    }
+    get_iconpath_from_resourcename(name:string): string{
+        name = name.trim();
+        var iconpath:string = this.name_to_path[name];
+        if(iconpath && name){
+            return path_to_all_icons + iconpath + ".png"
+        }
+        else if(name){
+            return path_to_all_icons + "Extras/Generic_GCP.png"
+        }
+        return "";
+    }
+    updateSkyColor(scene:THREE.Scene, color:string){
+        scene.background = new THREE.Color( color );
+        var hexcolor = parseInt(color.replace(/^#/, ''), 16);
+        this.reticleMat.color.setHex(~hexcolor);
+    }
+
 }
-//some of these may be arbitrarily decided symbols, nothing more
-//assumes all end in .png
-var name_to_path:Record<string,string> = {
-    "google_compute_instance.vm_instance":"Compute/Compute_Engine",
-    "google_compute_network.vpc_network":"Networking/Virtual_Private_Cloud",
-    "provider.google":"Extras/Google_Cloud_Platform",
-    "google_project.my_project":"Cloud_AI/Cloud_Natural_Language_API"
-}
+
 var path_to_all_icons:string = "img/gcp_icons/";
 //return path relative to root dir of a resource icon
-function get_iconpath_from_resourcename(name:string): string{
-    name = name.trim();
-    var iconpath:string = name_to_path[name];
-
-    if(iconpath && name){
-        return path_to_all_icons + iconpath + ".png"
-        
-    }
-    else if(name){
-        return path_to_all_icons + "Extras/Generic_GCP" + ".png"
-    }
-    return "";
-}
+function 
 
 export async function initScene(camera: THREE.Camera,scene: THREE.Scene, terraform_json:any): Promise<any> {
-    //create light and floor
-    var floorsize = 100;
-    createDirLight( scene, 0, 5, 0 );
-    var groundGeo = new THREE.PlaneBufferGeometry( floorsize, floorsize );
-    groundMat = new THREE.MeshLambertMaterial( { color: 0xededed } );
-    var ground = new THREE.Mesh( groundGeo, groundMat );
-    ground.position.y = -1.6;
-    ground.rotation.x = - Math.PI / 2;
-    ground.receiveShadow = true;
-    scene.add(ground);
+    
 
-    var gridHelper = new THREE.GridHelper( 10, 10 );
-    gridHelper.position.set(0,-1.6,0);
-    scene.add( gridHelper );
-    //add reticle
-    reticleMat = new THREE.MeshBasicMaterial({ color: ~0x0, opacity: 0.5 });
-    var reticle = new THREE.Mesh(
-      new THREE.RingBufferGeometry(0.005, 0.01, 15),
-      reticleMat
-    );
-    reticle.position.z = -0.5;
-    camera.add(reticle);
+    
+    
 
-    updateSkyColor(scene,"#ffffff");
+    
 
     var name_to_cube:Record<string,NodeCube> = {};
     const resource_list = Object.keys(terraform_json);
@@ -119,28 +161,9 @@ export async function initScene(camera: THREE.Camera,scene: THREE.Scene, terrafo
 
 }
 
-export function updateSkyColor(scene:THREE.Scene, color:string){
-    scene.background = new THREE.Color( color );
-    var hexcolor = parseInt(color.replace(/^#/, ''), 16);
-    reticleMat.color.setHex(~hexcolor);
-}
 
 export function updateGroundColor(color:string){
     var hexcolor = parseInt(color.replace(/^#/, ''), 16);
     groundMat.color.setHex(hexcolor);
 }
 
-function createDirLight(scene:THREE.Scene,x:number,y:number,z:number){
-    var light = new THREE.DirectionalLight( 0xffffff );
-    var helper = new THREE.DirectionalLightHelper( light, 5 );
-    scene.add(helper);
-    light.position.set( x, y, z );
-    light.castShadow = true;
-    var shadow_range = 50;
-    light.shadow.camera.top = shadow_range;
-    light.shadow.camera.bottom = -shadow_range;
-    light.shadow.camera.right = shadow_range;
-    light.shadow.camera.left = -shadow_range;
-    light.shadow.mapSize.set( 4096, 4096 );
-    scene.add( light );
-}
