@@ -8,7 +8,7 @@ export class SceneManager extends THREE.Scene{
         this.tf_json = tf_json;
         this.obj_list = [];
         this.camera = new THREE.PerspectiveCamera( 75, window.innerWidth/window.innerHeight, 0.1, 1000 );
-        camera.position.z = 5;
+        this.camera.position.z = 5;
         
          //add reticle
         this.reticleMat = new THREE.MeshBasicMaterial({ color: ~0x0, opacity: 0.5 });

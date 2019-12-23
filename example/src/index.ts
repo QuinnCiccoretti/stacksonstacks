@@ -100,7 +100,7 @@ function vrAnimate(){
 
 function desktopAnimate(){
   updateControls();
-  updateScene();
+  scene.updateScene();
 	requestAnimationFrame(desktopAnimate);
   renderer.render( scene, scene.camera );
 }
