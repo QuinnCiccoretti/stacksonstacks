@@ -57,17 +57,17 @@
     {
       "_gvid": 7,
       "name": "[root] meta.count-boundary (EachMode fixup)",
-      "label": ""
+      "label": "\\N"
     },
     {
       "_gvid": 8,
       "name": "[root] provider.aws (close)",
-      "label": ""
+      "label": "\\N"
     },
     {
       "_gvid": 9,
       "name": "[root] root",
-      "label": ""
+      "label": "\\N"
     }
   ],
   "edges": [
@@ -135,5 +135,6 @@
 }`;
 
 export function parseDotOutput(){
-  return JSON.parse(terraform_json_string.replace("\\N",""));
+  console.log(terraform_json_string);
+  return JSON.parse(terraform_json_string.replace(/\\N/g,''));
 }
