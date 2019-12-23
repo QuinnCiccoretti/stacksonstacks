@@ -57,17 +57,17 @@
     {
       "_gvid": 7,
       "name": "[root] meta.count-boundary (EachMode fixup)",
-      "label": "\\N"
+      "label": ""
     },
     {
       "_gvid": 8,
       "name": "[root] provider.aws (close)",
-      "label": "\\N"
+      "label": ""
     },
     {
       "_gvid": 9,
       "name": "[root] root",
-      "label": "\\N"
+      "label": ""
     }
   ],
   "edges": [
