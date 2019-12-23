@@ -32,14 +32,7 @@ export class SceneManager extends THREE.Scene{
     groundMat:THREE.MeshLambertMaterial;
     camera:THREE.Camera;
     tf_json:any;
-    //some of these may be arbitrarily decided symbols, nothing more
-    //assumes all end in .png
-    name_to_path:Record<string,string> = {
-        "google_compute_instance.vm_instance":"Compute/Compute_Engine",
-        "google_compute_network.vpc_network":"Networking/Virtual_Private_Cloud",
-        "provider.google":"Extras/Google_Cloud_Platform",
-        "google_project.my_project":"Cloud_AI/Cloud_Natural_Language_API"
-    }
+
 
     createDirLight(position:THREE.Vector3){
         var light = new THREE.DirectionalLight( 0xffffff );
@@ -71,17 +64,34 @@ export class SceneManager extends THREE.Scene{
     updateScene(){
         updateSelectedArrows(this.camera);
     }
-    path_to_all_icons:string = "img/gcp_icons/";
+    path_to_all_icons:string = "img/";
+    //some of these may be arbitrarily decided symbols, nothing more
+    //assumes all end in .png
+    name_to_path:Record<string,string> = {
+        "root":"root",
+        //gcp
+        "google_compute_instance.vm_instance":"gcp/Compute/Compute_Engine",
+        "google_compute_network.vpc_network":"gcp/Networking/Virtual_Private_Cloud",
+        "provider.google":"gcp/Extras/Google_Cloud_Platform",
+        "google_project.my_project":"gcp/Cloud_AI/Cloud_Natural_Language_API",
+        //aws
+        "aws_cognito_user_pool.pool":"aws/Cognito",
+        "aws_iam_role.main":"aws/IAM",
+        "aws_iam_role.cidp":"aws/IAMSTS",
+        "aws_lambda_function.main":"aws/Lambda",
+        "provider.aws":"aws/provider"
+
+    }
     get_iconpath_from_resourcename(name:string): string{
         name = name.trim();
         var iconpath:string = this.name_to_path[name];
         if(iconpath && name){
             return this.path_to_all_icons + iconpath + ".png"
         }
-        else if(name){
-            return this.path_to_all_icons + "Extras/Generic_GCP.png"
+        else if(name.includes("aws")){
+            return this.path_to_all_icons + "aws/General.png"
         }
-        return "";
+        return this.path_to_all_icons + "gcp/Extras/Generic_GCP.png";
     }
     updateSkyColor(color:string){
         this.background = new THREE.Color( color );
@@ -100,7 +110,7 @@ export class SceneManager extends THREE.Scene{
         for(var i = 1; i < resource_list.length; i++){
             var curr_resource = resource_list[i];
             var resource_name = curr_resource.name.replace("[root]",'').trim();
-
+            console.log(resource_name);
             var icon_path:string = this.get_iconpath_from_resourcename(resource_name);
             var cube = await createCube(icon_path);
             cube.position.set(Math.random()*10, Math.random()*10, Math.random()*10);
