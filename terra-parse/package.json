@@ -1,0 +1,27 @@
+{
+  "name": "terra-parse",
+  "version": "0.0.0",
+  "description": "parses output of graphviz dot format",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsc"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/QuinnCiccoretti/threeml.git"
+  },
+  "keywords": [],
+  "author": "quinnciccoretti",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/QuinnCiccoretti/threeml/issues"
+  },
+  "homepage": "https://github.com/QuinnCiccoretti/threeml#readme",
+  "devDependencies": {
+    "@types/node": "^12.12.17",
+    "typescript": "^3.7.2"
+  },
+  "dependencies": {
+  }
+}

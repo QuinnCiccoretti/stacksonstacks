@@ -26,7 +26,7 @@ export async function createCube(url: string): Promise<NodeCube> {
 
 	// uniforms
 	var uniforms = {
-	  color: { type: "c", value: new THREE.Color( 0x004fd1 ) }, // material is "red"
+	  color: { type: "c", value: new THREE.Color( 0xd1d1d1 ) }, // material is "red"
 	  texture: { type: "t", value: texture },
 	};
 

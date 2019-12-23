@@ -32,14 +32,7 @@ export class SceneManager extends THREE.Scene{
     groundMat:THREE.MeshLambertMaterial;
     camera:THREE.Camera;
     tf_json:any;
-    //some of these may be arbitrarily decided symbols, nothing more
-    //assumes all end in .png
-    name_to_path:Record<string,string> = {
-        "google_compute_instance.vm_instance":"Compute/Compute_Engine",
-        "google_compute_network.vpc_network":"Networking/Virtual_Private_Cloud",
-        "provider.google":"Extras/Google_Cloud_Platform",
-        "google_project.my_project":"Cloud_AI/Cloud_Natural_Language_API"
-    }
+
 
     createDirLight(position:THREE.Vector3){
         var light = new THREE.DirectionalLight( 0xffffff );
@@ -71,17 +64,34 @@ export class SceneManager extends THREE.Scene{
     updateScene(){
         updateSelectedArrows(this.camera);
     }
-    path_to_all_icons:string = "img/gcp_icons/";
+    path_to_all_icons:string = "img/";
+    //some of these may be arbitrarily decided symbols, nothing more
+    //assumes all end in .png
+    name_to_path:Record<string,string> = {
+        "root":"root",
+        //gcp
+        "google_compute_instance.vm_instance":"gcp/Compute/Compute_Engine",
+        "google_compute_network.vpc_network":"gcp/Networking/Virtual_Private_Cloud",
+        "provider.google":"gcp/Extras/Google_Cloud_Platform",
+        "google_project.my_project":"gcp/Cloud_AI/Cloud_Natural_Language_API",
+        //aws
+        "aws_cognito_user_pool.pool":"aws/Cognito",
+        "aws_iam_role.main":"aws/IAM",
+        "aws_iam_role.cidp":"aws/IAMSTS",
+        "aws_lambda_function.main":"aws/Lambda",
+        "provider.aws":"aws/provider"
+
+    }
     get_iconpath_from_resourcename(name:string): string{
         name = name.trim();
         var iconpath:string = this.name_to_path[name];
         if(iconpath && name){
             return this.path_to_all_icons + iconpath + ".png"
         }
-        else if(name){
-            return this.path_to_all_icons + "Extras/Generic_GCP.png"
+        else if(name.includes("aws")){
+            return this.path_to_all_icons + "aws/General.png"
         }
-        return "";
+        return this.path_to_all_icons + "gcp/Extras/Generic_GCP.png";
     }
     updateSkyColor(color:string){
         this.background = new THREE.Color( color );
@@ -93,52 +103,46 @@ export class SceneManager extends THREE.Scene{
         this.groundMat.color.setHex(hexcolor);
     }
     async make_cubes(){
-        var name_to_cube:Record<string,NodeCube> = {};
-        const resource_list = Object.keys(this.tf_json);
-        for(var resource_name of resource_list){
-            var info:any = this.tf_json[resource_name];
-            var resourcex:number = parseFloat(info.x);
-            var resourcey:number = parseFloat(info.y);
-            var dot_to_three_scale = 0.02;
-            resourcex *= dot_to_three_scale;
-            resourcey *= dot_to_three_scale;
-
+        var gvid_to_cube:Record<number,NodeCube> = {};
+        // gvid_to_cube[
+        const resource_list = this.tf_json.objects;
+        //start at one to skip root node
+        for(var i = 1; i < resource_list.length; i++){
+            var curr_resource = resource_list[i];
+            var resource_name = curr_resource.name.replace("[root]",'').trim();
+            console.log(resource_name);
             var icon_path:string = this.get_iconpath_from_resourcename(resource_name);
             var cube = await createCube(icon_path);
-            cube.position.set(resourcex, resourcey/2+3, resourcey)
+            cube.position.set(Math.random()*10, Math.random()*10, Math.random()*10);
             this.add(cube);
             this.obj_list.push(cube); //insert into our "graph"
-            name_to_cube[resource_name] = cube;
+            gvid_to_cube[curr_resource._gvid] = cube;
+
         }
-
-        for(const resource_name of resource_list){
-            var cube = name_to_cube[resource_name];
-            var neighbors:string[] = this.tf_json[resource_name].next;
-            if(neighbors){ //if this field exists
-                for(const neighbor_name of neighbors){
-                    var neighbor_cube = name_to_cube[neighbor_name];
-                    cube.edges_out.push(neighbor_cube);
-                    neighbor_cube.edges_in.push(cube);
-                    //draw the edge
-                    var cubepos = cube.position;
-                    var npos = neighbor_cube.position;
-                    var direction = npos.clone().sub(cubepos);
-                    var length = direction.length();
-                    const cone_length = 0.5;
-                    var arrow = new THREE.ArrowHelper(
-                        direction.normalize(),
-                        cubepos,
-                          length-cone_length,
-                          0xff0000,
-                        cone_length,
-                        cone_length/2
-                    );
-                    this.add(arrow);
-                    cube.arrows_out.push(arrow);
-                    neighbor_cube.arrows_in.push(arrow);
-                }
-            }
-
+        const edges = this.tf_json.edges;
+        for(const edge of edges){
+            var tail_cube = gvid_to_cube[edge.tail];
+            var head_cube = gvid_to_cube[edge.head];
+            tail_cube.edges_out.push(head_cube);
+            head_cube.edges_in.push(tail_cube);
+            //draw the edge
+            var cubepos = tail_cube.position;
+            var npos = head_cube.position;
+            var direction = npos.clone().sub(cubepos);
+            var length = direction.length();
+            const cone_length = 0.5;
+            var arrow = new THREE.ArrowHelper(
+                direction.normalize(),
+                cubepos,
+                  length-cone_length,
+                  0xff0000,
+                cone_length,
+                cone_length/2
+            );
+            this.add(arrow);
+            tail_cube.arrows_out.push(arrow);
+            head_cube.arrows_in.push(arrow);
+                            
         }
         var josh = "https://scontent-iad3-1.xx.fbcdn.net/v/t31.0-8/28701384_611205672553420_861063517891691345_o.jpg?_nc_cat=108&_nc_oc=AQkES19skZE56YmLT3a6H6U8xRKrLBB6h_hPjjlzvx8aED3WbZfB5bocBSZMHjgs1T0&_nc_ht=scontent-iad3-1.xx&oh=40bcd73e3df92eb235b5f4e05e5e7beb&oe=5E7A74A1";
         var joshcube = await createCube(josh);
