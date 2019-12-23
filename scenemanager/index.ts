@@ -93,9 +93,7 @@ export class SceneManager extends THREE.Scene{
         this.groundMat.color.setHex(hexcolor);
     }
     async make_cubes(){
-        var name_to_cube:Record<string,NodeCube> = {};
         var gvid_to_cube:Record<number,NodeCube> = {};
-
         // gvid_to_cube[
         const resource_list = this.tf_json.objects;
         //start at one to skip root node
@@ -108,7 +106,6 @@ export class SceneManager extends THREE.Scene{
             cube.position.set(Math.random()*10, Math.random()*10, Math.random()*10);
             this.add(cube);
             this.obj_list.push(cube); //insert into our "graph"
-            name_to_cube[resource_name] = cube;
             gvid_to_cube[curr_resource._gvid] = cube;
 
         }
