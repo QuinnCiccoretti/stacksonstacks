@@ -2,58 +2,10 @@ import * as THREE from 'three';
 // import WebVRPolyfill from 'webvr-polyfill';
 import {SceneManager} from 'scenemanager';
 import {isVREnabled, addControls, updateControls} from 'controlmanager';
+import {parseDotOutput} from 'terra-parse';
 //make all the objects
-var terraform_json:any = {
-  "google_compute_instance.vm_instance": {
-    "x": "283.23",
-    "y": "-158.3",
-    "next": [
-      "google_compute_network.vpc_network"
-    ]
-  },
-  "google_compute_network.vpc_network": {
-    "x": "329.23",
-    "y": "-86.3",
-    "next": [
-      "provider.google"
-    ]
-  },
-  "provider.google": {
-    "x": "429.23",
-    "y": "-14.3"
-  },
-  "google_project.my_project": {
-    "x": "553.23",
-    "y": "-158.3",
-    "next": [
-      "provider.google"
-    ]
-  },
-  "meta.count-boundary (EachMode fixup)": {
-    "x": "224.23",
-    "y": "-230.3",
-    "next": [
-      "google_compute_instance.vm_instance",
-      "google_project.my_project"
-    ]
-  },
-  "provider.google (close)": {
-    "x": "612.23",
-    "y": "-230.3",
-    "next": [
-      "google_compute_instance.vm_instance",
-      "google_project.my_project"
-    ]
-  },
-  "root": {
-    "x": "418.23",
-    "y": "-302.3",
-    "next": [
-      "meta.count-boundary (EachMode fixup)",
-      "provider.google (close)"
-    ]
-  }
-};
+var terraform_json:any = parseDotOutput();
+console.log(terraform_json);
 
 var scene = new SceneManager(terraform_json);
 var color1picker = document.getElementById("color1");
