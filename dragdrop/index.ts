@@ -2,7 +2,12 @@ import * as THREE from "three";
 import {NodeCube} from "threeml";
 var raycaster = new THREE.Raycaster();
 var selected_cube:any|null = null;
+var onMouseDown:EventListener;
+var onMouseUp:EventListener;
+
 export function setupRaycasting(camera:THREE.Camera, scene:THREE.Scene, obj_list:NodeCube[]){
+document.body.removeEventListener('mousedown',onMouseDown);
+document.body.removeEventListener( 'mouseup', onMouseUp);
 // actually onclick lmao
 function getIntersections() {
   var cam_mat = new THREE.Matrix4();
@@ -11,7 +16,7 @@ function getIntersections() {
   raycaster.ray.direction.set( 0, 0, -1 ).applyMatrix4( cam_mat );
   return raycaster.intersectObjects( obj_list );
 }
-var onMouseDown = function(){
+onMouseDown = function(){
   var intersections = getIntersections();
   if ( intersections.length > 0 ) {
     var intersection = intersections[ 0 ];
@@ -26,7 +31,7 @@ var onMouseDown = function(){
   }
 }
 // actually onmouseup lmao
-var onMouseUp = function(){
+onMouseUp = function(){
   if ( selected_cube ) {
     var object = selected_cube;
     selected_cube = null;

@@ -106,6 +106,7 @@ export class SceneManager extends THREE.Scene{
     async make_cubes(tf_json:any){
         for(var cube of this.obj_list){
             this.remove(cube);
+            this.camera.remove(cube);
             cube.geometry.dispose();
             (<THREE.Material>cube.material).dispose();
         }
