@@ -11,46 +11,44 @@ document.body.appendChild( renderer.domElement );
 var controls:any;
 var vrDisplay:any;
 var scene:SceneManager|null;
-var startbutton = document.getElementById("startButton");
-startbutton.addEventListener("click",renderScene);
-renderScene();
-function renderScene(){
-  //dispose of old scene if defined
-  if(scene){
-    scene.dispose();
+var renderButton = document.getElementById("renderButton");
+renderButton.addEventListener("click",renderCubes);
+
+scene = new SceneManager();
+var color1picker = document.getElementById("color1");
+color1picker.addEventListener("change", function(event:any){
+  var color = event.target.value;
+  scene.updateSkyColor(color);
+});
+var color2picker = document.getElementById("color2");
+color2picker.addEventListener("change", function(event:any){
+  var color = event.target.value;
+  scene.updateGroundColor(color);
+});
+
+var startbutton = document.getElementById("startButton");  
+var blocker = document.getElementById("blocker");
+addControls(scene, scene.camera, blocker,startbutton).then(
+	function(){
+  	if(isVREnabled()){
+  		vrDisplay.requestAnimationFrame(vrAnimate);
+  	}
+  	else{
+  		requestAnimationFrame(desktopAnimate);
+  	}
   }
+).catch(function(error){
+	console.log(error);
+});
+
+function renderCubes(){
   //make all the objects
   var text = (<HTMLInputElement>document.getElementById('textbox')).value;
   var terraform_json:any = parseDotOutput(text);
-
-  scene = new SceneManager(terraform_json);
-  var color1picker = document.getElementById("color1");
-  color1picker.addEventListener("change", function(event:any){
-    var color = event.target.value;
-    scene.updateSkyColor(color);
-  });
-  var color2picker = document.getElementById("color2");
-  color2picker.addEventListener("change", function(event:any){
-    var color = event.target.value;
-    scene.updateGroundColor(color);
-  });
-
-  
-  var blocker = document.getElementById("blocker");
-  addControls(scene, scene.camera, blocker,startbutton).then(
-  	function(){
-    	if(isVREnabled()){
-    		vrDisplay.requestAnimationFrame(vrAnimate);
-    	}
-    	else{
-    		requestAnimationFrame(desktopAnimate);
-    	}
-    }
-  ).catch(function(error){
-  	console.log(error);
-  });
+  scene.make_cubes(terraform_json);
 }
 
+renderCubes();
 
 function vrAnimate(){
 	updateControls();
