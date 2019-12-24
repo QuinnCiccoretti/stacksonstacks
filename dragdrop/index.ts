@@ -4,6 +4,8 @@ var raycaster = new THREE.Raycaster();
 var selected_cube:any|null = null;
 var onMouseDown:EventListener;
 var onMouseUp:EventListener;
+var colorRed = new THREE.Color(0xff0000);
+var colorBlue = new THREE.Color(0x0000ff);
 
 export function setupRaycasting(camera:THREE.Camera, scene:THREE.Scene, obj_list:NodeCube[]){
 document.body.removeEventListener('mousedown',onMouseDown);
@@ -23,7 +25,7 @@ onMouseDown = function(){
     var tempMatrix = new THREE.Matrix4();
     tempMatrix.getInverse( camera.matrixWorld );
     var object = intersection.object;
-
+    changeConnectedArrowColor(object, colorBlue);
     object.matrix.premultiply( tempMatrix );
     object.matrix.decompose( object.position, object.quaternion, object.scale );
     selected_cube = object;
@@ -33,6 +35,7 @@ onMouseDown = function(){
 // actually onmouseup lmao
 onMouseUp = function(){
   if ( selected_cube ) {
+  	changeConnectedArrowColor(selected_cube, colorRed);
     var object = selected_cube;
     selected_cube = null;
     object.matrix.premultiply( camera.matrixWorld );
@@ -45,6 +48,20 @@ onMouseUp = function(){
 
 document.body.addEventListener( 'mousedown', onMouseDown, false );
 document.body.addEventListener( 'mouseup', onMouseUp, false );
+}
+function changeConnectedArrowColor(cube:any, color:THREE.Color){
+	var arrows_in = cube.arrows_in;
+	var arrows_out = cube.arrows_out;
+	if(arrows_in){
+		for(var arrow of arrows_in){
+			arrow.setColor(color);
+		}
+	}
+	if(arrows_out){
+		for(var arrow of arrows_out){
+			arrow.setColor(color);
+		}
+	}
 }
 export function updateSelectedArrows(camera:THREE.Camera){
 	if(selected_cube){
