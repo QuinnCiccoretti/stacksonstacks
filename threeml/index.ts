@@ -1,5 +1,7 @@
 import * as THREE from "three";
-// import {NodeCube} from "./NodeCube";
+import * as createGeometry from 'three-bmfont-text';
+import * as loadFont from 'load-bmfont';
+
 const loader = promisifyLoader(new THREE.TextureLoader());
 
 export class NodeCube extends THREE.Mesh{
@@ -15,7 +17,34 @@ export class NodeCube extends THREE.Mesh{
   edges_in:NodeCube[];
   edges_out:NodeCube[];
 }
-
+export class TextCreator{
+	font: THREE.Font|null;
+	constructor(){
+		this.font = null;
+		loadFont('fonts/font.fnt', (err:any, font:any) =>{
+			if(err){
+				console.log(err);
+			}
+			else{
+				this.font = font;
+			}
+		})
+	}
+	async createTextMesh(text:string):Promise<THREE.Mesh>{
+		var texture = await loader.load('fonts/font.fnt');
+		var geometry = createGeometry({
+			font:this.font,
+			text: text
+		});
+		var material = new THREE.MeshBasicMaterial({
+			map:texture,
+			side: THREE.DoubleSide,
+			transparent: true
+		});
+		var mesh = new THREE.Mesh(geometry, material);
+		return mesh;
+	}
+}
 export async function createCube(url: string): Promise<NodeCube> {
 	var texture = await loader.load(url);
 	var scalefactor: number = 1;

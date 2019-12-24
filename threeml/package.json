@@ -26,6 +26,8 @@
     "typescript": "^3.7.2"
   },
   "dependencies": {
-    "three": "^0.110.0"
+    "load-bmfont": "^1.4.0",
+    "three": "^0.110.0",
+    "three-bmfont-text": "^2.3.0"
   }
 }
