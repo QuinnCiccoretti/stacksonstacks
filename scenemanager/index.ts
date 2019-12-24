@@ -3,9 +3,18 @@ import {createCube, NodeCube} from 'threeml';
 import {setupRaycasting, updateSelectedArrows} from 'dragdrop'
 
 export class SceneManager extends THREE.Scene{
+    // text_creator:TextCreator;
+    obj_list:NodeCube[];
+    arrow_list:THREE.ArrowHelper[];
+    reticleMat:THREE.MeshBasicMaterial;
+    groundMat:THREE.MeshLambertMaterial;
+    camera:THREE.Camera;
+    tf_json:any;
+
     constructor(){
         super();
         // this.tf_json = tf_json;
+        // this.text_creator = new TextCreator();
         this.obj_list = [];
         this.arrow_list = [];
         this.camera = new THREE.PerspectiveCamera( 75, window.innerWidth/window.innerHeight, 0.1, 1000 );
@@ -24,16 +33,14 @@ export class SceneManager extends THREE.Scene{
         this.createDirLight( new THREE.Vector3(0,6,0) );
         this.createFloor();
         this.updateSkyColor("#ffffff");
-        
+        this.hello();
 
     }
-    obj_list:NodeCube[];
-    arrow_list:THREE.ArrowHelper[];
-    reticleMat:THREE.MeshBasicMaterial;
-    groundMat:THREE.MeshLambertMaterial;
-    camera:THREE.Camera;
-    tf_json:any;
 
+    async hello(){
+        // var mesh = await this.text_creator.createTextMesh("Hello world");
+        // this.add(mesh);
+    }
 
     createDirLight(position:THREE.Vector3){
         var light = new THREE.DirectionalLight( 0xffffff );
