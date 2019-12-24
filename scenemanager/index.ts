@@ -3,10 +3,11 @@ import {createCube, NodeCube} from 'threeml';
 import {setupRaycasting, updateSelectedArrows} from 'dragdrop'
 
 export class SceneManager extends THREE.Scene{
-    constructor(tf_json:any){
+    constructor(){
         super();
-        this.tf_json = tf_json;
+        // this.tf_json = tf_json;
         this.obj_list = [];
+        this.arrow_list = [];
         this.camera = new THREE.PerspectiveCamera( 75, window.innerWidth/window.innerHeight, 0.1, 1000 );
         this.camera.position.z = 5;
         
@@ -23,11 +24,11 @@ export class SceneManager extends THREE.Scene{
         this.createDirLight( new THREE.Vector3(0,6,0) );
         this.createFloor();
         this.updateSkyColor("#ffffff");
-        this.make_cubes();
-        setupRaycasting(this.camera,this,this.obj_list);
+        
 
     }
     obj_list:NodeCube[];
+    arrow_list:THREE.ArrowHelper[];
     reticleMat:THREE.MeshBasicMaterial;
     groundMat:THREE.MeshLambertMaterial;
     camera:THREE.Camera;
@@ -102,7 +103,19 @@ export class SceneManager extends THREE.Scene{
         var hexcolor = parseInt(color.replace(/^#/, ''), 16);
         this.groundMat.color.setHex(hexcolor);
     }
-    async make_cubes(){
+    async make_cubes(tf_json:any){
+        for(var cube of this.obj_list){
+            this.remove(cube);
+            this.camera.remove(cube);
+            cube.geometry.dispose();
+            (<THREE.Material>cube.material).dispose();
+        }
+        for(var arrow of this.arrow_list){
+            this.remove(arrow);
+        }
+        this.obj_list = [];
+        this.arrow_list = [];
+        this.tf_json = tf_json;
         var gvid_to_cube:Record<number,NodeCube> = {};
         // gvid_to_cube[
         const resource_list = this.tf_json.objects;
@@ -140,6 +153,7 @@ export class SceneManager extends THREE.Scene{
                 cone_length/2
             );
             this.add(arrow);
+            this.arrow_list.push(arrow);
             tail_cube.arrows_out.push(arrow);
             head_cube.arrows_in.push(arrow);
                             
@@ -150,7 +164,7 @@ export class SceneManager extends THREE.Scene{
         joshcube.castShadow = true;
         this.add(joshcube);
         this.obj_list.push(joshcube);
-        
+        setupRaycasting(this.camera,this,this.obj_list);
 
     }
 

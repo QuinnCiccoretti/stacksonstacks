@@ -3,11 +3,18 @@ import * as THREE from 'three';
 import {SceneManager} from 'scenemanager';
 import {isVREnabled, addControls, updateControls} from 'controlmanager';
 import {parseDotOutput} from 'terra-parse';
-//make all the objects
-var terraform_json:any = parseDotOutput();
-console.log(terraform_json);
+var renderer = new THREE.WebGLRenderer();
+renderer.shadowMap.enabled = true;
+renderer.setSize( window.innerWidth, window.innerHeight );
+document.body.appendChild( renderer.domElement );
 
-var scene = new SceneManager(terraform_json);
+var controls:any;
+var vrDisplay:any;
+var scene:SceneManager|null;
+var renderButton = document.getElementById("renderButton");
+renderButton.addEventListener("click",renderCubes);
+
+scene = new SceneManager();
 var color1picker = document.getElementById("color1");
 color1picker.addEventListener("change", function(event:any){
   var color = event.target.value;
@@ -19,15 +26,8 @@ color2picker.addEventListener("change", function(event:any){
   scene.updateGroundColor(color);
 });
 
-var renderer = new THREE.WebGLRenderer();
-renderer.shadowMap.enabled = true;
-renderer.setSize( window.innerWidth, window.innerHeight );
-document.body.appendChild( renderer.domElement );
-
-var controls:any;
-var vrDisplay:any;
+var startbutton = document.getElementById("startButton");  
 var blocker = document.getElementById("blocker");
-var startbutton = document.getElementById("startButton");
 addControls(scene, scene.camera, blocker,startbutton).then(
 	function(){
   	if(isVREnabled()){
@@ -41,7 +41,14 @@ addControls(scene, scene.camera, blocker,startbutton).then(
 	console.log(error);
 });
 
+function renderCubes(){
+  //make all the objects
+  var text = (<HTMLInputElement>document.getElementById('textbox')).value;
+  var terraform_json:any = parseDotOutput(text);
+  scene.make_cubes(terraform_json);
+}
 
+renderCubes();
 
 function vrAnimate(){
 	updateControls();
