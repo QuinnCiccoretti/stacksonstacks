@@ -80,7 +80,29 @@ export class SceneManager extends THREE.Scene{
         "aws_iam_role.main":"aws/IAM",
         "aws_iam_role.cidp":"aws/IAMSTS",
         "aws_lambda_function.main":"aws/Lambda",
-        "provider.aws":"aws/provider"
+        "provider.aws":"aws/provider",
+        "aws_alb.main":"aws/elb",
+        "aws_alb_listener.front_end":"aws/elb",
+        "aws_alb_target_group.test":"aws/elb",
+        "aws_autoscaling_group.app":"aws/autoscaling_group",
+        "aws_cloudwatch_log_group.app":"aws/cloudwatch",
+        "aws_cloudwatch_log_group.ecs":"aws/cloudwatch",
+        "aws_ecs_cluster.main":"aws/ecs",
+        "aws_ecs_service.test":"aws/ecs",
+        "aws_ecs_task_definition.ghost":"aws/ecs",
+        "aws_iam_instance_profile.app":"aws/IAM",
+        "aws_iam_role.app_instance":"aws/IAM",
+        "aws_iam_role.ecs_service":"aws/IAM",
+        "aws_iam_role_policy.ecs_service":"aws/IAM",
+        "aws_iam_role_policy.instance":"aws/IAMSTS",
+        "aws_internet_gateway.gw":"aws/vpc_gateway",
+        "aws_launch_configuration.app":"aws/config",
+        "aws_route_table.r":"aws/route_table",
+        "aws_route_table_association.a":"aws/route_table",
+        "aws_security_group.instance_sg":"aws/security",
+        "aws_security_group.lb_sg":"aws/security",
+        "aws_subnet.main":"aws/subnet",
+        "aws_vpc.main":"aws/vpc"
 
     }
     get_iconpath_from_resourcename(name:string): string{
