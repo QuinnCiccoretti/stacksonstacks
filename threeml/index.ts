@@ -2,19 +2,6 @@ import * as THREE from "three";
 const loader = promisifyLoader(new THREE.TextureLoader());
 const fontloader = promisifyFontLoader(new THREE.FontLoader());
 
-export class NodeCube extends THREE.Mesh{
-  constructor(geometry:THREE.Geometry, material:THREE.Material){
-    super(geometry, material);
-    this.arrows_in = [];
-    this.arrows_out = [];
-    this.edges_in = [];
-    this.edges_out = [];
-  }
-  arrows_in:THREE.ArrowHelper[];
-  arrows_out:THREE.ArrowHelper[];
-  edges_in:NodeCube[];
-  edges_out:NodeCube[];
-}
 export class TextCreator{
 	font: THREE.Font|null;
 	constructor(){
@@ -27,6 +14,7 @@ export class TextCreator{
 	async initFont(){
 		var font = await fontloader.load( 'res/VT323_Regular.json');
 		this.font = font;
+		console.log(this.font);
 	}
 	async createTextMesh(text:string,textsize:number, ht:number):Promise<THREE.Mesh>{
 		if(!this.font){
@@ -45,6 +33,27 @@ export class TextCreator{
 	}
 	
 }
+
+// var text_creator = new TextCreator();
+
+export class NodeCube extends THREE.Mesh{
+  constructor(geometry:THREE.Geometry, material:THREE.Material, name:string){
+    super(geometry, material);
+    this.name = name;
+    this.arrows_in = [];
+    this.arrows_out = [];
+    this.edges_in = [];
+    this.edges_out = [];
+    this.label = null;
+  }
+
+  arrows_in:THREE.ArrowHelper[];
+  arrows_out:THREE.ArrowHelper[];
+  edges_in:NodeCube[];
+  edges_out:NodeCube[];
+  label:THREE.Mesh|null;
+}
+
 export async function createCube(url: string): Promise<NodeCube> {
 	var texture = await loader.load(url);
 	var scalefactor: number = 1;
@@ -67,8 +76,8 @@ export async function createCube(url: string): Promise<NodeCube> {
 	});
 
 	// var mesh:THREE.Mesh = new THREE.Mesh(geometry, material);
-	var nodecube = new NodeCube(geometry, material);
-  nodecube.name = url;
+	var nodecube = new NodeCube(geometry, material, url);
+  	nodecube.name = url;
 	nodecube.castShadow = true;
 	nodecube.receiveShadow = true;
 	
@@ -99,10 +108,9 @@ function promisifyLoader ( loader: THREE.TextureLoader ) {
 function promisifyFontLoader ( loader: THREE.FontLoader ) {
   function promiseLoader ( url: string): Promise<THREE.Font> {
     return new Promise( ( resolve, reject ) => {
-      loader.load( url, resolve, reject );
+      loader.load( url, resolve, function(){},reject );
     } );
   }
-  loader.setCrossOrigin('anonymous');
   return {
     originalLoader: loader,
     load: promiseLoader,

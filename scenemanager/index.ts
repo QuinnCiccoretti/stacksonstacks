@@ -32,9 +32,9 @@ export class SceneManager extends THREE.Scene{
         this.createDirLight( new THREE.Vector3(0,6,0) );
         this.createFloor();
         this.updateSkyColor("#ffffff");
-
     }
 
+    
 
     createDirLight(position:THREE.Vector3){
         var light = new THREE.DirectionalLight( 0xffffff );
@@ -148,7 +148,8 @@ export class SceneManager extends THREE.Scene{
             var resource_name = curr_resource.name.replace("[root]",'').trim();
             var icon_path:string = this.get_iconpath_from_resourcename(resource_name);
             var cube = await createCube(icon_path);
-
+            var label = await this.text_creator.createTextMesh(resource_name, 0.25, 0.1);
+            cube.add(label);
             cube.position.set(Math.random()*10, Math.random()*10, Math.random()*10);
             this.add(cube);
             this.obj_list.push(cube); //insert into our "graph"
