@@ -1,9 +1,9 @@
 import * as THREE from "three";
-import {createCube, NodeCube} from 'threeml';
+import {createCube, NodeCube, TextCreator} from 'threeml';
 import {setupRaycasting, updateSelectedArrows} from 'dragdrop'
 
 export class SceneManager extends THREE.Scene{
-    // text_creator:TextCreator;
+    text_creator:TextCreator;
     obj_list:NodeCube[];
     arrow_list:THREE.ArrowHelper[];
     reticleMat:THREE.MeshBasicMaterial;
@@ -13,8 +13,7 @@ export class SceneManager extends THREE.Scene{
 
     constructor(){
         super();
-        // this.tf_json = tf_json;
-        // this.text_creator = new TextCreator();
+        this.text_creator = new TextCreator();
         this.obj_list = [];
         this.arrow_list = [];
         this.camera = new THREE.PerspectiveCamera( 75, window.innerWidth/window.innerHeight, 0.1, 1000 );
@@ -33,14 +32,9 @@ export class SceneManager extends THREE.Scene{
         this.createDirLight( new THREE.Vector3(0,6,0) );
         this.createFloor();
         this.updateSkyColor("#ffffff");
-        this.hello();
 
     }
 
-    async hello(){
-        // var mesh = await this.text_creator.createTextMesh("Hello world");
-        // this.add(mesh);
-    }
 
     createDirLight(position:THREE.Vector3){
         var light = new THREE.DirectionalLight( 0xffffff );
@@ -152,9 +146,9 @@ export class SceneManager extends THREE.Scene{
         for(var i = 1; i < resource_list.length; i++){
             var curr_resource = resource_list[i];
             var resource_name = curr_resource.name.replace("[root]",'').trim();
-            console.log(resource_name);
             var icon_path:string = this.get_iconpath_from_resourcename(resource_name);
             var cube = await createCube(icon_path);
+
             cube.position.set(Math.random()*10, Math.random()*10, Math.random()*10);
             this.add(cube);
             this.obj_list.push(cube); //insert into our "graph"

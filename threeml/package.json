@@ -29,7 +29,5 @@
     "three": "^0.110.0"
   },
   "dependencies": {
-    "load-bmfont": "^1.4.0",
-    "three-bmfont-text": "^2.3.0"
   }
 }

@@ -1,6 +1,6 @@
 import * as THREE from "three";
-
 const loader = promisifyLoader(new THREE.TextureLoader());
+const fontloader = promisifyFontLoader(new THREE.FontLoader());
 
 export class NodeCube extends THREE.Mesh{
   constructor(geometry:THREE.Geometry, material:THREE.Material){
@@ -15,38 +15,36 @@ export class NodeCube extends THREE.Mesh{
   edges_in:NodeCube[];
   edges_out:NodeCube[];
 }
-// export class TextCreator{
-// 	font: THREE.Font|null;
-// 	constructor(){
-// 		this.font = null;
-// 		console.log("I am here");
-// 		loadFont('fonts/font.fnt', (err:any, font:any) =>{
-// 			if(err){
-// 				console.log(err);
-// 			}
-// 			else{
-// 				this.font = font;
-// 				console.log(font);
-// 			}
-// 		})
-// 	}
-// 	async createTextMesh(text:string):Promise<THREE.Mesh>{
-// 		console.log(this.font);
-// 		console.log("YYYYYYY");
-// 		var texture = await loader.load('fonts/font.fnt');
-// 		var geometry = createGeometry({
-// 			font:this.font,
-// 			text: text
-// 		});
-// 		var material = new THREE.MeshBasicMaterial({
-// 			map:texture,
-// 			side: THREE.DoubleSide,
-// 			transparent: true
-// 		});
-// 		var mesh = new THREE.Mesh(geometry, material);
-// 		return mesh;
-// 	}
-// }
+export class TextCreator{
+	font: THREE.Font|null;
+	constructor(){
+		this.font = null;
+		this.initFont();
+		var loader = new THREE.FontLoader();
+		var geometry;
+		
+	}
+	async initFont(){
+		var font = await fontloader.load( 'res/VT323_Regular.json');
+		this.font = font;
+	}
+	async createTextMesh(text:string,textsize:number, ht:number):Promise<THREE.Mesh>{
+		if(!this.font){
+			await this.initFont();
+		}
+		var text_geometry = new THREE.TextGeometry( text, {
+			font: <THREE.Font>this.font,	//the already loaded font
+			size: textsize,
+			height: ht,
+			curveSegments: 1,
+			bevelEnabled: false
+		} );
+		var text_material = new THREE.MeshBasicMaterial({color: 0x0});
+		var text_mesh = new THREE.Mesh( text_geometry, text_material);
+		return text_mesh;		
+	}
+	
+}
 export async function createCube(url: string): Promise<NodeCube> {
 	var texture = await loader.load(url);
 	var scalefactor: number = 1;
@@ -96,6 +94,19 @@ function promisifyLoader ( loader: THREE.TextureLoader ) {
     load: promiseLoader,
   };
 
+}
+
+function promisifyFontLoader ( loader: THREE.FontLoader ) {
+  function promiseLoader ( url: string): Promise<THREE.Font> {
+    return new Promise( ( resolve, reject ) => {
+      loader.load( url, resolve, reject );
+    } );
+  }
+  loader.setCrossOrigin('anonymous');
+  return {
+    originalLoader: loader,
+    load: promiseLoader,
+  };
 }
 
 function fragmentShader():string{
