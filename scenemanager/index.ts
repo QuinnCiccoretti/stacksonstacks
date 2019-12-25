@@ -148,7 +148,9 @@ export class SceneManager extends THREE.Scene{
             var resource_name = curr_resource.name.replace("[root]",'').trim();
             var icon_path:string = this.get_iconpath_from_resourcename(resource_name);
             var cube = await createCube(icon_path);
-            var label = await this.text_creator.createTextMesh(resource_name, 0.25, 0.1);
+            var label = await this.text_creator.createTextMesh(resource_name, 0.25, 0.01);
+            label.position.set(-0.6,-1,0); //offset label and cube
+            cube.label = label;
             cube.add(label);
             cube.position.set(Math.random()*10, Math.random()*10, Math.random()*10);
             this.add(cube);

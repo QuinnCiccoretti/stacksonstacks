@@ -65,6 +65,9 @@ function changeConnectedArrowColor(cube:any, color:THREE.Color){
 }
 export function updateSelectedArrows(camera:THREE.Camera){
 	if(selected_cube){
+		if(selected_cube.label){
+			selected_cube.label.lookAt(camera.position);
+		}
 		//we need the lists
 		var cam_pos = camera.position;
 		if(!selected_cube.arrows_in){
