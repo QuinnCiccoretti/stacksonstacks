@@ -7,6 +7,7 @@ var renderer = new THREE.WebGLRenderer();
 renderer.shadowMap.enabled = true;
 renderer.setSize( window.innerWidth, window.innerHeight );
 document.body.appendChild( renderer.domElement );
+var canvas = renderer.domElement;
 
 var controls:any;
 var vrDisplay:VRDisplay;
@@ -36,7 +37,7 @@ var control_manager = new ControlManager(blocker, startbutton, vrButton, fullscr
 
 
 //add controls
-control_manager.addControls(scene, scene.camera, renderer.domElement).then(
+control_manager.addControls(scene, scene.camera, canvas).then(
 	function(){
   	if(control_manager.vrEnabled){
       vrDisplay = control_manager.vrDisplay;
@@ -72,3 +73,28 @@ function desktopAnimate(){
 	requestAnimationFrame(desktopAnimate);
   renderer.render( scene, scene.camera );
 }
+
+function onResize() {
+  // The delay ensures the browser has a chance to layout
+  // the page and update the clientWidth/clientHeight.
+  // This problem particularly crops up under iOS.
+  setTimeout(function () {
+      console.log('Resizing to %s x %s.', canvas.clientWidth, canvas.clientHeight);
+      scene.camera.aspect = canvas.clientWidth / canvas.clientHeight;
+      scene.camera.updateProjectionMatrix();
+   }, 250);
+}
+
+function onVRDisplayPresentChange() {
+  console.log('onVRDisplayPresentChange');
+  onResize();
+}
+
+function onVRDisplayConnect(e:any) {
+  console.log('onVRDisplayConnect', (e.display || (e.detail && e.detail.display)));
+}
+
+// Resize the WebGL canvas when we resize and also when we change modes.
+window.addEventListener('resize', onResize);
+window.addEventListener('vrdisplaypresentchange', onVRDisplayPresentChange);
+window.addEventListener('vrdisplayconnect', onVRDisplayConnect);

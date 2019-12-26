@@ -8,7 +8,7 @@ export class SceneManager extends THREE.Scene{
     arrow_list:THREE.ArrowHelper[];
     reticleMat:THREE.MeshBasicMaterial;
     groundMat:THREE.MeshLambertMaterial;
-    camera:THREE.Camera;
+    camera:THREE.PerspectiveCamera;
     tf_json:any;
 
     constructor(){
