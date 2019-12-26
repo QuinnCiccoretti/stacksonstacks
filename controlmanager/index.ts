@@ -17,10 +17,6 @@ export class ControlManager{
     this.polyfill = new WebVRPolyfill();
   }
 
-  isVREnabled():boolean{
-  	return this.vrEnabled;
-  }
-
   updateControls():void {
   	if(this.vrEnabled){
   		this.updateVRControls();

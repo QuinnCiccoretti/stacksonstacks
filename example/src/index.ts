@@ -1,7 +1,7 @@
 import * as THREE from 'three';
 // import WebVRPolyfill from 'webvr-polyfill';
 import {SceneManager} from 'scenemanager';
-import {isVREnabled, addControls, updateControls} from 'controlmanager';
+import {ControlManager} from 'controlmanager';
 import {parseDotOutput} from 'terra-parse';
 var renderer = new THREE.WebGLRenderer();
 renderer.shadowMap.enabled = true;
@@ -9,8 +9,9 @@ renderer.setSize( window.innerWidth, window.innerHeight );
 document.body.appendChild( renderer.domElement );
 
 var controls:any;
-var vrDisplay:any;
+var vrDisplay:VRDisplay;
 var scene:SceneManager|null;
+var control_manager = new ControlManager();
 var renderButton = document.getElementById("renderButton");
 renderButton.addEventListener("click",renderCubes);
 
@@ -28,9 +29,10 @@ color2picker.addEventListener("change", function(event:any){
 
 var startbutton = document.getElementById("startButton");  
 var blocker = document.getElementById("blocker");
-addControls(scene, scene.camera, blocker,startbutton).then(
+control_manager.addControls(scene, scene.camera, blocker,startbutton).then(
 	function(){
-  	if(isVREnabled()){
+  	if(control_manager.vrEnabled){
+      vrDisplay = control_manager.vrDisplay;
   		vrDisplay.requestAnimationFrame(vrAnimate);
   	}
   	else{
@@ -51,14 +53,14 @@ function renderCubes(){
 renderCubes();
 
 function vrAnimate(){
-	updateControls();
+	control_manager.updateControls();
   scene.updateScene();
 	vrDisplay.requestAnimationFrame(vrAnimate);
   renderer.render( scene, scene.camera );
 }
 
 function desktopAnimate(){
-  updateControls();
+  control_manager.updateControls();
   scene.updateScene();
 	requestAnimationFrame(desktopAnimate);
   renderer.render( scene, scene.camera );
