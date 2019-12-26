@@ -45,6 +45,9 @@ export class ControlManager{
     const vrDisplays = await navigator.getVRDisplays();
     // If we have a native display, or we have a CardboardVRDisplay
     // from the polyfill, use it
+    startbutton.addEventListener( 'click', () => {
+        blocker.style.display = 'none';
+    }, false );
     if (vrDisplays.length) {
     	this.vrEnabled = true;
       this.vrDisplay = vrDisplays[0];
@@ -104,9 +107,6 @@ export class ControlManager{
       startbutton.addEventListener( 'click', () => {
         this.controls.lock();
       }, false );
-      this.controls.addEventListener( 'lock', () =>{
-        blocker.style.display = 'none';
-      } );
       this.controls.addEventListener( 'unlock', () =>{
         blocker.style.display = 'block';      
       } );
