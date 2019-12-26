@@ -12,7 +12,15 @@ export class ControlManager{
   controls:any|PointerLockControls;
   vrEnabled:boolean = false;
   vrDisplay:VRDisplay|null;
-  constructor(){
+  startbutton:HTMLElement;
+  webvrbutton:HTMLElement;
+  fsbutton:HTMLElement;
+  blocker:HTMLElement;
+  constructor(blocker:HTMLElement,startbutton:HTMLElement, webvrbutton:HTMLElement, fsbutton:HTMLElement){
+    this.blocker = blocker;
+    this.startbutton = startbutton;
+    this.webvrbutton = webvrbutton;
+    this.fsbutton = fsbutton;
     this.vrDisplay = null;
     this.polyfill = new WebVRPolyfill();
   }
@@ -24,7 +32,6 @@ export class ControlManager{
   	else{
   		this.updateDesktopControls();
   	}
-
   }
 
   updateVRControls(): void {
@@ -41,18 +48,25 @@ export class ControlManager{
   }
 
   //set vrenabled and init controls
-  async addControls(scene: THREE.Scene, camera: THREE.Camera, blocker: HTMLElement, startbutton:HTMLElement){
+  async addControls(scene: THREE.Scene, camera: THREE.Camera, render_dom_elem:HTMLCanvasElement){
     const vrDisplays = await navigator.getVRDisplays();
     // If we have a native display, or we have a CardboardVRDisplay
     // from the polyfill, use it
-    startbutton.addEventListener( 'click', () => {
-        blocker.style.display = 'none';
+    this.startbutton.addEventListener( 'click', () => {
+        this.blocker.style.display = 'none';
     }, false );
     if (vrDisplays.length) {
     	this.vrEnabled = true;
       this.vrDisplay = vrDisplays[0];
       // Apply VR headset positional data to camera.
       this.controls = new VRControls(camera);
+      //webvr should hide the blocker
+      this.webvrbutton.addEventListener('click', ()=>{
+        this.blocker.style.display = 'none';
+        if(this.vrDisplay){
+          this.vrDisplay.requestPresent([{source: render_dom_elem}]);
+        }
+      }, false);
     }
     else {    //we on desktop, get that good good point and shoot
       this.vrEnabled = false;
@@ -104,13 +118,30 @@ export class ControlManager{
       document.addEventListener( 'keydown', onKeyDown, false );
       document.addEventListener( 'keyup', onKeyUp, false );
 
-      startbutton.addEventListener( 'click', () => {
+      this.startbutton.addEventListener( 'click', () => {
         this.controls.lock();
       }, false );
+      this.webvrbutton.style.display = 'none';
+      this.fsbutton.addEventListener('click', ()=>{
+        this.controls.lock();
+        enterFullscreen(render_dom_elem);
+      },false);
       this.controls.addEventListener( 'unlock', () =>{
-        blocker.style.display = 'block';      
+        this.blocker.style.display = 'block';      
       } );
 
     }
+  }
+}
+//this is junk for x-platform fullscreen
+function enterFullscreen (el:any) {
+  if (el.requestFullscreen) {
+    el.requestFullscreen();
+  } else if (el.mozRequestFullScreen) {
+    el.mozRequestFullScreen();
+  } else if (el.webkitRequestFullscreen) {
+    el.webkitRequestFullscreen();
+  } else if (el.msRequestFullscreen) {
+    el.msRequestFullscreen();
   }
 }
