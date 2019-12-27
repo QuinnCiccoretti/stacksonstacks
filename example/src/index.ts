@@ -59,10 +59,11 @@ function renderCubes(){
 
 renderCubes();
 const resdir ="res/portalgun/";
-createPortalGun(resdir+"textures",resdir+"portalgun.3ds",resdir+"textures/normal.jpg").then(
+createPortalGun(resdir+"textures/",resdir+"portalgun.3ds",resdir+"textures/normal.jpg").then(
 	(portal_group)=>{
-		portal_group.position.z = -0.4;
-		portal_group.rotation.x = 1.6;
+		portal_group.position.z = -0.5;
+    portal_group.position.x = -0.5;
+		portal_group.rotation.x = -1.6;
 		scene.add(portal_group);
 	}
 ).catch((err)=>{
