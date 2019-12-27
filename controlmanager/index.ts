@@ -11,7 +11,7 @@ export class ControlManager{
   moveRight:boolean = false;
   moveUp:boolean = false;
   moveDown:boolean = false;
-
+  speed:number = 0.1;
   controls:any|PointerLockControls;
   vrEnabled:boolean = false;
   vrDisplay:VRDisplay|null;
@@ -51,8 +51,8 @@ export class ControlManager{
   	move_dir.z = Number( this.moveForward ) - Number( this.moveBackward );
   	move_dir.x = Number( this.moveRight ) - Number( this.moveLeft );
   	move_dir.normalize(); // this ensures constant movement speed
-  	move_dir.divideScalar(10);
-    this.camera.position.y += vert_move/10;
+  	move_dir.multiplyScalar(this.speed);
+    this.camera.position.y += vert_move*this.speed;
   	this.controls.moveRight( move_dir.x );
   	this.controls.moveForward( move_dir.z);
   }
@@ -107,6 +107,9 @@ export class ControlManager{
           case 69:
             this.moveDown = true;
             break;
+          case 16:
+            this.speed = 0.4;
+            break;
           }
          
       };
@@ -134,6 +137,10 @@ export class ControlManager{
               case 69:
                 this.moveDown = false;
                 break;
+              case 16:
+                this.speed = 0.1;
+                break;
+
             }
           };
       document.addEventListener( 'keydown', onKeyDown, false );
