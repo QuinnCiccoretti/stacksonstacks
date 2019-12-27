@@ -2,7 +2,7 @@ import * as THREE from 'three';
 import {SceneManager} from 'scenemanager';
 import {ControlManager} from 'controlmanager';
 import {parseDotOutput} from 'terra-parse';
-
+import {createPortalGun} from 'three-portalgun';
 var renderer = new THREE.WebGLRenderer();
 renderer.shadowMap.enabled = true;
 renderer.setSize( window.innerWidth, window.innerHeight );
@@ -58,7 +58,15 @@ function renderCubes(){
 }
 
 renderCubes();
-
+const resdir ="res/portalgun/";
+createPortalGun(resdir,resdir+"portalgun.3ds",resdir+"normal.jpg").then(
+	(portal_group)=>{
+		portal_group.position.z = -0.5;
+		scene.camera.add(portal_group);
+	}
+).catch((err)=>{
+	console.log(err);
+});
 function vrAnimate(){
 	control_manager.updateControls();
   scene.updateScene();
