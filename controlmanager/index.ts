@@ -9,6 +9,9 @@ export class ControlManager{
   moveLeft:boolean = false;
   moveBackward:boolean = false;
   moveRight:boolean = false;
+  moveUp:boolean = false;
+  moveDown:boolean = false;
+
   controls:any|PointerLockControls;
   vrEnabled:boolean = false;
   vrDisplay:VRDisplay|null;
@@ -16,7 +19,9 @@ export class ControlManager{
   webvrbutton:HTMLElement;
   fsbutton:HTMLElement;
   blocker:HTMLElement;
-  constructor(blocker:HTMLElement,startbutton:HTMLElement, webvrbutton:HTMLElement, fsbutton:HTMLElement){
+  camera: THREE.PerspectiveCamera;
+  constructor(camera: THREE.PerspectiveCamera, blocker:HTMLElement,startbutton:HTMLElement, webvrbutton:HTMLElement, fsbutton:HTMLElement){
+    this.camera = camera;
     this.blocker = blocker;
     this.startbutton = startbutton;
     this.webvrbutton = webvrbutton;
@@ -41,17 +46,20 @@ export class ControlManager{
   	this.controls.update();	
   }
   updateDesktopControls(): void {
-  	var move_dir = new THREE.Vector3()
+  	var move_dir = new THREE.Vector3();
+    move_dir.y = Number( this.moveUp ) - Number( this.moveDown );
   	move_dir.z = Number( this.moveForward ) - Number( this.moveBackward );
   	move_dir.x = Number( this.moveRight ) - Number( this.moveLeft );
-  	move_dir.normalize(); // this ensures consistent movements in all directions
+  	move_dir.normalize(); // this ensures constant movement speed
   	move_dir.divideScalar(10);
-  	this.controls.moveRight( move_dir.x );
-  	this.controls.moveForward( move_dir.z);
+    camera.position
+  	// this.controls.moveRight( move_dir.x );
+  	// this.controls.moveForward( move_dir.z);
+
   }
 
   //set vrenabled and init controls
-  async addControls(scene: THREE.Scene, camera: THREE.Camera, render_dom_elem:HTMLCanvasElement){
+  async addControls(scene: THREE.Scene, render_dom_elem:HTMLCanvasElement){
     const vrDisplays = await navigator.getVRDisplays();
     // If we have a native display, or we have a CardboardVRDisplay
     // from the polyfill, use it
@@ -74,7 +82,6 @@ export class ControlManager{
     else {    //we on desktop, get that good good point and shoot
       this.vrEnabled = false;
       this.controls = new PointerLockControls(camera,document.body);
-      console.log("added pointerlock document with blocker");
       scene.add(this.controls.getObject());
       var onKeyDown = ( event:KeyboardEvent)=>{
           
@@ -94,6 +101,12 @@ export class ControlManager{
           case 39: // right
           case 68: // d
             this.moveRight = true;
+            break;
+          case 9:
+            this.moveUp = true;
+            break;
+          case 16:
+            this.moveDown = true;
             break;
           }
          
@@ -115,6 +128,12 @@ export class ControlManager{
               case 39: // right
               case 68: // d
                 this.moveRight = false;
+                break;
+              case 9:
+                this.moveUp = false;
+                break;
+              case 16:
+                this.moveDown = false;
                 break;
             }
           };
