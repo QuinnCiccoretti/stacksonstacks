@@ -62,15 +62,16 @@ const resdir ="res/portalgun/";
 createPortalGun(resdir+"textures/",resdir+"portalgun.3ds",resdir+"textures/normal.jpg").then(
 	(portal_group)=>{
 		portal_group.position.copy(new THREE.Vector3(1,-0.7, -1));
-		portal_group.rotation.x = -3;
+		portal_group.rotation.x = -2;
     portal_group.rotation.y = 1;
     portal_group.rotation.z = 0.1;
+    
 		scene.camera.add(portal_group);
     document.body.addEventListener('mousedown', ()=>{
-      portal_group.rotation.z -= 0.1;
+      portal_group.rotation.z -= 0.2;
     });
     document.body.addEventListener('mouseup', ()=>{
-      portal_group.rotation.z += 0.1;
+      portal_group.rotation.z += 0.2;
     });
 	}
 ).catch((err)=>{
