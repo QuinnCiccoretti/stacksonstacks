@@ -1,0 +1,30 @@
+{
+  "name": "three-portalgun",
+  "version": "1.0.11",
+  "description": "asyncronously load a portal gun",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsc"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/QuinnCiccoretti/threeml.git"
+  },
+  "keywords": [
+    "threejs"
+  ],
+  "author": "quinnciccoretti",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/QuinnCiccoretti/threeml/issues"
+  },
+  "homepage": "https://github.com/QuinnCiccoretti/threeml#readme",
+  "devDependencies": {
+    "@types/node": "^12.12.17",
+    "typescript": "^3.7.2"
+  },
+  "dependencies": {
+    "three": "^0.110.0"
+  }
+}
