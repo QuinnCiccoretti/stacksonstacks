@@ -7,6 +7,7 @@
     "controlmanager": "file:../controlmanager",
     "scenemanager": "file:../scenemanager",
     "terra-parse": "file:../terra-parse",
+    "three-portalgun": "file:../three-portalgun",
     "three": "0.110.0",
     "webvr-polyfill": "^0.10.11"
   },
