@@ -45,6 +45,7 @@ h1 {
   font-size: 40px; color:whitesmoke;
   text-align: center;
   padding: 10%
+  padding-bottom:0px;
 }
 button {
   background-color: #f1f1f1;
@@ -86,4 +87,10 @@ hr{
 textarea{
   width: 50%;
   height: 30%;
+}
+p{
+  margin: 0px;
+}
+#instructions{
+  padding-bottom: 20px;
 }

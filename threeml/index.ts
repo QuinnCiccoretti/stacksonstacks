@@ -14,7 +14,6 @@ export class TextCreator{
 	async initFont(){
 		var font = await fontloader.load( 'res/VT323_Regular.json');
 		this.font = font;
-		console.log(this.font);
 	}
 	async createTextMesh(text:string,textsize:number, ht:number):Promise<THREE.Mesh>{
 		if(!this.font){

@@ -32,11 +32,11 @@ var vrButton = document.getElementById('vr');
 var fullscreenButton = document.getElementById('fullscreen');
 var startbutton = document.getElementById("startButton");  
 var blocker = document.getElementById("blocker");
-var control_manager = new ControlManager(blocker, startbutton, vrButton, fullscreenButton);
+var control_manager = new ControlManager(scene.camera,blocker, startbutton, vrButton, fullscreenButton);
 
 
 //add controls
-control_manager.addControls(scene, scene.camera, canvas).then(
+control_manager.addControls(scene, canvas).then(
 	function(){
   	if(control_manager.vrEnabled){
       vrDisplay = control_manager.vrDisplay;
