@@ -46,16 +46,15 @@ export class ControlManager{
   	this.controls.update();	
   }
   updateDesktopControls(): void {
-  	var move_dir = new THREE.Vector3();
-    move_dir.y = Number( this.moveUp ) - Number( this.moveDown );
+    var vert_move = Number( this.moveUp ) - Number( this.moveDown );
+    var move_dir = new THREE.Vector3();
   	move_dir.z = Number( this.moveForward ) - Number( this.moveBackward );
   	move_dir.x = Number( this.moveRight ) - Number( this.moveLeft );
   	move_dir.normalize(); // this ensures constant movement speed
   	move_dir.divideScalar(10);
-    camera.position
-  	// this.controls.moveRight( move_dir.x );
-  	// this.controls.moveForward( move_dir.z);
-
+    this.camera.position.y += vert_move/10;
+  	this.controls.moveRight( move_dir.x );
+  	this.controls.moveForward( move_dir.z);
   }
 
   //set vrenabled and init controls
@@ -70,7 +69,7 @@ export class ControlManager{
     	this.vrEnabled = true;
       this.vrDisplay = vrDisplays[0];
       // Apply VR headset positional data to camera.
-      this.controls = new VRControls(camera);
+      this.controls = new VRControls(this.camera);
       //webvr should hide the blocker
       this.webvrbutton.addEventListener('click', ()=>{
         this.blocker.style.display = 'none';
@@ -81,7 +80,7 @@ export class ControlManager{
     }
     else {    //we on desktop, get that good good point and shoot
       this.vrEnabled = false;
-      this.controls = new PointerLockControls(camera,document.body);
+      this.controls = new PointerLockControls(this.camera,document.body);
       scene.add(this.controls.getObject());
       var onKeyDown = ( event:KeyboardEvent)=>{
           
@@ -102,10 +101,10 @@ export class ControlManager{
           case 68: // d
             this.moveRight = true;
             break;
-          case 9:
+          case 81:
             this.moveUp = true;
             break;
-          case 16:
+          case 69:
             this.moveDown = true;
             break;
           }
@@ -129,10 +128,10 @@ export class ControlManager{
               case 68: // d
                 this.moveRight = false;
                 break;
-              case 9:
+              case 81:
                 this.moveUp = false;
                 break;
-              case 16:
+              case 69:
                 this.moveDown = false;
                 break;
             }
