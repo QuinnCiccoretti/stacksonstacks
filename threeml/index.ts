@@ -107,7 +107,7 @@ function promisifyLoader ( loader: THREE.TextureLoader ) {
 function promisifyFontLoader ( loader: THREE.FontLoader ) {
   function promiseLoader ( url: string): Promise<THREE.Font> {
     return new Promise( ( resolve, reject ) => {
-      loader.load( url, resolve, function(){},reject );
+      loader.load( url, resolve, undefined,reject );
     } );
   }
   return {
