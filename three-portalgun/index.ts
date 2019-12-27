@@ -7,7 +7,7 @@ export async function createPortalGun(resourcepath:string, modelpath:string, nor
 	var normal = await tloader.load( normalpath );
 	const tdsloader = promisifyTDSLoader(new TDSLoader());
   tdsloader.originalLoader.setResourcePath(resourcepath);
-  
+
 	var group = await tdsloader.load(modelpath);
 	group.traverse( ( child:any) => {
 		if ( child.isMesh ) {

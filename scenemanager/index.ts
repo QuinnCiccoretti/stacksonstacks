@@ -23,7 +23,7 @@ export class SceneManager extends THREE.Scene{
         this.createReticle();
         this.groundMat = new THREE.MeshLambertMaterial( { color: 0xededed } );
 
-        this.createDirLight( new THREE.Vector3(0,6,0) );
+        this.createDirLight( new THREE.Vector3(0,12,0) );
         this.createFloor();
         this.updateSkyColor("#ffffff");
     }
