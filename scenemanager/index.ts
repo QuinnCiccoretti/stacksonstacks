@@ -6,7 +6,7 @@ export class SceneManager extends THREE.Scene{
     text_creator:TextCreator;
     obj_list:NodeCube[];
     arrow_list:THREE.ArrowHelper[];
-    reticleMat:THREE.MeshBasicMaterial;
+    lineMat:THREE.LineBasicMaterial;
     groundMat:THREE.MeshLambertMaterial;
     camera:THREE.PerspectiveCamera;
     tf_json:any;
@@ -18,15 +18,9 @@ export class SceneManager extends THREE.Scene{
         this.arrow_list = [];
         this.camera = new THREE.PerspectiveCamera( 75, window.innerWidth/window.innerHeight, 0.1, 1000 );
         this.camera.position.z = 5;
-        
-         //add reticle
-        this.reticleMat = new THREE.MeshBasicMaterial({ color: ~0x0, opacity: 0.5 });
-        var reticle = new THREE.Mesh(
-          new THREE.RingBufferGeometry(0.005, 0.01, 15),
-          this.reticleMat
-        );
-        reticle.position.z = -0.5;
-        this.camera.add(reticle);
+
+        this.lineMat = new THREE.LineBasicMaterial({color:0x0, linewidth:2});
+        this.createReticle();
         this.groundMat = new THREE.MeshLambertMaterial( { color: 0xededed } );
 
         this.createDirLight( new THREE.Vector3(0,6,0) );
@@ -34,7 +28,22 @@ export class SceneManager extends THREE.Scene{
         this.updateSkyColor("#ffffff");
     }
 
-    
+    //draw reticle
+    createReticle(){
+    	var line_geom = new THREE.BufferGeometry();
+        var xhairsz = 0.004;
+        var vertices = new Float32Array([
+        	-xhairsz, xhairsz, 0,
+        	xhairsz, xhairsz, 0,
+        	xhairsz, -xhairsz, 0,
+        	-xhairsz, -xhairsz, 0,
+        	-xhairsz, xhairsz, 0,
+        	]);
+        line_geom.setAttribute('position', new THREE.BufferAttribute(vertices,3));
+        var reticle = new THREE.Line(line_geom, this.lineMat);
+        reticle.position.z = -0.5;
+        this.camera.add(reticle);
+    }
 
     createDirLight(position:THREE.Vector3){
         var light = new THREE.DirectionalLight( 0xffffff );
@@ -120,7 +129,7 @@ export class SceneManager extends THREE.Scene{
     updateSkyColor(color:string){
         this.background = new THREE.Color( color );
         var hexcolor = parseInt(color.replace(/^#/, ''), 16);
-        this.reticleMat.color.setHex(~hexcolor);
+        this.lineMat.color.setHex(~hexcolor);
     }
     updateGroundColor(color:string){
         var hexcolor = parseInt(color.replace(/^#/, ''), 16);

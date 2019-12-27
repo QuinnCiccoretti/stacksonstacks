@@ -35,7 +35,6 @@ var blocker = document.getElementById("blocker");
 var control_manager = new ControlManager(blocker, startbutton, vrButton, fullscreenButton);
 
 
-
 //add controls
 control_manager.addControls(scene, scene.camera, canvas).then(
 	function(){

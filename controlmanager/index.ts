@@ -23,6 +23,9 @@ export class ControlManager{
     this.fsbutton = fsbutton;
     this.vrDisplay = null;
     this.polyfill = new WebVRPolyfill();
+    document.addEventListener('touchmove', function (e) {
+	    e.preventDefault();
+	  });
   }
 
   updateControls():void {
