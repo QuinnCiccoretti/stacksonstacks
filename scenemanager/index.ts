@@ -19,9 +19,10 @@ export class SceneManager extends THREE.Scene{
         this.arrow_list = [];
         this.camera = new THREE.PerspectiveCamera( 75, window.innerWidth/window.innerHeight, 0.1, 1000 );
         this.camera.position.z = 5;
-        this.drag_drop_manager = new DragDropManager(this, this.camera);
         this.lineMat = new THREE.LineBasicMaterial({color:0x0, linewidth:2});
-        this.createReticle();
+        var reticle = this.createReticle();
+        this.drag_drop_manager = new DragDropManager(this, this.camera, reticle);
+        
         this.groundMat = new THREE.MeshLambertMaterial( { color: 0xededed } );
 
         this.createDirLight( new THREE.Vector3(0,12,0) );
@@ -59,7 +60,7 @@ export class SceneManager extends THREE.Scene{
         document.body.addEventListener('mouseup', ()=>{
             this.camera.remove(click_pt);
         })
-        
+        return reticle;
 
     }
 
@@ -92,7 +93,7 @@ export class SceneManager extends THREE.Scene{
     }
     updateScene(){
         this.drag_drop_manager.updateSelectedArrows();
-        this.drag_drop_manager.updateLabel();
+        this.drag_drop_manager.castRay();
     }
     path_to_all_icons:string = "img/";
     //some of these may be arbitrarily decided symbols, nothing more

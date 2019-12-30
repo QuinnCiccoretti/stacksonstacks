@@ -8,17 +8,19 @@ export class DragDropManager{
 	raycaster = new THREE.Raycaster();
 	selected_cube:any|null = null;
 	hitmarker:THREE.Group;
-	camera: THREE.Camera;
+	camera: THREE.PerspectiveCamera;
 	scene:THREE.Scene;
 	obj_list:NodeCube[];
 	oppColor = new THREE.Color(0x0);
 	accentColor = new THREE.Color(0xff0000);
 	hmMat = new THREE.LineBasicMaterial({color:0x0, linewidth:4});
-	constructor(scene:THREE.Scene,camera:THREE.Camera){
+	reticle: THREE.Object3D;
+	constructor(scene:THREE.Scene,camera:THREE.PerspectiveCamera, reticle:THREE.Object3D){
 		this.scene = scene;
 		this.camera = camera;
 		this.obj_list = [];
 		this.hitmarker = this.makeHitmarker();
+		this.reticle = reticle;
 	}
 	setColors(oppColor:number) {
 		this.oppColor = new THREE.Color(oppColor);
@@ -85,19 +87,19 @@ export class DragDropManager{
 		var line_geom4 = new THREE.BufferGeometry();
 		const xhairsz = 0.004;
 
-		var vertices = new Float32Array([-xhairsz*1.8,xhairsz*1.8,0,-xhairsz*1.5, xhairsz*1.5,0]);
+		var vertices = new Float32Array([-xhairsz*1.9,xhairsz*1.9,0,-xhairsz*1.5, xhairsz*1.5,0]);
 		line_geom1.setAttribute('position', new THREE.BufferAttribute(vertices,3));
 		var segment = new THREE.Line(line_geom1, this.hmMat);
 		hitmarker.add(segment);
-		var vertices = new Float32Array([xhairsz*1.8,xhairsz*1.8,0,xhairsz*1.5, xhairsz*1.5,0]);
+		var vertices = new Float32Array([xhairsz*1.9,xhairsz*1.9,0,xhairsz*1.5, xhairsz*1.5,0]);
 		line_geom2.setAttribute('position', new THREE.BufferAttribute(vertices,3));
 		var segment = new THREE.Line(line_geom2, this.hmMat);
 		hitmarker.add(segment);
-		var vertices = new Float32Array([xhairsz*1.8,-xhairsz*1.8,0,xhairsz*1.5, -xhairsz*1.5,0]);
+		var vertices = new Float32Array([xhairsz*1.9,-xhairsz*1.9,0,xhairsz*1.5, -xhairsz*1.5,0]);
 		line_geom3.setAttribute('position', new THREE.BufferAttribute(vertices,3));
 		var segment = new THREE.Line(line_geom3, this.hmMat);
 		hitmarker.add(segment);
-		var vertices = new Float32Array([-xhairsz*1.8,-xhairsz*1.8,0,-xhairsz*1.5, -xhairsz*1.5,0]);
+		var vertices = new Float32Array([-xhairsz*1.9,-xhairsz*1.9,0,-xhairsz*1.5, -xhairsz*1.5,0]);
 		line_geom4.setAttribute('position', new THREE.BufferAttribute(vertices,3));
 		var segment = new THREE.Line(line_geom4, this.hmMat);
 		hitmarker.add(segment);
@@ -119,15 +121,22 @@ export class DragDropManager{
 			}
 		}
 	}
-	updateLabel(){
+	castRay(){
 		var intersections = this.getIntersections();
 		if(intersections.length > 0){
-			var label = (<any>intersections[0].object).label;
+			var obj = intersections[0].object;
+			var label = (<any>obj).label;
 			if(label){
 				label.lookAt(this.camera.position);
 			}
+			this.reticle.position.z = -0.2;
 		}
+		else{
+			this.reticle.position.z = -0.5;
+		}
+		this.camera.updateProjectionMatrix();
 	}
+
 	updateSelectedArrows(){
 		if(this.selected_cube){
 			
