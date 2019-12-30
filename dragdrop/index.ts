@@ -11,9 +11,8 @@ export class DragDropManager{
 	camera: THREE.Camera;
 	scene:THREE.Scene;
 	obj_list:NodeCube[];
-	skyColor = new THREE.Color(0x0);
-	oppColor = new THREE.Color(~0x0);
-	colorRed = new THREE.Color(0xff0000);
+	oppColor = new THREE.Color(0x0);
+	accentColor = new THREE.Color(0xff0000);
 	hmMat = new THREE.LineBasicMaterial({color:0x0, linewidth:4});
 	constructor(scene:THREE.Scene,camera:THREE.Camera){
 		this.scene = scene;
@@ -21,7 +20,11 @@ export class DragDropManager{
 		this.obj_list = [];
 		this.hitmarker = this.makeHitmarker();
 	}
-
+	setColors(oppColor:number) {
+		this.oppColor = new THREE.Color(oppColor);
+		this.accentColor = new THREE.Color(oppColor>>8);
+		this.hmMat.color.setHex(oppColor);
+	}
 	getIntersections() {
 	  var cam_mat = new THREE.Matrix4();
 	  cam_mat.identity().extractRotation(this.camera.matrixWorld );
@@ -44,7 +47,7 @@ export class DragDropManager{
 		    var tempMatrix = new THREE.Matrix4();
 		    tempMatrix.getInverse( this.camera.matrixWorld );
 		    var object = intersection.object;
-		    this.changeConnectedArrowColor(object, this.colorRed);
+		    this.changeConnectedArrowColor(object, this.accentColor);
 		    object.matrix.premultiply( tempMatrix );
 		    object.matrix.decompose( object.position, object.quaternion, object.scale );
 		    this.selected_cube = object;
@@ -81,20 +84,20 @@ export class DragDropManager{
 		var line_geom3 = new THREE.BufferGeometry();
 		var line_geom4 = new THREE.BufferGeometry();
 		const xhairsz = 0.004;
-		
-		var vertices = new Float32Array([-xhairsz*2.2,xhairsz*2.2,0,-xhairsz*1.5, xhairsz*1.5,0]);
+
+		var vertices = new Float32Array([-xhairsz*1.8,xhairsz*1.8,0,-xhairsz*1.5, xhairsz*1.5,0]);
 		line_geom1.setAttribute('position', new THREE.BufferAttribute(vertices,3));
 		var segment = new THREE.Line(line_geom1, this.hmMat);
 		hitmarker.add(segment);
-		var vertices = new Float32Array([xhairsz*2.2,xhairsz*2.2,0,xhairsz*1.5, xhairsz*1.5,0]);
+		var vertices = new Float32Array([xhairsz*1.8,xhairsz*1.8,0,xhairsz*1.5, xhairsz*1.5,0]);
 		line_geom2.setAttribute('position', new THREE.BufferAttribute(vertices,3));
 		var segment = new THREE.Line(line_geom2, this.hmMat);
 		hitmarker.add(segment);
-		var vertices = new Float32Array([xhairsz*2.2,-xhairsz*2.2,0,xhairsz*1.5, -xhairsz*1.5,0]);
+		var vertices = new Float32Array([xhairsz*1.8,-xhairsz*1.8,0,xhairsz*1.5, -xhairsz*1.5,0]);
 		line_geom3.setAttribute('position', new THREE.BufferAttribute(vertices,3));
 		var segment = new THREE.Line(line_geom3, this.hmMat);
 		hitmarker.add(segment);
-		var vertices = new Float32Array([-xhairsz*2.2,-xhairsz*2.2,0,-xhairsz*1.5, -xhairsz*1.5,0]);
+		var vertices = new Float32Array([-xhairsz*1.8,-xhairsz*1.8,0,-xhairsz*1.5, -xhairsz*1.5,0]);
 		line_geom4.setAttribute('position', new THREE.BufferAttribute(vertices,3));
 		var segment = new THREE.Line(line_geom4, this.hmMat);
 		hitmarker.add(segment);

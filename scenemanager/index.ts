@@ -147,7 +147,11 @@ export class SceneManager extends THREE.Scene{
     updateSkyColor(color:string){
         this.background = new THREE.Color( color );
         var hexcolor = parseInt(color.replace(/^#/, ''), 16);
+        for(var arrow of this.arrow_list){
+            arrow.setColor(~hexcolor);
+        }
         this.lineMat.color.setHex(~hexcolor);
+        this.drag_drop_manager.setColors(~hexcolor);
     }
     updateGroundColor(color:string){
         var hexcolor = parseInt(color.replace(/^#/, ''), 16);
@@ -203,8 +207,8 @@ export class SceneManager extends THREE.Scene{
             var arrow = new THREE.ArrowHelper(
                 direction.normalize(),
                 cubepos,
-                  length-cone_length,
-                  0xff0000,
+                length-cone_length,
+                0x0,
                 cone_length,
                 cone_length/2
             );
