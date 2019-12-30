@@ -2,7 +2,7 @@ import * as THREE from 'three';
 import {SceneManager} from 'scenemanager';
 import {ControlManager} from 'controlmanager';
 import {parseDotOutput} from 'terra-parse';
-import {createPortalGun} from 'three-portalgun';
+
 var renderer = new THREE.WebGLRenderer();
 renderer.shadowMap.enabled = true;
 renderer.setSize( window.innerWidth, window.innerHeight );

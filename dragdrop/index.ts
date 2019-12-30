@@ -21,6 +21,7 @@ function getIntersections() {
 onMouseDown = function(){
   var intersections = getIntersections();
   if ( intersections.length > 0 ) {
+  	camera.add(hitmarker);
     var intersection = intersections[ 0 ];
     var tempMatrix = new THREE.Matrix4();
     tempMatrix.getInverse( camera.matrixWorld );
@@ -35,6 +36,7 @@ onMouseDown = function(){
 // actually onmouseup lmao
 onMouseUp = function(){
   if ( selected_cube ) {
+  	camera.remove(hitmarker);
   	changeConnectedArrowColor(selected_cube, colorRed);
     var object = selected_cube;
     selected_cube = null;
@@ -49,6 +51,38 @@ onMouseUp = function(){
 document.body.addEventListener( 'mousedown', onMouseDown, false );
 document.body.addEventListener( 'mouseup', onMouseUp, false );
 }
+
+
+var xhairsz = 0.004;
+var hitmarker = makeHitmarker();
+function makeHitmarker():THREE.Group {
+	var hitmarker = new THREE.Group();
+	var lineMat = new THREE.LineBasicMaterial({color:0x0, linewidth:4});
+
+	var line_geom1 = new THREE.BufferGeometry();
+	var line_geom2 = new THREE.BufferGeometry();
+	var line_geom3 = new THREE.BufferGeometry();
+	var line_geom4 = new THREE.BufferGeometry();
+	var vertices = new Float32Array([-xhairsz*2.2,xhairsz*2.2,0,-xhairsz*1.5, xhairsz*1.5,0]);
+	line_geom1.setAttribute('position', new THREE.BufferAttribute(vertices,3));
+	var segment = new THREE.Line(line_geom1, lineMat);
+	hitmarker.add(segment);
+	var vertices = new Float32Array([xhairsz*2.2,xhairsz*2.2,0,xhairsz*1.5, xhairsz*1.5,0]);
+	line_geom2.setAttribute('position', new THREE.BufferAttribute(vertices,3));
+	var segment = new THREE.Line(line_geom2, lineMat);
+	hitmarker.add(segment);
+	var vertices = new Float32Array([xhairsz*2.2,-xhairsz*2.2,0,xhairsz*1.5, -xhairsz*1.5,0]);
+	line_geom3.setAttribute('position', new THREE.BufferAttribute(vertices,3));
+	var segment = new THREE.Line(line_geom3, lineMat);
+	hitmarker.add(segment);
+	var vertices = new Float32Array([-xhairsz*2.2,-xhairsz*2.2,0,-xhairsz*1.5, -xhairsz*1.5,0]);
+	line_geom4.setAttribute('position', new THREE.BufferAttribute(vertices,3));
+	var segment = new THREE.Line(line_geom4, lineMat);
+	hitmarker.add(segment);
+	hitmarker.position.z = -0.5;
+	return hitmarker;
+}
+
 function changeConnectedArrowColor(cube:any, color:THREE.Color){
 	var arrows_in = cube.arrows_in;
 	var arrows_out = cube.arrows_out;
