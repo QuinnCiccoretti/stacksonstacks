@@ -1,9 +1,10 @@
 import * as THREE from "three";
 import {createCube, NodeCube, TextCreator} from 'threeml';
-import {setupRaycasting, updateSelectedArrows} from 'dragdrop'
+import {DragDropManager} from 'dragdrop'
 
 export class SceneManager extends THREE.Scene{
     text_creator:TextCreator;
+    drag_drop_manager:DragDropManager;
     obj_list:NodeCube[];
     arrow_list:THREE.ArrowHelper[];
     lineMat:THREE.LineBasicMaterial;
@@ -18,9 +19,10 @@ export class SceneManager extends THREE.Scene{
         this.arrow_list = [];
         this.camera = new THREE.PerspectiveCamera( 75, window.innerWidth/window.innerHeight, 0.1, 1000 );
         this.camera.position.z = 5;
-
         this.lineMat = new THREE.LineBasicMaterial({color:0x0, linewidth:2});
-        this.createReticle();
+        var reticle = this.createReticle();
+        this.drag_drop_manager = new DragDropManager(this, this.camera, reticle);
+        
         this.groundMat = new THREE.MeshLambertMaterial( { color: 0xededed } );
 
         this.createDirLight( new THREE.Vector3(0,12,0) );
@@ -38,11 +40,28 @@ export class SceneManager extends THREE.Scene{
         	xhairsz, -xhairsz, 0,
         	-xhairsz, -xhairsz, 0,
         	-xhairsz, xhairsz, 0,
-        	]);
+    	]);
         line_geom.setAttribute('position', new THREE.BufferAttribute(vertices,3));
         var reticle = new THREE.Line(line_geom, this.lineMat);
         reticle.position.z = -0.5;
         this.camera.add(reticle);
+
+        var click_geom = new THREE.BufferGeometry();
+        var vertices = new Float32Array([
+            0,0,0
+        ]);
+        click_geom.setAttribute('position', new THREE.BufferAttribute(vertices, 3));
+        var click_mat = new THREE.PointsMaterial({color:0x0, size:3.0,sizeAttenuation:false});
+        var click_pt = new THREE.Points(click_geom, click_mat);
+        click_pt.position.z = -0.5;
+        document.body.addEventListener('mousedown', ()=>{
+            this.camera.add(click_pt);
+        })
+        document.body.addEventListener('mouseup', ()=>{
+            this.camera.remove(click_pt);
+        })
+        return reticle;
+
     }
 
     createDirLight(position:THREE.Vector3){
@@ -73,7 +92,8 @@ export class SceneManager extends THREE.Scene{
    
     }
     updateScene(){
-        updateSelectedArrows(this.camera);
+        this.drag_drop_manager.updateSelectedArrows();
+        this.drag_drop_manager.castRay();
     }
     path_to_all_icons:string = "img/";
     //some of these may be arbitrarily decided symbols, nothing more
@@ -129,13 +149,17 @@ export class SceneManager extends THREE.Scene{
     updateSkyColor(color:string){
         this.background = new THREE.Color( color );
         var hexcolor = parseInt(color.replace(/^#/, ''), 16);
+        for(var arrow of this.arrow_list){
+            arrow.setColor(~hexcolor);
+        }
         this.lineMat.color.setHex(~hexcolor);
+        this.drag_drop_manager.setColors(~hexcolor);
     }
     updateGroundColor(color:string){
         var hexcolor = parseInt(color.replace(/^#/, ''), 16);
         this.groundMat.color.setHex(hexcolor);
     }
-    async make_cubes(tf_json:any){
+    cleanObjects(){
         for(var cube of this.obj_list){
             this.remove(cube);
             this.camera.remove(cube);
@@ -147,6 +171,9 @@ export class SceneManager extends THREE.Scene{
         }
         this.obj_list = [];
         this.arrow_list = [];
+    }
+    async make_cubes(tf_json:any){
+        this.cleanObjects();
         this.tf_json = tf_json;
         var gvid_to_cube:Record<number,NodeCube> = {};
         // gvid_to_cube[
@@ -182,8 +209,8 @@ export class SceneManager extends THREE.Scene{
             var arrow = new THREE.ArrowHelper(
                 direction.normalize(),
                 cubepos,
-                  length-cone_length,
-                  0xff0000,
+                length-cone_length,
+                0x0,
                 cone_length,
                 cone_length/2
             );
@@ -199,7 +226,7 @@ export class SceneManager extends THREE.Scene{
         joshcube.castShadow = true;
         this.add(joshcube);
         this.obj_list.push(joshcube);
-        setupRaycasting(this.camera,this,this.obj_list);
+        this.drag_drop_manager.setupRaycasting(this.obj_list);
 
     }
 
