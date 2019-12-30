@@ -1,9 +1,10 @@
 import * as THREE from "three";
 import {createCube, NodeCube, TextCreator} from 'threeml';
-import {setupRaycasting, updateSelectedArrows} from 'dragdrop'
+import {DragDropManager} from 'dragdrop'
 
 export class SceneManager extends THREE.Scene{
     text_creator:TextCreator;
+    drag_drop_manager:DragDropManager;
     obj_list:NodeCube[];
     arrow_list:THREE.ArrowHelper[];
     lineMat:THREE.LineBasicMaterial;
@@ -18,7 +19,7 @@ export class SceneManager extends THREE.Scene{
         this.arrow_list = [];
         this.camera = new THREE.PerspectiveCamera( 75, window.innerWidth/window.innerHeight, 0.1, 1000 );
         this.camera.position.z = 5;
-
+        this.drag_drop_manager = new DragDropManager(this, this.camera);
         this.lineMat = new THREE.LineBasicMaterial({color:0x0, linewidth:2});
         this.createReticle();
         this.groundMat = new THREE.MeshLambertMaterial( { color: 0xededed } );
@@ -90,7 +91,7 @@ export class SceneManager extends THREE.Scene{
    
     }
     updateScene(){
-        updateSelectedArrows(this.camera);
+        this.drag_drop_manager.updateSelectedArrows();
     }
     path_to_all_icons:string = "img/";
     //some of these may be arbitrarily decided symbols, nothing more
@@ -219,7 +220,7 @@ export class SceneManager extends THREE.Scene{
         joshcube.castShadow = true;
         this.add(joshcube);
         this.obj_list.push(joshcube);
-        setupRaycasting(this.camera,this,this.obj_list);
+        this.drag_drop_manager.setupRaycasting(this.obj_list);
 
     }
 
