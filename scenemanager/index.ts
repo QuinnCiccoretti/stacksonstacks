@@ -38,11 +38,28 @@ export class SceneManager extends THREE.Scene{
         	xhairsz, -xhairsz, 0,
         	-xhairsz, -xhairsz, 0,
         	-xhairsz, xhairsz, 0,
-        	]);
+    	]);
         line_geom.setAttribute('position', new THREE.BufferAttribute(vertices,3));
         var reticle = new THREE.Line(line_geom, this.lineMat);
         reticle.position.z = -0.5;
         this.camera.add(reticle);
+
+        var click_geom = new THREE.BufferGeometry();
+        var vertices = new Float32Array([
+            0,0,0
+        ]);
+        click_geom.setAttribute('position', new THREE.BufferAttribute(vertices, 3));
+        var click_mat = new THREE.PointsMaterial({color:0x0, size:3.0,sizeAttenuation:false});
+        var click_pt = new THREE.Points(click_geom, click_mat);
+        click_pt.position.z = -0.5;
+        document.body.addEventListener('mousedown', ()=>{
+            this.camera.add(click_pt);
+        })
+        document.body.addEventListener('mouseup', ()=>{
+            this.camera.remove(click_pt);
+        })
+        
+
     }
 
     createDirLight(position:THREE.Vector3){
@@ -135,7 +152,7 @@ export class SceneManager extends THREE.Scene{
         var hexcolor = parseInt(color.replace(/^#/, ''), 16);
         this.groundMat.color.setHex(hexcolor);
     }
-    async make_cubes(tf_json:any){
+    cleanObjects(){
         for(var cube of this.obj_list){
             this.remove(cube);
             this.camera.remove(cube);
@@ -147,6 +164,9 @@ export class SceneManager extends THREE.Scene{
         }
         this.obj_list = [];
         this.arrow_list = [];
+    }
+    async make_cubes(tf_json:any){
+        this.cleanObjects();
         this.tf_json = tf_json;
         var gvid_to_cube:Record<number,NodeCube> = {};
         // gvid_to_cube[
