@@ -92,6 +92,7 @@ export class SceneManager extends THREE.Scene{
     }
     updateScene(){
         this.drag_drop_manager.updateSelectedArrows();
+        this.drag_drop_manager.updateLabel();
     }
     path_to_all_icons:string = "img/";
     //some of these may be arbitrarily decided symbols, nothing more

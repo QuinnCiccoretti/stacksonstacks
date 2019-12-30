@@ -119,11 +119,18 @@ export class DragDropManager{
 			}
 		}
 	}
+	updateLabel(){
+		var intersections = this.getIntersections();
+		if(intersections.length > 0){
+			var label = (<any>intersections[0].object).label;
+			if(label){
+				label.lookAt(this.camera.position);
+			}
+		}
+	}
 	updateSelectedArrows(){
 		if(this.selected_cube){
-			if(this.selected_cube.label){
-				this.selected_cube.label.lookAt(this.camera.position);
-			}
+			
 			//we need the lists
 			if(!this.selected_cube.arrows_in){
 				return;
