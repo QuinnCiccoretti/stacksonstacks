@@ -83,7 +83,6 @@ export class ControlManager{
     else {    //we on desktop, get that good good point and shoot
       this.vrEnabled = false;
       this.controls = new PointerLockControls(this.camera,document.body);
-      scene.add(this.controls.getObject());
       var onKeyDown = ( event:KeyboardEvent)=>{
           
           switch ( event.keyCode ) {
