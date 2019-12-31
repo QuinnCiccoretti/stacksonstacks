@@ -19,6 +19,7 @@ export class SceneManager extends THREE.Scene{
         this.arrow_list = [];
         this.camera = new THREE.PerspectiveCamera( 75, window.innerWidth/window.innerHeight, 0.1, 1000 );
         this.camera.position.z = 5;
+        this.add(this.camera);
         this.lineMat = new THREE.LineBasicMaterial({color:0x0, linewidth:2});
         var reticle = this.createReticle();
         this.drag_drop_manager = new DragDropManager(this, this.camera, reticle);
