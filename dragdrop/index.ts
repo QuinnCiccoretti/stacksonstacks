@@ -72,7 +72,9 @@ export class DragDropManager{
 		}
 
 		document.body.addEventListener( 'mousedown', onMouseDown, false );
+		document.body.addEventListener( 'touchstart', onMouseDown, false );
 		document.body.addEventListener( 'mouseup', onMouseUp, false );
+		document.body.addEventListener( 'touchend', onMouseUp, false );
 	}
 
 
