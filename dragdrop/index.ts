@@ -24,19 +24,21 @@ export class DragDropManager{
 		this.reticle = reticle;
 		document.addEventListener('touchmove', (e) => {
 			e.preventDefault();
-			if(this.selected_cube && this.touchLastY){
+			if(this.selected_cube){
 				var currentY = e.touches[0].clientY;
-				var deltaY = currentY - this.touchLastY;
-				this.touchLastY = currentY;
-				var curr_pos = <THREE.Vector3>this.selected_cube.position;
-				var old_length = curr_pos.length();
-				if(old_length!=0){
-					var new_length = old_length - deltaY/100;
-					var ratio = new_length/old_length;
-					if(ratio != 0){
-						this.selected_cube.position.copy(curr_pos.multiplyScalar(ratio));
+				if(this.touchLastY){
+					var deltaY = currentY - this.touchLastY;
+					var curr_pos = <THREE.Vector3>this.selected_cube.position;
+					var old_length = curr_pos.length();
+					if(old_length!=0){
+						var new_length = old_length - deltaY/25;
+						var ratio = new_length/old_length;
+						if(ratio > 0){
+							this.selected_cube.position.copy(curr_pos.multiplyScalar(ratio));
+						}
 					}
 				}
+				this.touchLastY = currentY;
 			}
 		});
 	}
