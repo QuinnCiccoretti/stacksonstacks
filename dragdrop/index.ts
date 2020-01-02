@@ -15,12 +15,23 @@ export class DragDropManager{
 	accentColor = new THREE.Color(0xff0000);
 	hmMat = new THREE.LineBasicMaterial({color:0x0, linewidth:4});
 	reticle: THREE.Object3D;
+	touchLastY = 0;
 	constructor(scene:THREE.Scene,camera:THREE.PerspectiveCamera, reticle:THREE.Object3D){
 		this.scene = scene;
 		this.camera = camera;
 		this.obj_list = [];
 		this.hitmarker = this.makeHitmarker();
 		this.reticle = reticle;
+		document.addEventListener('touchmove', (e) => {
+			if(this.selected_cube){
+				e.preventDefault();
+				var currentY = e.touches[0].clientY;
+				var deltaY = currentY - this.touchLastY;
+				this.touchLastY = currentY;
+				var curr_pos = this.selected_cube.position;
+				this.selected_cube.position.copy(curr_pos.multiplyScalar(deltaY/100));
+			}
+		});
 	}
 	setColors(oppColor:number) {
 		this.oppColor = new THREE.Color(oppColor);
@@ -139,11 +150,11 @@ export class DragDropManager{
 		}
 		this.camera.updateProjectionMatrix();
 	}
-
+	// update connected arrows
 	updateSelectedArrows(){
 		if(this.selected_cube){
 			
-			//we need the lists
+
 			if(!this.selected_cube.arrows_in){
 				return;
 			}
