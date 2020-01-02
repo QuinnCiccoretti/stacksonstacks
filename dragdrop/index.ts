@@ -15,12 +15,32 @@ export class DragDropManager{
 	accentColor = new THREE.Color(0xff0000);
 	hmMat = new THREE.LineBasicMaterial({color:0x0, linewidth:4});
 	reticle: THREE.Object3D;
+	touchLastY:number|null = null;
 	constructor(scene:THREE.Scene,camera:THREE.PerspectiveCamera, reticle:THREE.Object3D){
 		this.scene = scene;
 		this.camera = camera;
 		this.obj_list = [];
 		this.hitmarker = this.makeHitmarker();
 		this.reticle = reticle;
+		document.addEventListener('touchmove', (e) => {
+			e.preventDefault();
+			if(this.selected_cube){
+				var currentY = e.touches[0].clientY;
+				if(this.touchLastY){
+					var deltaY = currentY - this.touchLastY;
+					var curr_pos = <THREE.Vector3>this.selected_cube.position;
+					var old_length = curr_pos.length();
+					if(old_length!=0){
+						var new_length = old_length - deltaY/25;
+						var ratio = new_length/old_length;
+						if(ratio > 0){
+							this.selected_cube.position.copy(curr_pos.multiplyScalar(ratio));
+						}
+					}
+				}
+				this.touchLastY = currentY;
+			}
+		});
 	}
 	setColors(oppColor:number) {
 		this.oppColor = new THREE.Color(oppColor);
@@ -39,7 +59,8 @@ export class DragDropManager{
 		this.obj_list = obj_list;
 		document.body.removeEventListener('mousedown',onMouseDown);
 		document.body.removeEventListener( 'mouseup', onMouseUp);
-		// actually onclick lmao
+		document.body.removeEventListener('touchend',onMouseDown);
+		document.body.removeEventListener( 'touchstart', onMouseUp);
 		
 		onMouseDown = ()=>{
 		  var intersections = this.getIntersections();
@@ -63,6 +84,7 @@ export class DragDropManager{
 		  	this.changeConnectedArrowColor(this.selected_cube, this.oppColor);
 		    var object = this.selected_cube;
 		    this.selected_cube = null;
+		    this.touchLastY = null;
 		    object.matrix.premultiply( this.camera.matrixWorld );
 		    object.matrix.decompose( object.position, object.quaternion, object.scale );
 
@@ -138,11 +160,11 @@ export class DragDropManager{
 		}
 		this.camera.updateProjectionMatrix();
 	}
-
+	// update connected arrows
 	updateSelectedArrows(){
 		if(this.selected_cube){
 			
-			//we need the lists
+
 			if(!this.selected_cube.arrows_in){
 				return;
 			}
