@@ -15,7 +15,7 @@ export class DragDropManager{
 	accentColor = new THREE.Color(0xff0000);
 	hmMat = new THREE.LineBasicMaterial({color:0x0, linewidth:4});
 	reticle: THREE.Object3D;
-	touchLastY = 0;
+	touchLastY:number|null = null;
 	constructor(scene:THREE.Scene,camera:THREE.PerspectiveCamera, reticle:THREE.Object3D){
 		this.scene = scene;
 		this.camera = camera;
@@ -23,13 +23,20 @@ export class DragDropManager{
 		this.hitmarker = this.makeHitmarker();
 		this.reticle = reticle;
 		document.addEventListener('touchmove', (e) => {
-			if(this.selected_cube){
-				e.preventDefault();
+			e.preventDefault();
+			if(this.selected_cube && this.touchLastY){
 				var currentY = e.touches[0].clientY;
 				var deltaY = currentY - this.touchLastY;
 				this.touchLastY = currentY;
-				var curr_pos = this.selected_cube.position;
-				this.selected_cube.position.copy(curr_pos.multiplyScalar(deltaY/100));
+				var curr_pos = <THREE.Vector3>this.selected_cube.position;
+				var old_length = curr_pos.length();
+				if(old_length!=0){
+					var new_length = old_length - deltaY/100;
+					var ratio = new_length/old_length;
+					if(ratio != 0){
+						this.selected_cube.position.copy(curr_pos.multiplyScalar(ratio));
+					}
+				}
 			}
 		});
 	}
@@ -75,6 +82,7 @@ export class DragDropManager{
 		  	this.changeConnectedArrowColor(this.selected_cube, this.oppColor);
 		    var object = this.selected_cube;
 		    this.selected_cube = null;
+		    this.touchLastY = null;
 		    object.matrix.premultiply( this.camera.matrixWorld );
 		    object.matrix.decompose( object.position, object.quaternion, object.scale );
 
