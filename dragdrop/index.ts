@@ -39,7 +39,8 @@ export class DragDropManager{
 		this.obj_list = obj_list;
 		document.body.removeEventListener('mousedown',onMouseDown);
 		document.body.removeEventListener( 'mouseup', onMouseUp);
-		// actually onclick lmao
+		document.body.removeEventListener('touchend',onMouseDown);
+		document.body.removeEventListener( 'touchstart', onMouseUp);
 		
 		onMouseDown = ()=>{
 		  var intersections = this.getIntersections();
