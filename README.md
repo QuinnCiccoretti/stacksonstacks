@@ -1,11 +1,24 @@
-# threeml
-Modularize - Adapt - Overcome
+# stacksonstacks
 
-This is the modular version of stacksonstacks (it will be renamed)
+Modular visualizations of directed graphs - specifically, terraform resources
 
-### Example install
-Cd to the example directory.
-Run
+![graph with edges](./stacks-on-stacks-cover.png)
+
+### Live Demo
+
+Here is a [live demo with an example graph](https://quinnciccoretti.github.io/stacksonstacks/example/).
+
+### Set up the example
+Cd to the example directory, run `./start.sh` and navigate
+to http://localhost:8000.
+
+There is no need to build if you just want to check this out, because a 
+"stable" bundle file is included in the repo.
+
+### Development install
+You must run build if you want to make changes. Cd to the example directory.
+You'll need to [install node.js.](https://docs.npmjs.com/downloading-and-installing-node-js-and-npm)
+
 ```sh
 npm install
 npm run build
@@ -19,10 +32,12 @@ and navigate to http://localhost:8000
 
 ### The modules
 cd to the directory. Right now there are 3:
- - threeml: sole purpose is to create textured cubes, but oh my is it good at that
+ - threeml: sole purpose is to create textured cubes, but oh my is it good at that.
+ Also specifies the NodeCube class, which is used by the scenemanager to wrangle the graph.
  - scenemanager: takes in a terraform_json and calls threeml to add cubes to the scene.
- I envision this one as managing a graph of 3d nodes eventually
  - controlsmanager: this module hides the disgusting keystroke boilerplate to get browser movements to work
+
+ > Important Note: all dist/ directories are gitignored, except for webpack's bundle. This means if you change the modules you will have to rebuild them, and rerun webpack on the example
 
 ### Developing the modules
 We _only_ write typescript, otherwise the world collapses. So the build process is a bit involved.
@@ -31,7 +46,6 @@ We _only_ write typescript, otherwise the world collapses. So the build process 
  a dependency which doesn't ship in the package but which you'll need to recompile.
  - Make changes to `index.ts` in module directory you want to edit. 
  - Run `npm run build` to invoke the typescript compile
- - How to publish a module is TBD since we need to setup an npm group for us all.
 
 ### Developing the example
 The example is slightly different. As usual, run `npm install` before doing anything.
@@ -41,4 +55,4 @@ The example is slightly different. As usual, run `npm install` before doing anyt
 and sees that we specify typescript, and then invokes the typescript compiler on the src file,
 and bundles it into `dist/`. The `dist/bundle.js` file is the only thing included in `example/index.html`.
 Webpack does all the work
-- Note that updating the dependencies doesn't really work automatically yet, idk why
+- Note that dependencies are currently all local.

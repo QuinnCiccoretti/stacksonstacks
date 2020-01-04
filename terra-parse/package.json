@@ -1,7 +1,7 @@
 {
-  "name": "dragdrop",
+  "name": "terra-parse",
   "version": "0.0.0",
-  "description": "for managing raycaster",
+  "description": "parses output of graphviz dot format",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "scripts": {
@@ -11,9 +11,7 @@
     "type": "git",
     "url": "git+https://github.com/QuinnCiccoretti/threeml.git"
   },
-  "keywords": [
-    "threejs"
-  ],
+  "keywords": [],
   "author": "quinnciccoretti",
   "license": "MIT",
   "bugs": {
@@ -25,7 +23,5 @@
     "typescript": "^3.7.2"
   },
   "dependencies": {
-    "three": "^0.110.0",
-    "threeml": "file:///home/qciccoretti/stacksonstacks/threeml"
   }
 }

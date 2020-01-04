@@ -1,7 +1,7 @@
 {
-  "name": "dragdrop",
-  "version": "0.0.0",
-  "description": "for managing raycaster",
+  "name": "three-portalgun",
+  "version": "1.0.11",
+  "description": "asyncronously load a portal gun",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "scripts": {
@@ -15,7 +15,7 @@
     "threejs"
   ],
   "author": "quinnciccoretti",
-  "license": "MIT",
+  "license": "ISC",
   "bugs": {
     "url": "https://github.com/QuinnCiccoretti/threeml/issues"
   },
@@ -25,7 +25,6 @@
     "typescript": "^3.7.2"
   },
   "dependencies": {
-    "three": "^0.110.0",
-    "threeml": "file:///home/qciccoretti/stacksonstacks/threeml"
+    "three": "^0.110.0"
   }
 }

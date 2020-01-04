@@ -1,82 +1,45 @@
 import * as THREE from 'three';
-// import WebVRPolyfill from 'webvr-polyfill';
-import {initScene} from 'scenemanager';
-import {isVREnabled, addControls, updateControls} from 'controlmanager';
-
-var scene = new THREE.Scene();
-var camera = new THREE.PerspectiveCamera( 75, window.innerWidth/window.innerHeight, 0.1, 1000 );
-
-var reticle = new THREE.Mesh(
-  new THREE.RingBufferGeometry(0.005, 0.01, 15),
-  new THREE.MeshBasicMaterial({ color: ~0x0, opacity: 0.5 })
-);
-reticle.position.z = -0.5;
-camera.add(reticle);
+import {SceneManager} from 'scenemanager';
+import {ControlManager} from 'controlmanager';
+import {parseDotOutput} from 'terra-parse';
 
 var renderer = new THREE.WebGLRenderer();
+renderer.shadowMap.enabled = true;
 renderer.setSize( window.innerWidth, window.innerHeight );
 document.body.appendChild( renderer.domElement );
+var canvas = renderer.domElement;
 
-//make all the objects
-var terraform_json:any = {
-  "google_compute_instance.vm_instance": {
-    "x": "283.23",
-    "y": "-158.3",
-    "next": [
-      "google_compute_network.vpc_network"
-    ]
-  },
-  "google_compute_network.vpc_network": {
-    "x": "329.23",
-    "y": "-86.3",
-    "next": [
-      "provider.google"
-    ]
-  },
-  "provider.google": {
-    "x": "429.23",
-    "y": "-14.3"
-  },
-  "google_project.my_project": {
-    "x": "553.23",
-    "y": "-158.3",
-    "next": [
-      "provider.google"
-    ]
-  },
-  "meta.count-boundary (EachMode fixup)": {
-    "x": "224.23",
-    "y": "-230.3",
-    "next": [
-      "google_compute_instance.vm_instance",
-      "google_project.my_project"
-    ]
-  },
-  "provider.google (close)": {
-    "x": "612.23",
-    "y": "-230.3",
-    "next": [
-      "google_compute_instance.vm_instance",
-      "google_project.my_project"
-    ]
-  },
-  "root": {
-    "x": "418.23",
-    "y": "-302.3",
-    "next": [
-      "meta.count-boundary (EachMode fixup)",
-      "provider.google (close)"
-    ]
-  }
-};
-
-initScene(camera,scene, terraform_json);
 var controls:any;
-var vrDisplay:any;
+var vrDisplay:VRDisplay;
+var scene:SceneManager|null;
+
+var renderButton = document.getElementById("renderButton");
+renderButton.addEventListener("click",renderCubes);
+
+scene = new SceneManager();
+var color1picker = document.getElementById("color1");
+color1picker.addEventListener("change", function(event:any){
+  var color = event.target.value;
+  scene.updateSkyColor(color);
+});
+var color2picker = document.getElementById("color2");
+color2picker.addEventListener("change", function(event:any){
+  var color = event.target.value;
+  scene.updateGroundColor(color);
+});
+//locate the ui elements
+var vrButton = document.getElementById('vr');
+var fullscreenButton = document.getElementById('fullscreen');
+var startbutton = document.getElementById("startButton");  
 var blocker = document.getElementById("blocker");
-addControls(scene, camera, blocker).then(
+var control_manager = new ControlManager(scene.camera,blocker, startbutton, vrButton, fullscreenButton);
+
+
+//add controls
+control_manager.addControls(scene, canvas).then(
 	function(){
-  	if(isVREnabled()){
+  	if(control_manager.vrEnabled){
+      vrDisplay = control_manager.vrDisplay;
   		vrDisplay.requestAnimationFrame(vrAnimate);
   	}
   	else{
@@ -87,34 +50,51 @@ addControls(scene, camera, blocker).then(
 	console.log(error);
 });
 
-var geometry = new THREE.BoxGeometry( 1, 1, 1 );
-var material = new THREE.MeshBasicMaterial( { color: 0x00ff00 } );
-var cube = new THREE.Mesh( geometry, material );
-scene.add( cube );
+function renderCubes(){
+  //make all the objects
+  var text = (<HTMLInputElement>document.getElementById('textbox')).value;
+  var terraform_json:any = parseDotOutput(text);
+  scene.make_cubes(terraform_json);
+}
 
-camera.position.z = 5;
+renderCubes();
+
 
 function vrAnimate(){
-	updateControls();
-  cube.rotation.x += 0.01;
-  cube.rotation.y += 0.01;
+	control_manager.updateControls();
+  scene.updateScene();
 	vrDisplay.requestAnimationFrame(vrAnimate);
-  renderer.render( scene, camera );
+  renderer.render( scene, scene.camera );
 }
 
 function desktopAnimate(){
-  cube.rotation.x += 0.01;
-  cube.rotation.y += 0.01;
-  updateControls();  
+  control_manager.updateControls();
+  scene.updateScene();
 	requestAnimationFrame(desktopAnimate);
-  renderer.render( scene, camera );
+  renderer.render( scene, scene.camera );
 }
 
+function onResize() {
+  // The delay ensures the browser has a chance to layout
+  // the page and update the clientWidth/clientHeight.
+  // This problem particularly crops up under iOS.
+  setTimeout(function () {
+      console.log('Resizing to %s x %s.', canvas.clientWidth, canvas.clientHeight);
+      scene.camera.aspect = canvas.clientWidth / canvas.clientHeight;
+      scene.camera.updateProjectionMatrix();
+   }, 250);
+}
 
+function onVRDisplayPresentChange() {
+  console.log('onVRDisplayPresentChange');
+  onResize();
+}
 
+function onVRDisplayConnect(e:any) {
+  console.log('onVRDisplayConnect', (e.display || (e.detail && e.detail.display)));
+}
 
-
-
-
-
-
+// Resize the WebGL canvas when we resize and also when we change modes.
+window.addEventListener('resize', onResize);
+window.addEventListener('vrdisplaypresentchange', onVRDisplayPresentChange);
+window.addEventListener('vrdisplayconnect', onVRDisplayConnect);
