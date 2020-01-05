@@ -324,9 +324,12 @@ def main():
     '''
     adj = adjacency_list()
     nodes = list(adj.keys())
+    nodes.reverse()
     print(adj)
+    print(nodes)
     X, Y, Z, level = points(adj, len(nodes), nodes, 1)
-    print(X, Y, Z, level)
+    print(level)
+    # print(X, Y, Z, level)
     rev = reverse_level(level)
     coordinates = connect(X, Y, Z, level, adj)
 
