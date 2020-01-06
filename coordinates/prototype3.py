@@ -235,9 +235,10 @@ def connect(x, y, z, level, adj):
     '''
     #print(adj)
     rev = reverse_level(level)
-    coordinates = {0: [0, 0, 0]}
-    for l in rev.keys():
 
+    coordinates = {0: [0, 0, 0]}
+    for num in range(len(rev.keys())):
+        l = num+1
         ## PREPROCESSING
 
         points = []                                     # candidate coordinates for next level
@@ -251,12 +252,12 @@ def connect(x, y, z, level, adj):
 
         # print(points)
         ordered = rev[l]                                # nodes in level l
-        '''                                               
+        #'''                                               
         for v in ordered:                               # debugging
             print(v)
             print(coordinates[v])
             print(max_distance(points, coordinates[v])[0])
-        '''
+        #'''
         ordered = sorted(ordered, key=lambda v: max_distance(points,\
         coordinates[v])[0], reverse=True)                               # list for order
         # print(ordered)
@@ -331,6 +332,7 @@ def main():
     print(level)
     # print(X, Y, Z, level)
     rev = reverse_level(level)
+    print(rev)
     coordinates = connect(X, Y, Z, level, adj)
 
     # verification
