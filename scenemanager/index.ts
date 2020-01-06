@@ -189,7 +189,11 @@ export class SceneManager extends THREE.Scene{
             label.position.set(-0.6,-1,0); //offset label and cube
             cube.label = label;
             cube.add(label);
-            cube.position.set(Math.random()*10, Math.random()*10, Math.random()*10);
+            var pos = curr_resource["coord-xyz"];
+            if(!pos){
+                pos = [Math.random()*10,Math.random()*10,Math.random()*10];
+            }
+            cube.position.set(pos[0], pos[1], pos[2]);
             this.add(cube);
             this.obj_list.push(cube); //insert into our "graph"
             gvid_to_cube[curr_resource._gvid] = cube;
@@ -222,11 +226,18 @@ export class SceneManager extends THREE.Scene{
                             
         }
         var josh = "https://scontent-iad3-1.xx.fbcdn.net/v/t31.0-8/28701384_611205672553420_861063517891691345_o.jpg?_nc_cat=108&_nc_oc=AQkES19skZE56YmLT3a6H6U8xRKrLBB6h_hPjjlzvx8aED3WbZfB5bocBSZMHjgs1T0&_nc_ht=scontent-iad3-1.xx&oh=40bcd73e3df92eb235b5f4e05e5e7beb&oe=5E7A74A1";
-        var joshcube = await createCube(josh);
-        joshcube.position.set(0,2,0);
-        joshcube.castShadow = true;
-        this.add(joshcube);
-        this.obj_list.push(joshcube);
+        createCube(josh).then( ( joshcube ) =>{
+
+            joshcube.position.set(0,2,0);
+            joshcube.castShadow = true;
+            this.add(joshcube);
+            this.obj_list.push(joshcube);
+
+        }).catch( (err)=>{
+            console.log(err);
+
+        });
+        
         this.drag_drop_manager.setupRaycasting(this.obj_list);
 
     }
