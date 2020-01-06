@@ -62,13 +62,13 @@ def set_axes_equal(ax):
     ax.set_ylim3d([y_middle - plot_radius, y_middle + plot_radius])
     ax.set_zlim3d([z_middle - plot_radius, z_middle + plot_radius])
 
-def graph(X, Y, Z, coordinates, adj, rev):
+def graph(X, Y, Z, coordinates, adj, rev, show_level=False):
     '''
     Visualize coordinates
     '''
 
-    phi = np.linspace(0, np.pi, 20)
-    theta = np.linspace(0, np.pi, 40)
+    phi = np.linspace(0, np.pi/2, 20)
+    theta = np.linspace(0, np.pi/2, 40)
     x = np.outer(np.sin(theta), np.cos(phi))
     y = np.outer(np.sin(theta), np.sin(phi))
     z = np.outer(np.cos(theta), np.ones_like(phi))
@@ -79,8 +79,11 @@ def graph(X, Y, Z, coordinates, adj, rev):
     ax = fig.add_subplot(1,1,1,projection='3d')
     #ax = fig.gca(projection='3d')
     ax.set_aspect('equal')
-    #for num in range(len(rev)):
-    #    ax.plot_wireframe(x*(num+1), y*(num+1), z*(num+1), color='k', rstride=5, cstride=5)
+    if show_level:
+        keys = rev.keys()
+        radius = min(keys)
+        for num in range(len(rev)):
+            ax.plot_wireframe(x*(num+1)*radius, y*(num+1)*radius, z*(num+1)*radius, color='gray', rstride=1, cstride=1)
     draw_lines(coordinates, adj, ax)
     # ax.plot([0, 1],[0, 1],[0, 1],color = 'g')
     ax.scatter(X, Y, Z, s=100, c='r', zorder=10)
@@ -130,7 +133,7 @@ def points(adj, length, nodes, radius):
 
         for neighbor in e:
             q.append(neighbor)
-            level[neighbor] = level[v]+1
+            level[neighbor] = level[v]+radius
 
     # Uncomment for level check:         
     #print(level)
@@ -211,7 +214,7 @@ def max_distance(points, origin):
             max_d_coord = point
     return max_d, max_d_coord
 
-def connect(x, y, z, level, adj):
+def connect(x, y, z, level, adj, radius=1):
     '''
     IDEA:
 
@@ -235,10 +238,12 @@ def connect(x, y, z, level, adj):
     '''
     #print(adj)
     rev = reverse_level(level)
-
+    levels_sorted = rev.keys()
+    levels_sorted = sorted(levels_sorted)
+    # print(levels_sorted)
     coordinates = {0: [0, 0, 0]}
-    for num in range(len(rev.keys())):
-        l = num+1
+    for l in levels_sorted:
+
         ## PREPROCESSING
 
         points = []                                     # candidate coordinates for next level
@@ -252,12 +257,12 @@ def connect(x, y, z, level, adj):
 
         # print(points)
         ordered = rev[l]                                # nodes in level l
-        #'''                                               
+        '''                                               
         for v in ordered:                               # debugging
             print(v)
             print(coordinates[v])
             print(max_distance(points, coordinates[v])[0])
-        #'''
+        '''
         ordered = sorted(ordered, key=lambda v: max_distance(points,\
         coordinates[v])[0], reverse=True)                               # list for order
         # print(ordered)
@@ -270,7 +275,7 @@ def connect(x, y, z, level, adj):
             # if v in coordinates:                           
             for neighbor in adj[v]:                     # for each neighbor to ^node
                 # print(neighbor, level[neighbor])
-                if l+1 == level[neighbor]:                                      # if the level of the neighbor is correct
+                if l+radius == level[neighbor]:                                      # if the level of the neighbor is correct
                     assignment = min_distance(points, coordinates[v])[1]        # min distance assignment
                     points.remove(assignment)
                     if neighbor not in coordinates:                             # neighbor already assigned? (ie shared neighbors)
@@ -291,10 +296,11 @@ def connect(x, y, z, level, adj):
 
 def gen_coordinates(adj, radius=1):
     nodes = list(adj.keys())
+    nodes.reverse()
     X, Y, Z, level = points(adj, len(nodes), nodes, radius)
     # print(level)
     rev = reverse_level(level)
-    coordinates = connect(X, Y, Z, level, adj)
+    coordinates = connect(X, Y, Z, level, adj, radius)
     return coordinates
 
 def adjacency_list():
@@ -326,14 +332,15 @@ def main():
     adj = adjacency_list()
     nodes = list(adj.keys())
     nodes.reverse()
-    print(adj)
-    print(nodes)
-    X, Y, Z, level = points(adj, len(nodes), nodes, 1)
-    print(level)
+    radius = 5
+    # print(adj)
+    # print(nodes)
+    X, Y, Z, level = points(adj, len(nodes), nodes, radius)
+    # print(level)
     # print(X, Y, Z, level)
     rev = reverse_level(level)
-    print(rev)
-    coordinates = connect(X, Y, Z, level, adj)
+    # print(rev)
+    coordinates = connect(X, Y, Z, level, adj, radius)
 
     # verification
     x = []
@@ -346,7 +353,7 @@ def main():
     #print(x)
     #print(y)
     #print(z)
-    graph(x, y, z, coordinates, adj, rev)
+    graph(x, y, z, coordinates, adj, rev, show_level=False)
     plt.show()
     
 
