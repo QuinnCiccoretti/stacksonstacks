@@ -32,7 +32,12 @@
             </div>
     	</div>
         <br>
-        <h3>terraform output</h3>
+        <h3>paste below the output of
+        	<br>
+        	<code>terraform graph | dot -Txdot_json</code>
+        	<br>
+        	then hit render. an example is provided.
+        </h3>
         <textarea id="textbox">
     {
           "name": "%3",
@@ -171,7 +176,6 @@
         }
         </textarea>
 
-    	<!-- <input type="color" id="color2" value="#ff0000"> -->
   	</div>
 	<!-- include the result of webpack -->
 	<script src="./dist/bundle.js"></script>
