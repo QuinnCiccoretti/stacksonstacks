@@ -189,7 +189,11 @@ export class SceneManager extends THREE.Scene{
             label.position.set(-0.6,-1,0); //offset label and cube
             cube.label = label;
             cube.add(label);
-            cube.position.set(Math.random()*10, Math.random()*10, Math.random()*10);
+            var pos = curr_resource["coord-xyz"];
+            if(!pos){
+                pos = [Math.random()*10,Math.random()*10,Math.random()*10];
+            }
+            cube.position.set(pos[0], pos[1], pos[2]);
             this.add(cube);
             this.obj_list.push(cube); //insert into our "graph"
             gvid_to_cube[curr_resource._gvid] = cube;
