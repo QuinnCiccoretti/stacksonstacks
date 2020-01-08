@@ -96,7 +96,7 @@ Object.assign(jh.prototype,{_getValue_unbound:jh.prototype.getValue,_setValue_un
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
- */var n;n=function(){"use strict";var e,n="undefined"!=typeof window?window:void 0!==t?t:"undefined"!=typeof self?self:{},r=function(){return/Android/i.test(navigator.userAgent)||/iPhone|iPad|iPod/i.test(navigator.userAgent)},i=function(e,t){for(var n=0,r=e.length;n<r;n++)t[n]=e[n]},a=function(e,t){for(var n in t)t.hasOwnProperty(n)&&(e[n]=t[n]);return e},o=function(e,t){return e(t={exports:{}},t.exports),t.exports}((function(e,t){
+ */var n;n=function(){"use strict";var t,n="undefined"!=typeof window?window:void 0!==e?e:"undefined"!=typeof self?self:{},r=function(){return/Android/i.test(navigator.userAgent)||/iPhone|iPad|iPod/i.test(navigator.userAgent)},i=function(t,e){for(var n=0,r=t.length;n<r;n++)e[n]=t[n]},a=function(t,e){for(var n in e)e.hasOwnProperty(n)&&(t[n]=e[n]);return t},o=function(t,e){return t(e={exports:{}},e.exports),e.exports}((function(t,e){
 /**
  * @license
  * cardboard-vr-display
