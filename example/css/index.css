@@ -8,6 +8,11 @@ html, body {
   overflow: hidden;
 }
 
+code {
+  background-color: #aaa;
+  color: #ffffff;
+}
+
 canvas {
   width: 100%;
   height: 100%;
