@@ -75,7 +75,7 @@ function desktopAnimate(){
   control_manager.updateDesktopControls();
   scene.updateScene();
 	requestAnimationFrame(desktopAnimate);
-  renderer.render( scene, scene.camera );
+  effect.render( scene, scene.camera );
 }
 
 function onResize() {
