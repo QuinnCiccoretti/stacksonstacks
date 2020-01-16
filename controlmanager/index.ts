@@ -150,7 +150,6 @@ export class ControlManager{
       this.startbutton.addEventListener( 'click', () => {
         this.controls.lock();
       }, false );
-      this.webvrbutton.style.display = 'none';
       this.fsbutton.addEventListener('click', ()=>{
         this.controls.lock();
         enterFullscreen(render_dom_elem);
