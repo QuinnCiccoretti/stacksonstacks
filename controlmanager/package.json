@@ -26,6 +26,7 @@
   },
   "dependencies": {
     "three": "^0.110.0",
+    "three-vrcontrols-module": "^2.2.1",
     "webvr-polyfill": "^0.10.11"
   }
 }
