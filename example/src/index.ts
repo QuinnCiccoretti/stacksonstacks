@@ -2,12 +2,16 @@ import * as THREE from 'three';
 import {SceneManager} from 'scenemanager';
 import {ControlManager} from 'controlmanager';
 import {parseDotOutput} from 'terra-parse';
+import VREffect from 'three-vreffect-module';
 
 var renderer = new THREE.WebGLRenderer();
 renderer.shadowMap.enabled = true;
 renderer.setSize( window.innerWidth, window.innerHeight );
 document.body.appendChild( renderer.domElement );
 var canvas = renderer.domElement;
+
+const effect = new VREffect(renderer);
+effect.setSize(window.innerWidth, window.innerHeight);
 
 var controls:any;
 var vrDisplay:VRDisplay;
@@ -64,7 +68,7 @@ function vrAnimate(){
 	control_manager.updateVRControls();
   scene.updateScene();
 	vrDisplay.requestAnimationFrame(vrAnimate);
-  renderer.render( scene, scene.camera );
+  effect.render( scene, scene.camera );
 }
 
 function desktopAnimate(){
