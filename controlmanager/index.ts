@@ -69,7 +69,12 @@ export class ControlManager{
       this.webvrbutton.addEventListener('click', ()=>{
         this.blocker.style.display = 'none';
         if(this.vrDisplay){
+          try{
           this.vrDisplay.requestPresent([{source: render_dom_elem}]);
+          }
+          catch(error){
+            console.log(error);
+          }
         }
       }, false);
     }
