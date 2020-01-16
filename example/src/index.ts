@@ -84,6 +84,7 @@ function onResize() {
   // This problem particularly crops up under iOS.
   setTimeout(function () {
       console.log('Resizing to %s x %s.', canvas.clientWidth, canvas.clientHeight);
+      effect.setSize(canvas.clientWidth, canvas.clientHeight, false);
       scene.camera.aspect = canvas.clientWidth / canvas.clientHeight;
       scene.camera.updateProjectionMatrix();
    }, 250);

@@ -63,10 +63,11 @@ export class ControlManager{
     	this.vrEnabled = true;
       this.vrDisplay = vrDisplays[0];
       // Apply VR headset positional data to camera.
-      this.controls = new VRControls(this.camera);
-      // this.controls = new DeviceOrientationControls(this.camera);
+      this.controls = new DeviceOrientationControls(this.camera);
       //webvr should hide the blocker
+      
       this.webvrbutton.addEventListener('click', ()=>{
+        this.controls = new VRControls(this.camera);
         this.blocker.style.display = 'none';
         if(this.vrDisplay){
           try{
