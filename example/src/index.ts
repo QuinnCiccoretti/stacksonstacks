@@ -61,14 +61,14 @@ renderCubes();
 
 
 function vrAnimate(){
-	control_manager.updateControls();
+	control_manager.updateVRControls();
   scene.updateScene();
 	vrDisplay.requestAnimationFrame(vrAnimate);
   renderer.render( scene, scene.camera );
 }
 
 function desktopAnimate(){
-  control_manager.updateControls();
+  control_manager.updateDesktopControls();
   scene.updateScene();
 	requestAnimationFrame(desktopAnimate);
   renderer.render( scene, scene.camera );

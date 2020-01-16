@@ -34,14 +34,6 @@ export class ControlManager{
 	  // });
   }
 
-  updateControls():void {
-  	if(this.vrEnabled){
-  		this.updateVRControls();
-  	}
-  	else{
-  		this.updateDesktopControls();
-  	}
-  }
 
   updateVRControls(): void {
   	this.controls.update();	
@@ -67,6 +59,7 @@ export class ControlManager{
         this.blocker.style.display = 'none';
     }, false );
     if (vrDisplays.length) {
+      console.log("Using WebVR Polyfill...");
     	this.vrEnabled = true;
       this.vrDisplay = vrDisplays[0];
       // Apply VR headset positional data to camera.
@@ -81,6 +74,7 @@ export class ControlManager{
       }, false);
     }
     else {    //we on desktop, get that good good point and shoot
+      console.log("Using desktop controls...");
       this.vrEnabled = false;
       this.controls = new PointerLockControls(this.camera,document.body);
       var onKeyDown = ( event:KeyboardEvent)=>{
@@ -154,6 +148,7 @@ export class ControlManager{
         this.controls.lock();
         enterFullscreen(render_dom_elem);
       },false);
+      // this.webvrbutton.style.display = 'none';
       this.controls.addEventListener( 'unlock', () =>{
         this.blocker.style.display = 'block';      
       } );
