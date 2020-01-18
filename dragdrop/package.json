@@ -25,7 +25,7 @@
     "typescript": "^3.7.2"
   },
   "dependencies": {
-    "three": "^0.110.0",
+    "three": "^0.112.1",
     "threeml": "file:///home/qciccoretti/stacksonstacks/threeml"
   }
 }

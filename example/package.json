@@ -7,7 +7,7 @@
     "controlmanager": "file:../controlmanager",
     "scenemanager": "file:../scenemanager",
     "terra-parse": "file:../terra-parse",
-    "three": "0.110.0",
+    "three": "^0.112.1",
     "webvr-polyfill": "^0.10.11"
   },
   "devDependencies": {
