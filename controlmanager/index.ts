@@ -1,7 +1,6 @@
 import * as THREE from "three";
 import { PointerLockControls } from 'three/examples/jsm/controls/PointerLockControls.js';
 import WebVRPolyfill from 'webvr-polyfill';
-// import VRControls from 'three-vrcontrols-module';
 import { DeviceOrientationControls } from 'three/examples/jsm/controls/DeviceOrientationControls.js';
 
 export class ControlManager{
@@ -17,21 +16,19 @@ export class ControlManager{
   vrEnabled:boolean = false;
   vrDisplay:VRDisplay|null;
   startbutton:HTMLElement;
-  webvrbutton:HTMLElement;
   fsbutton:HTMLElement;
   blocker:HTMLElement;
   camera: THREE.PerspectiveCamera;
-  constructor(camera: THREE.PerspectiveCamera, blocker:HTMLElement,startbutton:HTMLElement, webvrbutton:HTMLElement, fsbutton:HTMLElement){
+  constructor(camera: THREE.PerspectiveCamera, blocker:HTMLElement,startbutton:HTMLElement, buttonbox:HTMLElement, fsbutton:HTMLElement){
     this.camera = camera;
     this.blocker = blocker;
     this.startbutton = startbutton;
-    this.webvrbutton = webvrbutton;
     this.fsbutton = fsbutton;
     this.vrDisplay = null;
     this.polyfill = new WebVRPolyfill();
-   //  document.addEventListener('touchmove', function (e) {
-	  //   e.preventDefault();
-	  // });
+    document.addEventListener('touchmove', function (e) {
+	    e.preventDefault();
+	  });
   }
 
   updateControls():void {
@@ -72,13 +69,6 @@ export class ControlManager{
       // Apply VR headset positional data to camera.
       // this.controls = new VRControls(this.camera);
       this.controls = new DeviceOrientationControls(this.camera);
-      //webvr should hide the blocker
-      this.webvrbutton.addEventListener('click', ()=>{
-        this.blocker.style.display = 'none';
-        if(this.vrDisplay){
-          this.vrDisplay.requestPresent([{source: render_dom_elem}]);
-        }
-      }, false);
     }
     else {    //we on desktop, get that good good point and shoot
       this.vrEnabled = false;
@@ -150,7 +140,6 @@ export class ControlManager{
       this.startbutton.addEventListener( 'click', () => {
         this.controls.lock();
       }, false );
-      this.webvrbutton.style.display = 'none';
       this.fsbutton.addEventListener('click', ()=>{
         this.controls.lock();
         enterFullscreen(render_dom_elem);
