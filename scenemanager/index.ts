@@ -199,6 +199,10 @@ export class SceneManager extends THREE.Scene{
             gvid_to_cube[curr_resource._gvid] = cube;
 
         }
+
+        //camera should look in a decent direction
+        this.camera.lookAt(this.obj_list[0].position);
+
         const edges = this.tf_json.edges;
         for(const edge of edges){
             var tail_cube = gvid_to_cube[edge.tail];
@@ -225,18 +229,18 @@ export class SceneManager extends THREE.Scene{
             head_cube.arrows_in.push(arrow);
                             
         }
-        var josh = "https://scontent-iad3-1.xx.fbcdn.net/v/t31.0-8/28701384_611205672553420_861063517891691345_o.jpg?_nc_cat=108&_nc_oc=AQkES19skZE56YmLT3a6H6U8xRKrLBB6h_hPjjlzvx8aED3WbZfB5bocBSZMHjgs1T0&_nc_ht=scontent-iad3-1.xx&oh=40bcd73e3df92eb235b5f4e05e5e7beb&oe=5E7A74A1";
-        createCube(josh).then( ( joshcube ) =>{
+        // var josh = "https://scontent-iad3-1.xx.fbcdn.net/v/t31.0-8/28701384_611205672553420_861063517891691345_o.jpg?_nc_cat=108&_nc_oc=AQkES19skZE56YmLT3a6H6U8xRKrLBB6h_hPjjlzvx8aED3WbZfB5bocBSZMHjgs1T0&_nc_ht=scontent-iad3-1.xx&oh=40bcd73e3df92eb235b5f4e05e5e7beb&oe=5E7A74A1";
+        // createCube(josh).then( ( joshcube ) =>{
 
-            joshcube.position.set(0,2,0);
-            joshcube.castShadow = true;
-            this.add(joshcube);
-            this.obj_list.push(joshcube);
+        //     joshcube.position.set(0,2,0);
+        //     joshcube.castShadow = true;
+        //     this.add(joshcube);
+        //     this.obj_list.push(joshcube);
 
-        }).catch( (err)=>{
-            console.log(err);
+        // }).catch( (err)=>{
+        //     console.log(err);
 
-        });
+        // });
         
         this.drag_drop_manager.setupRaycasting(this.obj_list);
 

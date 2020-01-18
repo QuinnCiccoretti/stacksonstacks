@@ -4,6 +4,7 @@
   "description": "example for threeml",
   "main": "dist/index.js",
   "dependencies": {
+    "@types/three": "^0.103.2",
     "controlmanager": "file:../controlmanager",
     "scenemanager": "file:../scenemanager",
     "terra-parse": "file:../terra-parse",

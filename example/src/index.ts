@@ -2,12 +2,18 @@ import * as THREE from 'three';
 import {SceneManager} from 'scenemanager';
 import {ControlManager} from 'controlmanager';
 import {parseDotOutput} from 'terra-parse';
+import { VRButton } from 'three/examples/jsm/webxr/VRButton';
 
 var renderer = new THREE.WebGLRenderer();
 renderer.shadowMap.enabled = true;
 renderer.setSize( window.innerWidth, window.innerHeight );
+renderer.xr.enabled = true;
 document.body.appendChild( renderer.domElement );
 var canvas = renderer.domElement;
+
+//add vr button
+document.body.appendChild( VRButton.createButton( renderer ) );
+
 
 var controls:any;
 var vrDisplay:VRDisplay;
@@ -39,11 +45,10 @@ var control_manager = new ControlManager(scene.camera,blocker, startbutton, vrBu
 control_manager.addControls(scene, canvas).then(
 	function(){
   	if(control_manager.vrEnabled){
-      vrDisplay = control_manager.vrDisplay;
-  		vrDisplay.requestAnimationFrame(vrAnimate);
+      renderer.setAnimationLoop(vrAnimate);
   	}
   	else{
-  		requestAnimationFrame(desktopAnimate);
+  		renderer.setAnimationLoop(desktopAnimate);
   	}
   }
 ).catch(function(error){
@@ -63,14 +68,12 @@ renderCubes();
 function vrAnimate(){
 	control_manager.updateControls();
   scene.updateScene();
-	vrDisplay.requestAnimationFrame(vrAnimate);
   renderer.render( scene, scene.camera );
 }
 
 function desktopAnimate(){
   control_manager.updateControls();
   scene.updateScene();
-	requestAnimationFrame(desktopAnimate);
   renderer.render( scene, scene.camera );
 }
 
