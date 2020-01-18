@@ -26,6 +26,6 @@
   },
   "dependencies": {
     "three": "^0.110.0",
-    "webvr-polyfill": "^0.10.11"
+    "webxr-polyfill": "^2.0.1"
   }
 }

@@ -1,8 +1,7 @@
 import * as THREE from "three";
 import { PointerLockControls } from 'three/examples/jsm/controls/PointerLockControls.js';
-import WebVRPolyfill from 'webvr-polyfill';
-// import VRControls from 'three-vrcontrols-module';
 import { DeviceOrientationControls } from 'three/examples/jsm/controls/DeviceOrientationControls.js';
+import WebXRPolyfill from 'webxr-polyfill';
 
 export class ControlManager{
   polyfill:any;
@@ -28,10 +27,10 @@ export class ControlManager{
     this.webvrbutton = webvrbutton;
     this.fsbutton = fsbutton;
     this.vrDisplay = null;
-    this.polyfill = new WebVRPolyfill();
-   //  document.addEventListener('touchmove', function (e) {
-	  //   e.preventDefault();
-	  // });
+    document.addEventListener('touchmove', function (e) {
+	    e.preventDefault();
+	  });
+    this.polyfill = new WebXRPolyfill();
   }
 
   updateControls():void {
@@ -72,13 +71,6 @@ export class ControlManager{
       // Apply VR headset positional data to camera.
       // this.controls = new VRControls(this.camera);
       this.controls = new DeviceOrientationControls(this.camera);
-      //webvr should hide the blocker
-      this.webvrbutton.addEventListener('click', ()=>{
-        this.blocker.style.display = 'none';
-        if(this.vrDisplay){
-          this.vrDisplay.requestPresent([{source: render_dom_elem}]);
-        }
-      }, false);
     }
     else {    //we on desktop, get that good good point and shoot
       this.vrEnabled = false;
